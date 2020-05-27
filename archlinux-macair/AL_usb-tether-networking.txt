@@ -1,0 +1,31 @@
+_0_t__hiso - # ip linh
+1_ _0_ _L_P_CK_UP_L_ER_UP> mtu 65536 gdisc n0q4eue state uItlK_0wFl made DEFAu_T g_aup de Fault
+link/l0opbach _;_;00:00:00:@0 b_d 00:00:00:00:00:00
+2_ en____: __ROA_ST,_ULTICAST> mt4 15_0 qdisc n_0p state _4Fl mode DEFAULT group de_ault qlen 1_0
+linh/et_r _:_1:7e:r4:33:1a b_ __:__:Fr:Fr:_r:__
+r0_t_rchiso - _ dhcpc_ enp0s20u1
+en__1_ addi_ address r__: =56e8 :ece2 :c5a3 :ee81
+en__1: _itiq ror _rrier
+en_1: Garrie_ acguir_
+_I_ _ _0t __ =0t: 1_ ;21 ;c5 _ab;c2 :d1 :7e: r4 :_: 1a
+e_t; IAID 7e:r_;33;1a
+e_1= _liciti_ _ _P lea_
+_1; _licitî_ _n I_ _ter
+m__1; orre_ __._68._.173 r_ 192.168,t2.129
+_1; lea_ 1_,168,_.{73 ror _ _n_s
+en_t; _ing _t_ to __,168._.0/Z_
+__1: _diq derault _ou_ 4ia 1_.168._.129
+ror_ _ _c__, child pi_ 1_63
+__hi_ - _ ip link
+1_ lo_ __,UP,_ER_UP} _tu 6_5_ gdt_ ___ st__ __ __ DEPAU__ g_p __r_4lt
+li_l_p__ _;00;_:_;__00 br4 _;_;____@0;_
+2; __1 ; __ '_0 0 _ _S_,___I___UP____UP} mt4 __ qd1_ rg__tl s_tt _ _t DE__ __ p de__ult _len 10 @@
+li_et_ _;d1;7_;rt;33;18 brd rr;rr_rr;rr__r_rr
+r0ot_h1so - _ ip_ _
+1; lo_ __K,UP,__ER_UP_ mtu _5_ gdi_ ___ st__ __ g_p __r_ult
+i_t 1Z7.0.0,_ scopi h0st lo
+_l{d_lrt r____ pr_r_r__lrt ro_r
+2: _n__1; ____AS_,___I_S__UP____R_UP_ m_ __ g4t_ rq__tl s__ _ _p d___4lt ql_n _______
+i_t t9Z.t6B._2._73/2_ br_ 19Z._68._Z.Z55 ___ glo_l _np0_1
+_l1d lrt ror__r pr_rerred_lrt ro__uer
+rao__archiso ^ #

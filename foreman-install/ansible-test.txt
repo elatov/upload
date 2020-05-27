@@ -1,0 +1,99 @@
+### For testing
+First install it
+
+sudo yum install ansible
+
+Then configure it:
+
+[elatov@fore ~]$ grep -vE '^#|^$' /etc/ansible/ansible.cfg
+[defaults]
+inventory      = /etc/ansible/hosts
+roles_path    = /etc/ansible/roles
+deprecation_warnings = False
+[inventory]
+[privilege_escalation]
+[paramiko_connection]
+[ssh_connection]
+[persistent_connection]
+[accelerate]
+[selinux]
+[colors]
+[diff]
+
+I added the following section to the hosts files:
+
+[elatov@fore ~]$ grep -vE '^#|^$' /etc/ansible/hosts
+[vms]
+10.0.0.150
+
+And then as a test I installed the chronyd roles from galaxy:
+
+[elatov@fore ~]$ sudo ansible-galaxy install influxdata.chrony -p /etc/ansible/roles/
+- downloading role 'chrony', owned by influxdata
+- downloading role from https://github.com/influxdata/ansible-chrony/archive/master.tar.gz
+- extracting influxdata.chrony to /etc/ansible/roles/influxdata.chrony
+- influxdata.chrony (master) was installed successfully
+
+As a quick test make sure you can connect to the host with ansible:
+
+[elatov@fore ~]$ ansible all -m ping -u root
+10.0.0.150 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+
+Then I created a quick playbook to install the role:
+
+[elatov@fore ~]$ cat deploy.yml
+---
+- hosts: all
+  roles:
+    - { role: influxdata.chrony }
+
+And then ran it:
+
+[elatov@fore ~]$ ansible-playbook deploy.yml -u root -v
+Using /etc/ansible/ansible.cfg as config file
+
+PLAY [all] *************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************
+ok: [10.0.0.150]
+
+TASK [influxdata.chrony : include os-specific vars] ********************************************************************
+ok: [10.0.0.150] => {"ansible_facts": {"chrony_conf_file": "/etc/chrony.conf", "chrony_driftfile": "/var/lib/chrony/drif
+t", "chrony_keyfile": "/etc/chrony/chrony.keys", "chrony_service_name": "chronyd"}, "ansible_included_var_files": ["/etc
+/ansible/roles/influxdata.chrony/vars/redhat.yml"], "changed": false}
+
+TASK [influxdata.chrony : Install Chrony] ******************************************************************************
+ok: [10.0.0.150] => {"changed": false, "msg": "", "rc": 0, "results": ["chrony-3.1-2.el7.centos.x86_64 providing chrony
+is already installed"]}
+..
+..
+PLAY RECAP *************************************************************************************************************
+10.0.0.150                 : ok=6    changed=2    unreachable=0    failed=0
+
+And that was it. I logged into the host and confirmed chronyd is running:
+
+[elatov@fore ~]$ ssh root@10.0.0.150
+Last login: Thu Jan 18 19:06:12 2018 from fore.kar.int
+[root@karim-test ~]# systemctl status chronyd
+● chronyd.service - NTP client/server
+   Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Thu 2018-01-18 19:06:12 UTC; 6min ago
+     Docs: man:chronyd(8)
+           man:chrony.conf(5)
+  Process: 20362 ExecStartPost=/usr/libexec/chrony-helper update-daemon (code=exited, status=0/SUCCESS)
+  Process: 20358 ExecStart=/usr/sbin/chronyd $OPTIONS (code=exited, status=0/SUCCESS)
+ Main PID: 20361 (chronyd)
+   CGroup: /system.slice/chronyd.service
+           └20361 /usr/sbin/chronyd
+
+Jan 18 19:06:12 karim-test.kar.int systemd[1]: Starting NTP client/server...
+Jan 18 19:06:12 karim-test.kar.int chronyd[20361]: chronyd version 3.1 starting (+CMDMON +NTP +REFCLOCK +RTC +PRI...BUG)
+Jan 18 19:06:12 karim-test.kar.int chronyd[20361]: commandkey directive is no longer supported
+Jan 18 19:06:12 karim-test.kar.int chronyd[20361]: Could not open keyfile /etc/chrony/chrony.keys
+Jan 18 19:06:12 karim-test.kar.int chronyd[20361]: Frequency -0.582 +/- 0.031 ppm read from /var/lib/chrony/drift
+Jan 18 19:06:12 karim-test.kar.int systemd[1]: Started NTP client/server.
+
+Pretty sweet

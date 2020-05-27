@@ -1,0 +1,43 @@
+elatov@fed:~$time ovftool -ds=datastore1 vi://root@esx/RHEL_2 vi://root@macm
+Enter login information for source vi://esx/
+Username: root
+Password: ********
+Opening VI source: vi://root@esx:443/RHEL_2
+Enter login information for target vi://macm/
+Username: root
+Password: ********
+Opening VI target: vi://root@macm:443/
+Deploying to VI: vi://root@macm:443/
+Transfer Completed
+Completed successfully
+
+real    6m36.661s
+user    3m54.351s
+sys     0m37.720s
+
+# this was an 8GB file
+
+elatov@fed:~$time ovftool -ds=datastore1 vi://root@esx/Moxz vi://root@macm
+Enter login information for source vi://esx/
+Username: root
+Password: ***************
+Enter login information for source vi://esx/
+Username: root
+Password: ********
+Opening VI source: vi://root@esx:443/Moxz
+Enter login information for target vi://macm/
+Username: root
+Password: ***********
+Enter login information for target vi://macm/
+Username: root
+Password: ********
+Opening VI target: vi://root@macm:443/
+Deploying to VI: vi://root@macm:443/
+Transfer Completed
+Completed successfully
+
+real    10m41.248s
+user    5m27.957s
+sys     0m51.681s
+
+# this was 15GB

@@ -1,0 +1,42 @@
+So I decided it was time to update my ESXi host. It was running at the
+following version:
+
+~ # vmware -lv
+VMware ESXi 5.5.0 build-2068190
+VMware ESXi 5.5.0 Update 2
+
+From the previous update posts (Updating ESXi 5.0U2 to ESXi
+5.1U1)[/2014/01/updating-esxi-5-0u2-esxi-5-1u1/] and (ESXi Patch for
+HeartBleed)[/2014/06/esxi-patch-for-heartbleed/], I usually use esxcli to
+apply the update. We can check the VMware hosted VUM server:
+
+~ # esxcli network firewall ruleset set -e true -r httpClient
+~ # esxcli software sources profile list -d https://hostupdate.vmware.com/softwa
+re/VUM/PRODUCTION/main/vmw-depot-index.xml | grep ESXi-6.
+ESXi-6.0.0-20150404001-standard   VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150704001-standard   VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150704001-no-tools   VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150404001-no-tools   VMware, Inc.  PartnerSupported
+ESXi-6.0.0-2494585-standard       VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150504001-no-tools   VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150701001s-no-tools  VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150701001s-standard  VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20150504001-standard   VMware, Inc.  PartnerSupported
+ESXi-6.0.0-2494585-no-tools       VMware, Inc.  PartnerSupported
+
+Then looking over [this
+page](http://www.virten.net/vmware/esxi-release-build-number-history/#esxi6.0)
+
+![esxi-patches](esxi-patches.png)
+
+it looks like ESXi 6.0b is latest version and is the way to go since it fixes
+a bunch of bugs. I found the patch at
+[my-vmware](https://my.vmware.com/group/vmware/patch):
+
+![vshpere-6-versions](vshpere-6-versions.png)
+
+After downloading the file, I scp'ed it to a datastore on the ESXi host
+(I know I could've used the public VUM repo, but I want to have the zip for
+later use if necessary):
+
+

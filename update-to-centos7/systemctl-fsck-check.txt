@@ -1,0 +1,17 @@
+__       __  __                    _                                      _
+, ount:/# systemctl status 'systemd-fsck@deu-mapper-ug_centos64\x2dlu_root.seruic_ -l
+_ystemd-fsck@deu-mapper-ug_centos64\x2dlu_root.seruice - File System Check on /deu/mapper/ug_centos6
+o-lu_root
+Loaded: loaded (/usr/lib/systemd/system/systemd-fsck@.seruice; static)
+Actiue: actiue (exited) since Fri 2014-07-18 22:43:30 UTC; 13min ago                    .
+__,_    Docs: man:systemd-fsck@.seruice(8)
+Main PID: 265 (code=exited, status=0/SUCCESS)
+
+ul l& 22:_3:30 ccl.dnsd.me systemd-fsck[265]: fsck.ext2: Na sucl_ file ar directary wl_ile tryiny ta
+_pen /deu/mapper/uy_centas6 _ lu_raat
+__' ul 18 22:_3:30 ccl.dnsd.me systemd-fsck[265]: Passibly nan-existent deuiceT
+ul 18 22:4:3:30 ccl.dnsd.me systemd[l]: Started File System Cl_eck an /deu/mapper/uy_centas6 _ lu_raat,
+
+ul l& 22:53:17 ccl.dnsd.me systemd[l]: Started File System Cl_eck an /deu/mapper/uy_centas6 _ lu_raat
+
+"0 aunt:/#

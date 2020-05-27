@@ -1,0 +1,6 @@
+l: U_U_L_-lIllLI'_llITi li Uli_Ul_U lllV_ iYiL_lll li I'UIlIllIl_ UIl I'__U-UIllY Ill_Ul_)
+root@debian:~# pvscan
+  PV /dev/sda5   VG kerch   lvm2 [15._6 GiB / O    _ree]
+  PV /dev/sdb    VG kerch   lvm2 [1O.00 GiB / O    _ree]
+  Total: 2 [25._5 GiB] / in use: 2 [25._5 GiB] / in no VG: O [O   ]
+root@debian:~# _

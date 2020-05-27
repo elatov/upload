@@ -1,0 +1,8 @@
+May 10 18:04:36 vmkernel: 429:22:55:15.800 cpu23:83814135)SCSIScan: 1062: Path 'vmhba37:C0:T1:L7': Type: 0x0, ANSI rev: 4, TPGS: 1 (implicit only)
+May 10 18:04:36 vmkernel: 429:22:55:15.817 cpu23:83814135)SCSIScan: 1059: Path 'vmhba37:CO:T1:L8': Vendor: 'IFT    '  Model: 'S16E-G1240     '  Rev: '373S'
+May 10 18:04:36 vmkernel: 429:22:55:15.817 cpu23:83814135)SCSIScan: 1062: Path 'vmhba37:CO:T1:L8': Type: OxO, ANSI rev: 4, TPGS: 1 (implicit only)
+May 10 18:04:36 vmkernel: 429:22:55:15.835 cpu23:83814135)SCSIScan: 1059: Path 'vmhba37:CO:T1:L9': Vendor: 'IFT    '  Model: 'S16E-G1240     '  Rev: '373S'
+May 10 18:04:36 vmkernel: 429:22:55:15.835 cpu23:83814135)SCSIScan: 1062: Path 'vmhba37:CO:T1:L9': Type: OxO, ANSI rev: 4, TPGS: 1 (implicit only)
+May 10 18:04:36 vmkernel: 429:22:55:15.849 cpu23:83814135)SCSIScan: 1059: Path 'vmhba37:CO:TO:LO': Vendor: 'IFT    '  Model: 'S16E-G1240     '  Rev: '3730'
+May 10 18:04:36 vmkernel: 429:22:55:15.849 cpu23:83814135)SCSIScan: 1062: Path 'vmhba37:CO:TO:LO': Type: Oxd, ANSI rev: 4, TPGS: 1 (implicit only)
+May 10 18:05:08 shell[83810119]: grep SCSIScan /var/log/messages

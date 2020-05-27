@@ -1,0 +1,7 @@
+_
+/root i dd if=/deu/sda of=/deu/sdb
+od: writing to •/deu/sdb•: No space left on deuice
+_2428801+0 records in
+_2428800+0 records out
+_6843545600 bytes (27 GB) copied, 684.758 s, 39.2 MB/s
+/root i

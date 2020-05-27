@@ -1,0 +1,2 @@
+root@debian:~# vgreduce kerch /dev/sdb
+  Removed "/dev/sdb" _rom volume group "kerch"

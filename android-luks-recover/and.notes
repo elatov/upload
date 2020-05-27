@@ -1,0 +1,155 @@
+# main sites
+https://dx.eng.uiowa.edu/dave/luks.php
+http://nelenkov.blogspot.com/2014/10/revisiting-android-disk-encryption.html
+
+# get the ndk
+http://developer.android.com/tools/sdk/ndk/index.html
+
+wget http://dl.google.com/android/ndk/android-ndk-r10d-linux-x86_64.bin
+# install it
+chmod +x android-ndk-r10d-linux-x86_64.bin
+./android-ndk-r10d-linux-x86_64.bin
+Extracting  android-ndk-r10d/build/gmsl
+Extracting  android-ndk-r10d/build/core
+Extracting  android-ndk-r10d/build/awk
+Extracting  android-ndk-r10d/build
+Extracting  android-ndk-r10d
+
+Everything is Ok
+# put it under /usr/local
+sudo mv android-ndk-r10d /usr/local/.
+sudo ln -s /usr/local/android-ndk-r10d /usr/local/and-ndk
+
+## get the sdk
+http://developer.android.com/sdk/index.html#Other
+wget http://dl.google.com/android/android-sdk_r24.0.2-linux.tgz
+tar xvzf android-sdk_r24.0.2-linux.tgz 
+sudo mv android-sdk-linux/ /usr/local/.
+sudo ln -s /usr/local/android-sdk-linux/ /usr/local/and-sdk
+
+## get the kernel source
+http://wiki.cyanogenmod.org/w/Build_for_pyramid
+I was running cyanogenmod 10
+$ mkdir -p ~/bin
+$ mkdir -p ~/android/system
+$ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+$ chmod a+x ~/bin/repo
+$ vi ~/bin/repo
+---
+- # /usr/bin/env python
++ # /usr/bin/env python2.7
+---
+$ cd ~/android/system/
+$ repo init -u https://github.com/CyanogenMod/android.git -b cm-10.1
+$ repo sync
+
+## Actually for the source found one here
+http://www.htcdev.com/devcenter/downloads
+and here
+https://github.com/htc-msm8660/android_kernel_htc_msm8660
+
+git clone https://github.com/htc-msm8660/android_kernel_htc_msm8660.git -b android-msm-pyramid-3.0
+
+# setup the environment
+export SDK_PATH=/usr/local/android-sdk-linux/
+export NDK_PATH=/usr/local/android-ndk-r10d/
+export KSRC_PATH=/data/work/android_kernel_htc_msm8660/
+export CC_PATH=/usr/local/android-ndk-r10d/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/
+export LIME_SRC=~/LiME/src/
+
+# pull the kernel config from phone
+adb pull /proc/config.gz
+# extract it
+gunzip config.gz
+# copy it into the kernel source
+cp config /data/work/android_kernel_htc_msm8660/.config
+
+# before preparing the source modify the wrapper to use python 2.7
+http://forum.xda-developers.com/showthread.php?t=1821869
+vi /data/work/android_kernel_htc_msm8660/scripts/gcc-wrapper.py
+---
+- #! /usr/bin/env python
++ #! /usr/bin/env python2.7
+---
+# then prepare the source
+make ARCH=arm CROSS_COMPILE=$CC_PATH/arm-linux-androideabi- modules_prepare
+
+# Lime install is covered well here
+https://code.google.com/p/volatility/wiki/AndroidMemoryForensics
+# Now let's modify the makefile for Lime
+vi ~/LiME/src/Makefile
+---
+PWD := $(shell pwd)
+
++ KDIR := /data/work/android_kernel_htc_msm8660/
++ CCPATH := /usr/local/android-ndk-r10d/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/
+
+default:
++ #   $(MAKE) -C /lib/modules/$(KVER)/build M=$(PWD) modules
++ #   strip --strip-unneeded lime.ko
++ #   mv lime.ko lime-$(KVER).ko
++    $(MAKE) ARCH=arm CROSS_COMPILE=$(CCPATH)/arm-linux-androideabi- -C $(KDIR) EXTRA_CFLAGS=-fno-pic M=$(PWD) modules
++    mv lime.ko lime-pyramid.ko
+---
+
+## push the module to the phone
+$adb push lime-pyramid.ko /sdcard/lime.ko
+1520 KB/s (347364 bytes in 0.223s)
+# then install the module
+
+
+elatov@gen:~/LiME/src$modinfo ./lime-pyramid.ko 
+filename:       /home/elatov/LiME/src/./lime-pyramid.ko
+license:        GPL
+depends:        
+vermagic:       3.0.36-g7290c7f-dirty SMP preempt mod_unload ARMv7 
+parm:           path:charp
+parm:           dio:int
+parm:           format:charp
+
+# upon installing ran into this issue
+http://neosysforensics.blogspot.com/2012/09/creando-volcados-de-memoria-en-android.html
+root@android:/sdcard # insmod lime.ko                                          
+insmod: init_module 'lime.ko' failed (Exec format error)
+255|
+# checking out dmesg
+<3>[656653.599731] lime: version magic '3.0.36-g7290c7f-dirty SMP preempt mod_unload ARMv7 ' should be '3.0.53-g6ac6fc4 SMP preempt mod_unload ARMv7 '
+
+# then after specifying the version in the kerner source make file:
+vi /data/work/android_kernel_htc_msm8660/Makefile
+---
+VERSION = 3
+PATCHLEVEL = 0
+SUBLEVEL = 53
+EXTRAVERSION = -g6ac6fc4
+NAME = Sneaky Weasel
+---
+
+# then rebuilt the module
+elatov@gen:~/LiME/src$modinfo ./lime-pyramid.ko filename:       /home/elatov/LiME/src/./lime-pyramid.ko
+license:        GPL
+depends:        
+vermagic:       3.0.53-g6ac6fc4 SMP preempt mod_unload ARMv7 
+parm:           path:charp
+parm:           dio:int
+parm:           format:charp
+
+# then it loaded
+root@android:/ # insmod /sdcard/lime.ko "path=/sdcard/lime.dump format=lime"    
+root@android:/sdcard # ls -la /sdcard/lime.dump                                
+----rwxr-x system   sdcard_rw 627048480 2015-03-15 10:05 lime.dump
+
+## Then I just grabbed the whole file
+elatov@gen:~$adb pull /sdcard/lime.dump
+3119 KB/s (627048480 bytes in 196.314s)
+
+# it took about 3 mins
+
+# or get the raw version
+root@android:/ # insmod /sdcard/lime.ko "path=/sdcard/lime.raw format=raw"
+root@android:/ # ls -la /sdcard/lime.raw
+----rwxr-x system   sdcard_rw 627048448 2015-03-15 10:15 lime.raw
+
+elatov@gen:~$adb pull /sdcard/lime.raw
+2992 KB/s (627048448 bytes in 204.595s)
+

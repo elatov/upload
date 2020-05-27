@@ -1,0 +1,601 @@
+# Download the ISO from here
+http://www.virtuallyghetto.com/2013/09/running-esxi-55-on-apple-mac-mini.html
+# then plug in a USB disk:
+elatov@fed:~/downloads$dmesg | tail
+[344963.649354] usb-storage 2-2:1.0: USB Mass Storage device detected
+[344963.656236] scsi7 : usb-storage 2-2:1.0
+[344964.660238] scsi 7:0:0:0: Direct-Access     SanDisk                   1.26 PQ: 0 ANSI: 5
+[344964.663088] sd 7:0:0:0: Attached scsi generic sg2 type 0
+[344964.667184] sd 7:0:0:0: [sdb] 15633408 512-byte logical blocks: (8.00 GB/7.45 GiB)
+[344964.668689] sd 7:0:0:0: [sdb] Write Protect is off
+[344964.668693] sd 7:0:0:0: [sdb] Mode Sense: 43 00 00 00
+[344964.669697] sd 7:0:0:0: [sdb] Write cache: disabled, read cache: enabled, doesn't support DPO or FUA
+[344964.680956]  sdb: sdb1
+[344964.684574] sd 7:0:0:0: [sdb] Attached SCSI removable disk
+# then dd the iso onto the USB:
+elatov@fed:~/downloads$sudo dd if=ESXi-5.5u1-MacMini-6-2.iso of=/dev/sdb bs=1M 
+[sudo] password for elatov: 
+328+1 records in
+328+1 records out
+343977984 bytes (344 MB) copied, 69.3967 s, 5.0 MB/s
+# DD didn't work so had to use unetbootin
+# first install it
+elatov@fed:~$sudo yum install unetbootin
+# then create a fa16 partition on the disk
+elatov@fed:~$sudo fdisk /dev/sdb
+[sudo] password for elatov: 
+
+Welcome to fdisk (util-linux 2.24.1).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table.
+
+Created a new DOS disklabel with disk identifier 0xbeb9f6a5.
+
+Command (m for help): n
+
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 1
+First sector (2048-15633407, default 2048): 
+Last sector, +sectors or +size{K,M,G,T,P} (2048-15633407, default 15633407): 
+
+Created a new partition 1 of type 'Linux' and of size 7.5 GiB.
+
+Command (m for help): L
+L: unknown command
+
+Command (m for help): t
+
+Selected partition 1
+Hex code (type L to list all codes): L
+
+ 0  Empty           24  NEC DOS         81  Minix / old Lin bf  Solaris        
+ 1  FAT12           27  Hidden NTFS Win 82  Linux swap / So c1  DRDOS/sec (FAT-
+ 2  XENIX root      39  Plan 9          83  Linux           c4  DRDOS/sec (FAT-
+ 3  XENIX usr       3c  PartitionMagic  84  OS/2 hidden C:  c6  DRDOS/sec (FAT-
+ 4  FAT16 <32M      40  Venix 80286     85  Linux extended  c7  Syrinx         
+ 5  Extended        41  PPC PReP Boot   86  NTFS volume set da  Non-FS data    
+ 6  FAT16           42  SFS             87  NTFS volume set db  CP/M / CTOS / .
+ 7  HPFS/NTFS/exFAT 4d  QNX4.x          88  Linux plaintext de  Dell Utility   
+ 8  AIX             4e  QNX4.x 2nd part 8e  Linux LVM       df  BootIt         
+ 9  AIX bootable    4f  QNX4.x 3rd part 93  Amoeba          e1  DOS access     
+ a  OS/2 Boot Manag 50  OnTrack DM      94  Amoeba BBT      e3  DOS R/O        
+ b  W95 FAT32       51  OnTrack DM6 Aux 9f  BSD/OS          e4  SpeedStor      
+ c  W95 FAT32 (LBA) 52  CP/M            a0  IBM Thinkpad hi eb  BeOS fs        
+ e  W95 FAT16 (LBA) 53  OnTrack DM6 Aux a5  FreeBSD         ee  GPT            
+ f  W95 Ext'd (LBA) 54  OnTrackDM6      a6  OpenBSD         ef  EFI (FAT-12/16/
+10  OPUS            55  EZ-Drive        a7  NeXTSTEP        f0  Linux/PA-RISC b
+11  Hidden FAT12    56  Golden Bow      a8  Darwin UFS      f1  SpeedStor      
+12  Compaq diagnost 5c  Priam Edisk     a9  NetBSD          f4  SpeedStor      
+14  Hidden FAT16 <3 61  SpeedStor       ab  Darwin boot     f2  DOS secondary  
+16  Hidden FAT16    63  GNU HURD or Sys af  HFS / HFS+      fb  VMware VMFS    
+17  Hidden HPFS/NTF 64  Novell Netware  b7  BSDI fs         fc  VMware VMKCORE 
+18  AST SmartSleep  65  Novell Netware  b8  BSDI swap       fd  Linux raid auto
+1b  Hidden W95 FAT3 70  DiskSecure Mult bb  Boot Wizard hid fe  LANstep        
+1c  Hidden W95 FAT3 75  PC/IX           be  Solaris boot    ff  BBT            
+1e  Hidden W95 FAT1 80  Old Minix      
+Hex code (type L to list all codes): 6
+If you have created or modified any DOS 6.x partitions, please see the fdisk documentation for additional information.
+Changed type of partition 'Linux' to 'FAT16'.
+
+Command (m for help): p
+Disk /dev/sdb: 7.5 GiB, 8004304896 bytes, 15633408 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0xbeb9f6a5
+
+Device    Boot Start       End  Blocks  Id System
+/dev/sdb1       2048  15633407 7815680   6 FAT16
+
+Command (m for help): w
+
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+# then put a file system on it
+elatov@fed:~$sudo mkfs.vfat /dev/sdb1
+mkfs.fat 3.0.26 (2014-03-07)
+# then mount it
+sudo mount /dev/sdb1 /mnt/usb
+# lastly install a bootloader and the ISO to the usb disk
+tov@fed:~$sudo unetbootin method=diskimage isofile="downloads/ESXi-5.5u1-MacMini-6-2.iso"  installtype=USB targetdrive=/dev/sdb1
+
+## the first approach is described at "Format a USB Flash Drive to Boot the ESXi Installation or Upgrade":
+http://pubs.vmware.com/vsphere-50/index.jsp?topic=%2Fcom.vmware.vsphere.install.doc_50%2FGUID-33C3E7D5-20D0-4F84-B2E3-5CD33D32EAA8.html
+
+# here are the steps laid out:
+Create a partition table on the USB flash device.
+/sbin/fdisk /dev/sdb
+a Type d to delete partitions until they are all deleted.
+b Type n to create primary partition 1 that extends over the entire disk.
+c Type t to set the type to an appropriate setting for the FAT32 file system, such as c.
+d Type a to set the active flag on partition 1.
+e Type p to print the partition table.
+The result should be similar to the following text:
+Disk /dev/sdb: 2004 MB, 2004877312 bytes
+255 heads, 63 sectors/track, 243 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1   *           1         243     1951866    c  W95 FAT32 (LBA)
+f Type w to write the partition table and quit.
+3 Format the USB flash drive with the Fat32 file system.
+/sbin/mkfs.vfat -F 32 -n USB /dev/sdb1
+4 Run the following commands.
+/path_to_syslinux-3.86_directory/syslinux-3.86/bin/syslinux /dev/sdb1
+cat /path_to_syslinux-3.86_directory/syslinux-3.86/usr/share/syslinux/mbr.bin > /dev/sdb
+5 Mount the USB flash drive.
+mount /dev/sdb1 /usbdisk
+6
+Mount the ESXi installer ISO image.
+mount -o loop VMware-VMvisor-Installer-5.x.x-XXXXXX.x86_64.iso /esxi_cdrom
+7 Copy the contents of the ISO image to /usbdisk.
+cp -r /esxi_cdrom/* /usbdisk
+8 Rename the isolinux.cfg file to syslinux.cfg.
+mv /usbdisk/isolinux.cfg /usbdisk/syslinux.cfg
+9 In the file /usbdisk/syslinux.cfg, change the line APPEND -c boot.cfg to APPEND -c boot.cfg -p 1.
+10 Unmount the USB flash drive.
+umount /usbdisk
+11 Unmount the installer ISO image.
+umount /esxi_cdrom
+The USB flash drive can now boot the ESXi installer.
+### So let's put a FAT32 partition on the disk
+# here is my empty usb disk
+elatov@fed:~$sudo fdisk -l /dev/sdc
+
+Disk /dev/sdc: 7.5 GiB, 8004304896 bytes, 15633408 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+# now let's use fdisk to add a FAT32 Partition to it
+elatov@fed:~$sudo fdisk /dev/sdc
+
+Welcome to fdisk (util-linux 2.24.1).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table.
+
+Created a new DOS disklabel with disk identifier 0x504de632.
+
+Command (m for help): n
+
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 
+First sector (2048-15633407, default 2048): 
+Last sector, +sectors or +size{K,M,G,T,P} (2048-15633407, default 15633407): 
+
+Created a new partition 1 of type 'Linux' and of size 7.5 GiB.
+
+Command (m for help): t
+Selected partition 1
+Hex code (type L to list all codes): c
+If you have created or modified any DOS 6.x partitions, please see the fdisk documentation for additional information.
+Changed type of partition 'Linux' to 'W95 FAT32 (LBA)'.
+
+Command (m for help): a
+Selected partition 1
+The bootable flag on partition 1 is enabled now.
+
+Command (m for help): p
+Disk /dev/sdc: 7.5 GiB, 8004304896 bytes, 15633408 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x504de632
+
+Device    Boot Start       End  Blocks  Id System
+/dev/sdc1 *     2048  15633407 7815680   c W95 FAT32 (LBA)
+
+Command (m for help): w
+
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Syncing disks.
+# now let's put a file system on our partition
+elatov@fed:~$sudo mkfs.vfat -F 32 -n USB /dev/sdc1
+mkfs.fat 3.0.26 (2014-03-07)
+# now let's put a bootloader on the disk
+elatov@fed:~$sudo syslinux /dev/sdc1
+elatov@fed:~$
+# now let's put an MBR on the disk
+elatov@fed:~$sudo dd if=/usr/share/syslinux/mbr.bin of=/dev/sdc bs=4k
+0+1 records in
+0+1 records out
+440 bytes (440 B) copied, 0.0141524 s, 31.1 kB/s
+# Now let's mount the Fat32 File-system
+elatov@fed:~$sudo mount /dev/sdc1 /mnt/usb
+elatov@fed:~$df -hT -t vfat
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/sdb1      vfat  7.5G   36K  7.5G   1% /mnt/usb
+# now let's mount our ISO
+elatov@fed:~$sudo mount -o loop downloads/ESXi-5.5u1-MacMini-6-2.iso /mnt/iso
+mount: /dev/loop0 is write-protected, mounting read-only
+# now let's copy all the files
+elatov@fed:~$sudo rsync -avzP /mnt/iso/. /mnt/usb/.
+..
+...
+sent 337,011,106 bytes  received 2,057 bytes  4,919,900.19 bytes/sec
+total size is 343,461,997  speedup is 1.02
+# lastly let's copy the syslinux.cfg file into place
+elatov@fed:~$sudo mv /mnt/usb/isolinux.cfg /mnt/usb/syslinux.cfg
+# now let's umount the iso and the usb disk
+elatov@fed:~$sudo umount /mnt/iso
+elatov@fed:~$sudo umount /mnt/usb
+elatov@fed:~$sudo sync
+# now eject the disk and plug into the MacMini after you hear the Boot Chime, hold down the Alt/Option button and you should see the following:
+pick the EFI boot and the installer will start
+#
+
+After the install was finished, I made sure the Interrupt Remap is disabled
+~ # esxcli system settings kernel list -o iovDisableIR
+Name          Type  Description                              Configured  Runtime  Default
+------------  ----  ---------------------------------------  ----------  -------  -------
+iovDisableIR  Bool  Disable Interrrupt Routing in the IOMMU  true        TRUE     FALSE  
+
+# then made sure the hardware looked good:
+
+~ # esxcli hardware cpu list | grep ^CPU
+CPU:0
+CPU:1
+CPU:2
+CPU:3
+CPU:4
+CPU:5
+CPU:6
+CPU:7
+
+~ # esxcli hardware memory get
+   Physical Memory: 17081536512 Bytes
+   Reliable Memory: 0 Bytes
+   NUMA Node Count: 1
+
+and lastly the platform
+~ # esxcli hardware platform get
+Platform Information
+   UUID: 0xf9 0x55 0x7 0x8b 0x4f 0xf2 0x58 0x55 0x98 0x36 0xc 0x74 0x1a 0x9e 0x82 0xc3 
+   Product Name: Macmini6,2
+   Vendor Name: Apple Inc.
+   Serial Number: XXXXXX
+   IPMI Supported: false
+# and here was the SSD drive
+~ # esxcli storage core device list
+t10.ATA_____APPLE_SSD_SM256E________________________S1AANYNF302924______
+   Display Name: Local ATA Disk (t10.ATA_____APPLE_SSD_SM256E________________________S1AANYNF302924______)
+   Has Settable Display Name: true
+   Size: 239372
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/t10.ATA_____APPLE_SSD_SM256E________________________S1AANYNF302924______
+   Vendor: ATA     
+   Model: APPLE SSD SM256E
+   Revision: DXM0
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: on
+   Is RDM Capable: false
+   Is Local: true
+   Is Removable: false
+   Is SSD: true
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.0100000000533141414e594e463330323932342020202020204150504c4520
+   Is Local SAS Device: false
+   Is Boot USB Device: false
+   No of outstanding IOs with competing worlds: 32
+
+
+### So now let's get some VMs to this host, first let's connect to our
+# ISCSI target. 
+# most of the below commands are covered in iSCSI Storage Setup with ESXCLI:
+http://pubs.vmware.com/vsphere-50/index.jsp?topic=%2Fcom.vmware.vcli.examples.doc_50%2Fcli_manage_iscsi_storage.7.5.html
+## Let's enable the ISCSI initiator
+~ # esxcli iscsi software set -e true
+Software iSCSI Enabled
+~ # esxcli iscsi software get
+true
+# now figure out which vmhba was assigned to the client
+~ # esxcli iscsi adapter list
+Adapter  Driver     State   UID            Description           
+-------  ---------  ------  -------------  ----------------------
+vmhba37  iscsi_vmk  online  iscsi.vmhba37  iSCSI Software Adapter
+# Now let's bind our vmkernel interface to the iSCSI vmhba
+~ # esxcli iscsi networkportal add -n vmk0 -A vmhba37
+~ # esxcli iscsi networkportal list 
+vmhba37
+   Adapter: vmhba37
+   Vmknic: vmk0
+# now let's add our ISCSI target to the initiator
+esxcli iscsi adapter discovery sendtarget add -A vmhba37 -a 192.168.1.101:3260
+# Also let's figure out the IQN of the initiator
+~ # esxcli iscsi adapter get -A vmhba37
+vmhba37
+   Name: iqn.1998-01.com.vmware:macm-38de6805
+   Alias: 
+   Vendor: VMware
+   Model: iSCSI Software Adapter
+   Description: iSCSI Software Adapter
+# now on the zfs server let's allow that IQN to connect to our LUN
+# first list the LUNS
+root@zfs:~#sbdadm list-lu
+
+Found 2 LU(s)
+
+              GUID                    DATA SIZE           SOURCE
+--------------------------------  -------------------  ----------------
+600144f0876a9c47000052b641c30008  322122547200         /dev/zvol/rdsk/data/m2
+600144f0876a9c47000052edc9a60002  214748364800         /dev/zvol/rdsk/rpool/backups
+# then check the current view on the desired LUN
+root@zfs:~#stmfadm list-view -l 600144f0876a9c47000052b641c30008
+View Entry: 0
+    Host group   : All
+    Target group : tg1
+    LUN          : 7
+# it looks like it's allowing all hosts to connect, so no need to add the IQN to a host group. If there was a host group, we would add it.
+# so from the host side, let's do a discovery and see if the LUN shows up
+~ # esxcli iscsi adapter discovery rediscover -A vmhba37
+Rediscovery started
+# check out the logs you should see something like this
+~ # tail /var/log/vmkernel.log | tail -7
+2014-04-05T00:38:06.284Z cpu5:219519)iscsi_vmk: iscsivmk_ConnNetRegister: socket 0x41096b6bef60 network resource pool netsched.pools.persist.iscsi associated
+2014-04-05T00:38:06.284Z cpu5:219519)iscsi_vmk: iscsivmk_ConnNetRegister: socket 0x41096b6bef60 network tracker id 168 tracker.iSCSI.192.168.1.101 associated
+2014-04-05T00:38:06.789Z cpu5:219519)WARNING: iscsi_vmk: iscsivmk_StartConnection: vmhba37:CH:0 T:0 CN:0: iSCSI connection is being marked "ONLINE"
+2014-04-05T00:38:06.789Z cpu5:219519)WARNING: iscsi_vmk: iscsivmk_StartConnection: Sess [ISID: 00023d000001 TARGET: iqn.2010-09.org.napp-it:1387343318 TPGT: 1 TSIH: 0]
+2014-04-05T00:38:06.789Z cpu5:219519)WARNING: iscsi_vmk: iscsivmk_StartConnection: Conn [CID: 0 L: 192.168.1.109:57860 R: 192.168.1.101:3260]
+# Also rescan all the storage devices
+esxcli storage core adapter rescan --adapter=vmhba37
+# then checking out the LUNS, 
+~ # esxcfg-scsidevs -c | grep SUN
+naa.600144f0876a9c47000052b641c30008                                      Direct-Access    /vmfs/devices/disks/naa.600144f0876a9c47000052b641c30008                                      307200MB  NMP     SUN iSCSI Disk (naa.600144f0876a9c47000052b641c30008)
+# the disk is there and here is more information regarding the device
+~ # esxcli storage core device list -d naa.600144f0876a9c47000052edc9a60002
+naa.600144f0876a9c47000052edc9a60002
+   Display Name: SUN iSCSI Disk (naa.600144f0876a9c47000052edc9a60002)
+   Has Settable Display Name: true
+   Size: 204800
+   Device Type: Direct-Access 
+   Multipath Plugin: NMP
+   Devfs Path: /vmfs/devices/disks/naa.600144f0876a9c47000052edc9a60002
+   Vendor: SUN     
+   Model: COMSTAR         
+   Revision: 1.0 
+   SCSI Level: 5
+   Is Pseudo: false
+   Status: degraded
+   Is RDM Capable: true
+   Is Local: false
+   Is Removable: false
+   Is SSD: false
+   Is Offline: false
+   Is Perennially Reserved: false
+   Queue Full Sample Size: 0
+   Queue Full Threshold: 0
+   Thin Provisioning Status: yes
+   Attached Filters: 
+   VAAI Status: unknown
+   Other UIDs: vml.0200000000600144f0876a9c47000052edc9a60002434f4d535441
+   Is Local SAS Device: false
+   Is Boot USB Device: false
+   No of outstanding IOs with competing worlds: 32
+# and it should already have a VMFS filesystem on it
+~ # esxcli storage filesystem list | grep VMFS
+/vmfs/volumes/533e29ae-e243ce90-39a5-685b35c99610  datastore1   533e29ae-e243ce90-39a5-685b35c99610     true  VMFS-5  242934087680  241747099648
+/vmfs/volumes/52b642f0-779dc131-c1cc-0030489f1400  M2           52b642f0-779dc131-c1cc-0030489f1400     true  VMFS-5  321854111744  106085482496
+# that's perfect. I didn't have a Vcenter Running, since I only had one host
+# so on the original host, let's shutdown a VM
+# then lets Launch PowerCLI, it's the first time you launch powerCLI you will
+# see this warning
+
+# to fix that run the following
+PS C:\> Set-ExecutionPolicy RemoteSigned
+
+Execution Policy Change
+The execution policy helps protect you from scripts that you do not trust.
+Changing the execution policy might expose you to the security risks described
+in the about_Execution_Policies help topic. Do you want to change the execution
+ policy?
+[Y] Yes  [N] No  [S] Suspend  [?] Help (default is "Y"):
+# then Relaunch PowerCli and you will see the following:
+
+# now let's connect to our original esxi host
+PowerCLI C:\> Connect-VIServer esx -User root
+Name                           Port  User
+----                           ----  ----
+esx                            443   root
+# now let's list our VMs
+PowerCLI C:\> get-vm
+
+Name                 PowerState Num CPUs MemoryGB
+----                 ---------- -------- --------
+M2                   PoweredOn  1        3.000
+Moxz                 PoweredOn  1        2.000
+Kerch                PoweredOn  1        1.000
+# and now let's get the Datastores
+# I am planning on moving the M2 machine to the M2 datastore
+PowerCLI C:\> Get-Datastore
+
+Name                               FreeSpaceGB      CapacityGB
+----                               -----------      ----------
+VMs                                    435.369         555.750
+M2                                      98.801         299.750
+datastore1                              61.051          62.000
+backups                                159.043         199.750
+# Now to get a sense of vmdk usage
+PowerCLI C:\> foreach ($VM in get-vm){$VM | get-HardDisk}
+
+CapacityGB      Persistence                                            Filename
+----------      -----------                                            --------
+20.000          Persistent                                     [VMs] M2/M2.vmdk
+200.000         Persistent                                    [M2] M2/M2_1.vmdk
+15.000          Persistent                                 [VMs] Moxz/Moxz.vmdk
+16.000          Persistent                               [VMs] Kerch/Kerch.vmdk
+# So the VM we are moving (M2) has two hard-disks, one is already on M2 and the first one is on the VMs datastore and it's only 20GB (we have 90GB free on the M2 datastore, so we are okay to do the move. So let's move the M2 VM to the M2 datastore
+# first shutdown the VM (it has vmware-tools installed)
+PowerCLI C:\> Get-VM M2 | Shutdown-VMGuest
+
+Perform operation?
+Performing operation "Shutdown VM guest." on VM "M2".
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help
+(default is "Y"):y
+
+State          IPAddress            OSFullName
+-----          ---------            ----------
+ShuttingDown   {192.168.1.100}      Linux 3.13.7-200.fc20.x86_64 Fedora rele...
+# then copy the harddisk
+PowerCLI C:\> Copy-HardDisk -HardDisk (Get-HardDisk -vm M2  | Where {$_.Name -eq
+ "Hard disk 1"}) -DestinationPath "[M2] M2"
+
+CapacityGB      Persistence                                            Filename
+----------      -----------                                            --------
+20.000          Unknown                                         [M2] M2/M2.vmdk
+# to copy a file, we need to know the datacetner name, here is that
+PowerCLI C:\> Get-Datacenter
+Name
+----
+ha-datacenter
+# then go ahead and copy the vmx file
+PowerCLI C:\> Copy-DatastoreItem -Item vmstore:\ha-datacenter\VMs\M2\M2.vmx -Des
+tination vmstore:\ha-datacenter\M2\M2\M2.vmx
+# then go ahead and remove the VM from the original host's inventory
+PowerCLI C:\> Remove-VM M2
+
+Perform operation?
+Performing operation 'Removing VM from inventory.' on VM 'M2'
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help
+(default is "Y"):y
+# now let's disconnect from this host and connect to the mac mini
+PowerCLI C:\> Disconnect-VIServer
+
+Confirm
+Are you sure you want to perform this action?
+Performing operation "Disconnect VIServer" on Target "User: root, Server: esx,
+Port: 443".
+[Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help
+(default is "Y"):y
+
+# now to connect to the new host
+PowerCLI C:\> Connect-VIServer macm
+Name                           Port  User
+----                           ----  ----
+macm                           443   root
+# Now let's copy the harddisk to the local datastore
+PowerCLI C:\> Copy-HardDisk -HardDisk (Get-HardDisk -Datastore "M2" -DatastorePa
+th "[M2] M2/" | where {$_.Name -eq "M2.vmdk"}) -DestinationPath "[datastore1] M2
+"
+
+CapacityGB      Persistence                                            Filename
+----------      -----------                                            --------
+20.000          Unknown                                    [datastore1] M2.vmdk
+# now let's go ahead and copy the vmx over
+PowerCLI C:\> Copy-DatastoreItem -Item vmstore:\ha-datacenter\M2\M2\M2.vmx -Dest
+ination vmstore:\ha-datacenter\datastore1\M2\M2.vmx
+# Now let's add the VM to inventory
+PowerCLI C:\> New-VM -VMFilePath "[datastore1] M2/M2.vmx" -VMHost macm
+
+Name                 PowerState Num CPUs MemoryGB
+----                 ---------- -------- --------
+M2                   PoweredOff 1        3.000
+# make sure the disk locations are correct
+PowerCLI C:\> get-vm M2 | Get-HardDisk
+
+CapacityGB      Persistence                                            Filename
+----------      -----------                                            --------
+20.000          Persistent                              [datastore1] M2/M2.vmdk
+200.000         Persistent                                    [M2] M2/M2_1.vmdk
+# I was surprised to see this automatically pick up the correct locations, but it did :)
+
+# then go ahead and start the VM
+PowerCLI C:\> Start-VM M2
+Start-VM : 4/5/2014 11:42:48 AM    Start-VM        This VM has questions that m
+ust be answered before the operation can continue.
+At line:1 char:9
++ Start-VM <<<<  M2
+    + CategoryInfo          : InvalidOperation: (:) [Start-VM], VmBlockedByQue
+   stionException
+    + FullyQualifiedErrorId : Client20_VmServiceImpl_WrapInVMQuestionWatchingT
+   ask_HasQuestions,VMware.VimAutomation.ViCore.Cmdlets.Commands.StartVM
+# since we copied the files we can then run the following to answer the question
+PowerCLI C:\> Get-VMQuestion | Set-VMQuestion -Option 'button.uuid.movedTheVM"
+
+# there are a couple of other ways of doing this. You can use VMware
+#Converter, here is a pretty cool video on the process:
+http://www.youtube.com/watch?v=Jf4_4sTNBg8
+
+#You can use vmkfstools and cp, like jarret described here:
+
+#Some people also have used Veeam Fast Copy, as described here: 
+
+#Another cool one, that I wanted to try was using ovftool. First let's follow
+#the instructions laid out here to get the binary on the host:
+http://www.virtuallyghetto.com/2012/05/how-to-deploy-ovfova-in-esxi-shell.html
+# then we can use the instructions laid out here to do the copying
+http://www.virtuallyghetto.com/2012/06/how-to-copy-vms-directly-between-esxi.html
+# I already had ovftool installed on my linux machine, so let's copy the file
+# over
+elatov@fed:~$scp -r /usr/lib/vmware-ovftool root@esx:/vmfs/volumes/datastore1/.
+# now let's fix the shell
+~ # vi /vmfs/volumes/datastore1/vmware-ovftool/ovftool
+===
+#!/bin/sh
+===
+# and then you can run the following commands, since I had on my linux box,
+# I just ran it from there
+elatov@fed:~$ovftool vi://root@esx/
+Accept SSL fingerprint (72:14:A0:55:65:99:C8:21:0F:60:FA:DB:87:1E:B1:7B:A2:19:DA:50) for host esx as source type.
+Fingerprint will be added to the known host file
+Write 'yes' or 'no'
+yes
+Enter login information for source vi://esx/
+Username: root
+Password: ********
+Error: Found wrong kind of object (ResourcePool). Possible completions are: 
+  Kerch
+  Moxz
+# now let's move the VM, initially I got the following error
+elatov@fed:~$ovftool -ds=datastore1 vi://root@esx/VC vi://root@macm
+Enter login information for source vi://esx/
+Username: root
+Password: ********
+Opening VI source: vi://root@esx:443/VC
+Accept SSL fingerprint (1C:3A:31:99:06:8C:57:6F:A5:49:AF:8D:9B:A6:D9:00:76:3D:63:44) for host macm as target type.
+Fingerprint will be added to the known host file
+Write 'yes' or 'no'
+yes
+Enter login information for target vi://macm/
+Username: root
+Password: ********
+Opening VI target: vi://root@macm:443/
+Error: No network mapping specified. OVF networks:   Mgmt_Net. Target networks:   VM Network  VM_Net_VLAN_1
+Completed with errors
+# Make sure the destination host has the same Virtual Port Groups Defined 
+# as the source
+elatov@fed:~$ovftool -ds=datastore1 vi://root@esx/VC vi://root@macm
+Enter login information for source vi://esx/
+Username: root
+Password: ********
+Opening VI source: vi://root@esx:443/VC
+Enter login information for target vi://macm/
+Username: root
+Password: ********
+Opening VI target: vi://root@macm:443/
+Deploying to VI: vi://root@macm:443/
+Progress: 3%
+# after it's finished you will see the followin
+Transfer Completed                    
+Completed successfully
+

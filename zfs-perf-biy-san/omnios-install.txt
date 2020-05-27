@@ -1,0 +1,239 @@
+During the install had to plug it into the usb 2.0 port, after the install
+moved the disk into the USB 3.0 port but it failed to boot with the following
+error:
+
+NOTICE: Cannot read the pool label from '/pci at 0,0/pci8086,25e3 at 3/pci103c,3235 at 0/sd at 0,0:a'
+> NOTICE: spa_import_rootpool: error 5
+> Cannot mount root on /pci at 0,0/pci8086,25e3 at 3/pci103c,3235 at 0/sd at 0,0:a fstype zfs
+>
+
+Found the following link:
+
+http://serverfault.com/questions/252291/nexenta-can-not-read-the-pool-label-error-5-on-import-root-pool
+
+Here is a snippet from the link:
+
+This is because of the bootstrapping architecture in use by Solaris for x86/x64. The OS pool has a different device in its metadata than is currently reported. 
+
+
+It looks like the port that the USB stick was plugged into needs to match when
+it's booting. To fix the issue, plug into the right port then boot from the
+omnios disk and run the following:
+
+zpool import rpool
+
+then after you reboot it will boot up just fine.
+
+
+Some ZFS testing
+
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/dev/dsk/c3t0d0s0 bs=1M count=2K
+dd: failed to open '/dev/dsk/c3t0d0s0': I/O error
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/dev/dsk/c3t0d0p0 bs=1M count=2K
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 10.3361 s, 208 MB/s
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/dev/dsk/c3t1d0p0 bs=1M count=2K
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 10.3385 s, 208 MB/s
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/dev/dsk/c3t2d0p0 bs=1M count=2K
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 12.8074 s, 168 MB/s
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/dev/dsk/c3t3d0p0 bs=1M count=2K
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 12.1698 s, 176 MB/s
+root@zf.dnsd.me:/root# dd if=/dev/zero of=t.f bs=1M count=100
+100+0 records in
+100+0 records out
+104857600 bytes (105 MB) copied, 0.0310934 s, 3.4 GB/s
+root@zf.dnsd.me:/root# dd if=/dev/zero of=t.f bs=1M count=500
+500+0 records in
+500+0 records out
+524288000 bytes (524 MB) copied, 0.136864 s, 3.8 GB/s
+root@zf.dnsd.me:/root# ls
+t.f  t.file
+root@zf.dnsd.me:/root# dd if=/dev/zero of=t.f bs=1M count=1K 
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 76.7234 s, 14.0 MB/s
+root@zf.dnsd.me:/root# zfs list
+NAME                         USED  AVAIL  REFER  MOUNTPOINT
+rpool                       14.9G  13.9G    22K  /rpool
+rpool/ROOT                  4.91G  13.9G    19K  legacy
+rpool/ROOT/omnios           4.91G  13.9G  4.59G  /
+rpool/ROOT/omnios-backup-1    53K  13.9G  1.58G  /
+rpool/ROOT/omniosvar          19K  13.9G    19K  legacy
+rpool/dump                  7.94G  13.9G  7.94G  -
+rpool/export                  38K  13.9G    19K  /export
+rpool/export/home             19K  13.9G    19K  /export/home
+rpool/swap                  2.06G  16.0G  2.08M  -
+root@zf.dnsd.me:/root# zpool create data c3t2d0 c3t3d0
+root@zf.dnsd.me:/root# zfs list
+NAME                         USED  AVAIL  REFER  MOUNTPOINT
+data                         288K  3.51T    96K  /data
+rpool                       14.9G  13.9G    22K  /rpool
+rpool/ROOT                  4.91G  13.9G    19K  legacy
+rpool/ROOT/omnios           4.91G  13.9G  4.59G  /
+rpool/ROOT/omnios-backup-1    53K  13.9G  1.58G  /
+rpool/ROOT/omniosvar          19K  13.9G    19K  legacy
+rpool/dump                  7.94G  13.9G  7.94G  -
+rpool/export                  38K  13.9G    19K  /export
+rpool/export/home             19K  13.9G    19K  /export/home
+rpool/swap                  2.06G  16.0G  2.08M  -
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/data/test.dd bs=1M count=2K
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 2.90056 s, 740 MB/s
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/data/test.dd bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 12.154 s, 442 MB/s
+root@zf.dnsd.me:/root# zpool status
+  pool: data
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	data        ONLINE       0     0     0
+	  c3t2d0    ONLINE       0     0     0
+	  c3t3d0    ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: rpool
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	rpool       ONLINE       0     0     0
+	  c4t0d0s0  ONLINE       0     0     0
+
+errors: No known data errors
+root@zf.dnsd.me:/root# zpool add data log c3t0d0
+root@zf.dnsd.me:/root# zpool add data cache c3t1d0
+root@zf.dnsd.me:/root# zpool status
+  pool: data
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	data        ONLINE       0     0     0
+	  c3t2d0    ONLINE       0     0     0
+	  c3t3d0    ONLINE       0     0     0
+	logs
+	  c3t0d0    ONLINE       0     0     0
+	cache
+	  c3t1d0    ONLINE       0     0     0
+
+errors: No known data errors
+
+  pool: rpool
+ state: ONLINE
+  scan: none requested
+config:
+
+	NAME        STATE     READ WRITE CKSUM
+	rpool       ONLINE       0     0     0
+	  c4t0d0s0  ONLINE       0     0     0
+
+errors: No known data errors
+root@zf.dnsd.me:/root# dd if=/dev/zero of=/data/test.dd bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 12.317 s, 436 MB/s
+
+
+The iSCSI target service must be online before running this command.
+Use 'svcadm enable -r svc:/network/iscsi/target:default'
+to enable the service and its prerequisite services and/or
+'svcs -x svc:/network/iscsi/target:default' to determine why it is not online.
+
+
+#### tests from the VM
+
+[root@puppet ~]# dd if=/dev/zero of=/dev/sdb bs=1M count=1K
+1024+0 records in
+1024+0 records out
+1073741824 bytes (1.1 GB) copied, 9.56409 s, 112 MB/s
+[root@puppet ~]# cat /sys/block/sdb/queue/max_sectors_kb
+512
+[root@puppet ~]# cat /sys/block/sdb/queue/nr_requests
+128
+[root@puppet ~]# dd if=/dev/zero of=/dev/sdb bs=1M count=2K
+2048+0 records in
+2048+0 records out
+2147483648 bytes (2.1 GB) copied, 18.8652 s, 114 MB/s
+
+
+what is seen on the zfs box
+
+               capacity     operations    bandwidth
+pool        alloc   free   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+data        21.2G  3.60T      0  1.06K      0   122M
+  c3t2d0    10.6G  1.80T      0    534      0  60.6M
+  c3t3d0    10.6G  1.80T      0    547      0  61.2M
+logs            -      -      -      -      -      -
+  c3t0d0        0   232G      0      0      0      0
+cache           -      -      -      -      -      -
+  c3t1d0    3.71G   229G      0    621      0  76.9M
+----------  -----  -----  -----  -----  -----  -----
+
+               capacity     operations    bandwidth
+pool        alloc   free   read  write   read  write
+----------  -----  -----  -----  -----  -----  -----
+data        21.2G  3.60T      0  1.05K      0   122M
+  c3t2d0    10.6G  1.80T      0    541      0  61.5M
+  c3t3d0    10.6G  1.80T      0    537      0  60.8M
+logs            -      -      -      -      -      -
+  c3t0d0        0   232G      0      0      0      0
+cache           -      -      -      -      -      -
+  c3t1d0    3.76G   229G      0    614      0  76.2M
+----------  -----  -----  -----  -----  -----  -----
+
+Cache with NFS
+
+elatov@gen:~/downloads$rsync -avzP sol-11_2-text-x86.iso /mnt/nfs/.
+sending incremental file list
+sol-11_2-text-x86.iso
+   675102720 100%   58.67MB/s    0:00:10 (xfer#1, to-check=0/1)
+
+sent 675329457 bytes  received 31 bytes  54026359.04 bytes/sec
+total size is 675102720  speedup is 1.00
+elatov@gen:~/downloads$rsync -avzP sol-11_2-text-x86.iso /mnt/nfs/.
+sending incremental file list
+
+sent 64 bytes  received 12 bytes  152.00 bytes/sec
+total size is 675102720  speedup is 8882930.53
+elatov@gen:~/downloads$rsync -avzP sol-11_2-text-x86.iso /mnt/nfs/.
+sending incremental file list
+sol-11_2-text-x86.iso
+   675102720 100%   70.73MB/s    0:00:09 (xfer#1, to-check=0/1)
+
+sent 675329457 bytes  received 31 bytes  64317094.10 bytes/sec
+total size is 675102720  speedup is 1.00
+
+
+## Direct dd to SSD
+root@zf:/root# dd if=/dev/zero of=dd.test bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 9.44135 s, 569 MB/s
+
+### Back to back DDs
+
+root@zf:/data# dd if=/dev/zero of=dd.test bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 11.6227 s, 462 MB/s
+root@zf:/data# dd if=/dev/zero of=dd.test bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 11.01 s, 488 MB/s
+

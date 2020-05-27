@@ -1,0 +1,64 @@
+Found some instructions here:
+
+http://linux.dell.com/wiki/index.php/Repository/firmware
+
+# first setup the repos
+elatov@fed:~$wget -q -O - http://linux.dell.com/repo/community/bootstrap.cgi | sudo bash
+[sudo] password for elatov: 
+Downloading GPG key: http://linux.dell.com/repo/community/RPM-GPG-KEY-dell
+-i used with no filenames on the command line, reading from STDIN.
+    Importing key into RPM.
+Downloading GPG key: http://linux.dell.com/repo/community/RPM-GPG-KEY-libsmbios
+-i used with no filenames on the command line, reading from STDIN.
+    Importing key into RPM.
+Downloading GPG key: http://linux.dell.com/repo/community/mirrors.cgi?osname=f20&basearch=x86_64&redirpath=/repodata/repomd.xml.key
+
+# proceeding to the next step, ran into this
+elatov@fed:~$wget -q -O - http://linux.dell.com/repo/firmware/bootstrap.cgi | sudo bash
+the firmware respository is obsolete and unmaintained. Please use the OMSA repository instead for official updates.
+
+# so then ran into this page:
+http://linux.dell.com/wiki/index.php/Tech/libsmbios_dellBiosUpdate
+# decided to give it a try, first install the binary:
+elatov@fed:~$sudo yum install smbios-utils-python
+# then getting the system information
+elatov@fed:~$sudo getSystemId
+Libsmbios version:      2.2.28
+Product Name:           Latitude E6500
+Vendor:                 Dell Inc.
+BIOS Version:           A18
+System ID:              0x024F
+Service Tag:            XXXXX
+Express Service Code:   9917517637
+Asset Tag:              
+Property Ownership Tag: 
+# looking over this page
+http://linux.dell.com/repo/firmware/bios-hdrs/
+# it didn't have the latest version. It only had up to A25, then latest version was A29
+
+elatov@fed:~/downloads$sudo inventory_firmware
+Wait while we inventory system:
+System inventory:
+	System BIOS for Latitude E6500 = A18
+
+# I then decided to see if that dell package is available:
+
+elatov@fed:~$yum search firmware-addon-dell
+Loaded plugins: langpacks, refresh-packagekit, remove-with-leaves
+======================= N/S matched: firmware-addon-dell =======================
+firmware-addon-dell.x86_64 : A firmware-tools plugin to handle BIOS/Firmware for
+                           : Dell systems
+
+  Name and summary matches only, use "search all" for everything.
+
+# so then I installed the package
+elatov@fed:~$sudo yum install firmware-addon-dell
+# then I extracted the hdr file from the exe
+$wine E6500A29.exe -writehdrfile -nopause
+# lastly to install the bios run the following
+sudo dellBiosUpdate -u -f 1525_A17.hdr
+
+Initially I just wanted to extract the bios file with extract-hdr, but that seems to be missing now:
+
+https://linux.dell.com/libsmbios/main/bios_hdr.html
+

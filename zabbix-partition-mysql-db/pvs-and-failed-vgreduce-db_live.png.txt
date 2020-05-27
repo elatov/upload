@@ -1,0 +1,6 @@
+root@debian:~# pvs -o+pv_used
+  PV         VG    Fmt  Attr PSize  PFree Used
+  /dev/sda5  kerch lvm2 a--  15._6g    O  15._6g
+  /dev/sdb   kerch lvm2 a--  10.0Og 9.99g  8.0Om
+root@debian:~# vgreduce kerch /dev/sdb
+  Physical volume "/dev/sdb" still in use

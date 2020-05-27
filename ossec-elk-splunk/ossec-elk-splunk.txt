@@ -1,0 +1,136 @@
+### let's enable our ossec server to send syslogs
+
+sudo vi /usr/local/ossec-hids/etc/ossec.conf
+===
+<syslog_output>
+    <server>10.0.0.3</server>
+    <port>514</port>
+  </syslog_output>
+
+  <syslog_output>
+    <server>10.0.0.6</server>
+    <port>5001</port>
+  </syslog_output>
+
+</ossec_config>
+===
+
+# then enable syslog on the ossec server
+
+┌─[elatov@moxz] - [/usr/local/ossec-hids/etc] - [2016-01-23 11:47:52]
+└─[0] <> sudo /usr/local/ossec-hids/bin/ossec-control enable client-syslog
+
+# then restart the service
+
+┌─[elatov@moxz] - [/usr/local/ossec-hids/etc] - [2016-01-23 11:47:59]
+└─[0] <> sudo service ossec-hids restart
+
+# and lastly confirm it started up
+┌─[elatov@moxz] - [/home/elatov] - [2016-01-23 11:48:55]
+└─[0] <> grep ossec-csyslogd /usr/local/ossec-hids/logs/ossec.log
+2016/01/23 11:48:07 ossec-csyslogd: INFO: Started (pid: 38590).
+2016/01/23 11:48:07 ossec-csyslogd: INFO: Forwarding alerts via syslog to: '10.0.0.3:514'.
+2016/01/23 11:48:07 ossec-csyslogd: INFO: Forwarding alerts via syslog to: '10.0.0.6:5001'.
+
+
+# then in splunk we can install the addon. Very similar to how we did for suricata. The process is covered here:
+
+http://nolabnoparty.com/en/setup-ossec-with-splunk/
+
+# then we can dedicate a port to the ossec input:
+
+sudo vi /opt/splunk/
+---
+[udp://10.0.0.3:5001]
+disabled = false
+sourcetype = ossec
+---
+
+Then restarting splunk applied that
+
+sudo service splunk restart
+
+# then going to the ossec app
+
+# then going to the ossec dashboar:
+
+I saw all the summary
+
+# with ELK, first let's enable the input (the example of from here)
+
+┌─[elatov@puppet] - [/home/elatov] - [2016-01-23 01:35:10]
+└─[0] <> cat /etc/logstash/conf.d/ossec-syslog.conf
+input {
+# stdin{}
+  udp {
+     port => 5001
+     type => "syslog"
+  }
+}
+
+filter {
+  if [type] == "syslog" {
+    grok {
+      match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_host} %{DATA:syslog_program}: Alert Level: %{NONNEGINT:Alert_Level}; Rule: %{NONNEGINT:Rule} - %{DATA:Description}; Location: %{DATA:Location}; (user: %{USER:User};%{SPACE})?(srcip: %{IP:Src_IP};%{SPACE})?(user: %{USER:User};%{SPACE})?(dstip: %{IP:Dst_IP};%{SPACE})?(src_port: %{NONNEGINT:Src_Port};%{SPACE})?(dst_port: %{NONNEGINT:Dst_Port};%{SPACE})?%{GREEDYDATA:Details}" }
+      add_field => [ "ossec_server", "%{host}" ]
+    }
+    mutate {
+      remove_field => [ "message","syslog_timestamp", "syslog_program", "syslog_host", "syslog_message", "syslog_pid", "@version", "type", "host" ]
+    }
+  }
+}
+
+output {
+  elasticsearch { hosts => ["localhost:9200"] }
+  stdout { codec => rubydebug }
+}
+
+# now let's restart logstash to apply the new change
+┌─[elatov@puppet] - [/etc/logstash/conf.d] - [2016-01-23 12:18:00]
+└─[0] <> sudo service logstash restart
+Killing logstash (pid 9057) with SIGTERM
+Waiting logstash (pid 9057) to die...
+Waiting logstash (pid 9057) to die...
+Waiting logstash (pid 9057) to die...
+logstash stopped.
+logstash started.
+
+# then fire off an ossec alert and you will see something similar to this in the logs:
+
+{
+              "@timestamp" => "2016-01-23T19:39:10.000Z",
+         "syslog_hostname" => "moxz",
+             "received_at" => "2016-01-23T19:39:12.864Z",
+           "received_from" => "10.0.0.3",
+    "syslog_severity_code" => 5,
+    "syslog_facility_code" => 1,
+         "syslog_facility" => "user-level",
+         "syslog_severity" => "notice",
+             "Alert_Level" => "5",
+                    "Rule" => "5503",
+             "Description" => "User login failed.",
+                "Location" => "(gen) 192.168.1.114->/var/log/messages",
+                 "Details" => "Jan 23 12:39:09 gen xscreensaver[3649]: pam_unix(
+xscreensaver:auth): authentication failure; logname= uid=xxx euid=xxx tty=:0.0
+ ruser= rhost=  user=elatov",
+            "ossec_server" => "10.0.0.3"
+}
+
+### To create the dashboard we can follow the instructions laid out here:
+http://vichargrave.com/create-an-ossec-log-management-console-with-kibana-4/
+
+# here is the search
+
+# before adding a visualization make sure you update your field list. There is a request to automatically do this (https://github.com/elastic/kibana/issues/2236) but I just did it manually:
+
+After that the fields will be available for visualizations.
+
+# here is the count vertical graph
+
+# here is the pie chart
+
+# I also added a stacked graph for fun
+
+# and in the end here is the dashboard I ended up with
+
+

@@ -1,0 +1,10 @@
+root@debian:~# resize2_s -p /dev/mapper/kerch-root 14G
+resize2_s 1.42.5 (29-Jul-2012)
+Resizing the _ilesystem on /dev/mapper/kerch-root to 36_O016 (4k) blocks.
+Begin pass 2 (max = 11_8051)
+Relocating blocks             XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Begin pass 3 (max = 201)
+Scanning inode table          XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Begin pass 4 (max = 15156)
+Updating inode re_erences     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+The _ilesystem on /dev/mapper/kerch-root is now 36_O016 blocks long.

@@ -1,0 +1,214 @@
+[root@hp:~] ethtool -i vmnic0
+driver: e1000e
+version: 3.2.2.1-NAPI
+firmware-version: 0.8-4
+bus-info: 0000:00:1f.6
+
+2017-09-27T14:45:36.968Z cpu0:69102)Vmxnet3: 17265: Disable Rx queuing; queue size 256 is larger than Vmxnet3RxQueueLimit limit of 64.
+2017-09-27T14:45:36.968Z cpu0:69102)Vmxnet3: 17623: Using default queue delivery for vmxnet3 for port 0x2000008
+2017-09-27T14:45:36.968Z cpu0:69102)NetPort: 1660: enabled port 0x2000008 with mac 00:0c:29:d4:e7:2b
+2017-09-27T14:45:41.418Z cpu0:65951)<6>xhci_hcd 0000:00:14.0: Waiting for status stage event
+2017-09-27T14:45:41.712Z cpu0:65951)<6>xhci_hcd 0000:00:14.0: Waiting for status stage event
+2017-09-30T17:25:53.140Z cpu5:65932)<6>vmnic0 NIC Link is Down
+2017-09-30T17:25:56.086Z cpu1:65936)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:26:01.509Z cpu2:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:26:01.509Z cpu3:66086)NetSched: 628: vmnic0-0-tx: worldID = 66086 exits
+2017-09-30T17:26:01.509Z cpu2:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:26:01.509Z cpu6:65578)CpuSched: 692: user latency of 817863 vmnic0-0-tx 0 changed by 65578 HELPER_MISC_QUEUE-1-1 -6
+2017-09-30T17:26:50.881Z cpu1:65936)WARNING: LinNet: netdev_watchdog:3688: NETDEV WATCHDOG: vmnic0: transmit timed out
+2017-09-30T17:26:50.881Z cpu1:65936)WARNING: at vmkdrivers/src_92/vmklinux_92/vmware/linux_net.c:3717/netdev_watchdog() (inside vmklinux)
+2017-09-30T17:26:50.881Z cpu1:65936)Backtrace for current CPU #1, worldID=65936, fp=0x430410ce87c0
+2017-09-30T17:26:50.881Z cpu1:65936)0x4390cc81be50:[0x418020d03f71]vmk_LogBacktraceMessage@vmkernel#nover+0x29 stack: 0x430410ce2ac8, 0x4180214838ad, 0xe68, 0x430410ce87c0, 0x43900000101f
+2017-09-30T17:26:50.881Z cpu1:65936)0x4390cc81be70:[0x4180214838ad]watchdog_work_cb@com.vmware.driverAPI#9.2+0x27d stack: 0x43900000101f, 0x4180215b7268, 0x41802148385a, 0x4390cc81bef0, 0xc0000000
+2017-09-30T17:26:50.881Z cpu1:65936)0x4390cc81bed0:[0x4180214a4e28]vmklnx_workqueue_callout@com.vmware.driverAPI#9.2+0xe0 stack: 0x430410d01100, 0x417fc4e0c5c0, 0x8000000000001014, 0x418021483630, 0x4180214a4e1d
+2017-09-30T17:26:50.881Z cpu1:65936)0x4390cc81bf50:[0x418020cc93ee]helpFunc@vmkernel#nover+0x4b6 stack: 0x43007206e050, 0x0, 0x0, 0x0, 0x1014
+2017-09-30T17:26:50.881Z cpu1:65936)0x4390cc81bfe0:[0x418020ec8c95]CpuSched_StartWorld@vmkernel#nover+0x99 stack: 0x0, 0x0, 0x0, 0x0, 0x0
+2017-09-30T17:26:50.881Z cpu1:65936)<3>e1000e 0000:00:1f.6: vmnic0: Reset adapter unexpectedly
+2017-09-30T17:27:29.238Z cpu4:65938)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:27:30.509Z cpu1:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:27:30.509Z cpu6:817863)NetSched: 628: vmnic0-0-tx: worldID = 817863 exits
+2017-09-30T17:27:30.509Z cpu1:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:27:30.510Z cpu7:65579)CpuSched: 692: user latency of 817875 vmnic0-0-tx 0 changed by 65579 HELPER_MISC_QUEUE-1-2 -6
+2017-09-30T17:27:31.239Z cpu5:65931)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:27:31.239Z cpu5:65931)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <46>
+  next_to_use          <46>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:28:09.507Z cpu6:65936)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:28:10.509Z cpu4:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:28:10.509Z cpu0:817875)NetSched: 628: vmnic0-0-tx: worldID = 817875 exits
+2017-09-30T17:28:10.509Z cpu4:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:28:10.510Z cpu0:65577)CpuSched: 692: user latency of 817876 vmnic0-0-tx 0 changed by 65577 HELPER_MISC_QUEUE-1-0 -6
+2017-09-30T17:28:11.509Z cpu2:65943)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:28:11.509Z cpu2:65943)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <1e>
+  next_to_use          <1e>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:28:49.791Z cpu3:65929)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:28:50.509Z cpu0:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:28:50.509Z cpu0:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:28:50.509Z cpu5:817876)NetSched: 628: vmnic0-0-tx: worldID = 817876 exits
+2017-09-30T17:28:50.510Z cpu7:65578)CpuSched: 692: user latency of 817882 vmnic0-0-tx 0 changed by 65578 HELPER_MISC_QUEUE-1-1 -6
+2017-09-30T17:28:51.794Z cpu2:65941)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:28:51.794Z cpu2:65941)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <1b>
+  next_to_use          <1b>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:29:30.256Z cpu5:65942)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:29:32.256Z cpu4:65938)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:29:32.256Z cpu4:65938)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <45>
+  next_to_use          <45>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:29:35.509Z cpu5:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:29:35.509Z cpu6:817882)NetSched: 628: vmnic0-0-tx: worldID = 817882 exits
+2017-09-30T17:29:35.509Z cpu5:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:29:35.509Z cpu7:65577)CpuSched: 692: user latency of 817885 vmnic0-0-tx 0 changed by 65577 HELPER_MISC_QUEUE-1-0 -6
+2017-09-30T17:30:10.555Z cpu4:65941)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:30:11.509Z cpu1:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:30:11.509Z cpu1:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:30:11.509Z cpu3:817885)NetSched: 628: vmnic0-0-tx: worldID = 817885 exits
+2017-09-30T17:30:11.509Z cpu1:65578)CpuSched: 692: user latency of 817900 vmnic0-0-tx 0 changed by 65578 HELPER_MISC_QUEUE-1-1 -6
+2017-09-30T17:30:12.557Z cpu1:65936)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:30:12.557Z cpu1:65936)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <22>
+  next_to_use          <22>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:30:50.878Z cpu4:65940)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:30:51.509Z cpu2:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:30:51.509Z cpu6:817900)NetSched: 628: vmnic0-0-tx: worldID = 817900 exits
+2017-09-30T17:30:51.509Z cpu2:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:30:51.510Z cpu7:65579)CpuSched: 692: user latency of 817906 vmnic0-0-tx 0 changed by 65579 HELPER_MISC_QUEUE-1-2 -6
+2017-09-30T17:30:52.879Z cpu3:65929)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:30:52.879Z cpu3:65929)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <25>
+  next_to_use          <25>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:31:31.164Z cpu4:65938)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:31:32.510Z cpu6:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:31:32.510Z cpu5:817906)NetSched: 628: vmnic0-0-tx: worldID = 817906 exits
+2017-09-30T17:31:32.510Z cpu6:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:31:32.510Z cpu1:65578)CpuSched: 692: user latency of 817908 vmnic0-0-tx 0 changed by 65578 HELPER_MISC_QUEUE-1-1 -6
+2017-09-30T17:31:33.167Z cpu5:65942)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:31:33.167Z cpu5:65942)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <1e>
+  next_to_use          <1e>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:32:11.473Z cpu4:65929)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:32:12.509Z cpu3:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:32:12.509Z cpu7:817908)NetSched: 628: vmnic0-0-tx: worldID = 817908 exits
+2017-09-30T17:32:12.509Z cpu3:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:32:12.510Z cpu7:65579)CpuSched: 692: user latency of 817914 vmnic0-0-tx 0 changed by 65579 HELPER_MISC_QUEUE-1-2 -6
+2017-09-30T17:32:13.475Z cpu3:65941)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:32:13.475Z cpu3:65941)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <1a>
+  next_to_use          <1a>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:32:51.803Z cpu5:65930)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:32:52.509Z cpu7:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:32:52.509Z cpu0:817914)NetSched: 628: vmnic0-0-tx: worldID = 817914 exits
+2017-09-30T17:32:52.509Z cpu7:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:32:52.509Z cpu5:65578)CpuSched: 692: user latency of 817918 vmnic0-0-tx 0 changed by 65578 HELPER_MISC_QUEUE-1-1 -6
+2017-09-30T17:32:53.804Z cpu5:65940)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:32:53.804Z cpu5:65940)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <23>
+  next_to_use          <23>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:33:32.310Z cpu4:65941)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:33:33.509Z cpu2:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:33:33.509Z cpu1:817918)NetSched: 628: vmnic0-0-tx: worldID = 817918 exits
+2017-09-30T17:33:33.509Z cpu2:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:33:33.509Z cpu5:65577)CpuSched: 692: user latency of 817923 vmnic0-0-tx 0 changed by 65577 HELPER_MISC_QUEUE-1-0 -6
+2017-09-30T17:33:34.311Z cpu5:65938)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:33:34.311Z cpu5:65938)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <19>
+  next_to_use          <19>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+2017-09-30T17:34:12.726Z cpu0:65937)<6>vmnic0 NIC Link is Up 1000 Mbps Full Duplex, Flow Control: Rx/Tx
+2017-09-30T17:34:13.509Z cpu4:65597)NetPort: 1879: disabled port 0x2000002
+2017-09-30T17:34:13.509Z cpu2:817923)NetSched: 628: vmnic0-0-tx: worldID = 817923 exits
+2017-09-30T17:34:13.509Z cpu4:65597)Uplink: 9893: enabled port 0x2000002 with mac 70:5a:0f:42:c3:e5
+2017-09-30T17:34:13.509Z cpu6:65579)CpuSched: 692: user latency of 817925 vmnic0-0-tx 0 changed by 65579 HELPER_MISC_QUEUE-1-2 -6
+2017-09-30T17:34:14.728Z cpu4:65929)<6>e1000e 0000:00:1f.6: vmnic0: Hardware hanged on TSO context. Reset it.
+2017-09-30T17:34:14.728Z cpu4:65929)<3>e1000e 0000:00:1f.6: vmnic0: Detected Hardware Unit Hang:
+  TDH                  <0>
+  TDT                  <1b>
+  next_to_use          <1b>
+  next_to_clean        <0>
+buffer_info[next_to_clean]:
+  time_stamp      $
+
+
+  0000:00:1f.6 8086:15b7 103c:82bf  11/   /0x33 A V ne1000       vmnic0
+
+  [root@hp:~] esxcli network nic get -n vmnic0
+   Advertised Auto Negotiation: true
+   Advertised Link Modes: Auto, 10BaseT/Half, 10BaseT/Full, 100BaseT/Half, 100BaseT/Full, 1000BaseT/Full
+   Auto Negotiation: false
+   Cable Type: Twisted Pair
+   Current Message Level: -1
+   Driver Info:
+         Bus Info: 0000:00:1f:6
+         Driver: ne1000
+         Firmware Version: 0.8-4
+         Version: 0.8.0
+   Link Detected: true
+   Link Status: Up
+   Name: vmnic0
+   PHYAddress: 0
+   Pause Autonegotiate: false
+   Pause RX: false
+   Pause TX: false
+   Supported Ports: TP
+   Supports Auto Negotiation: true
+   Supports Pause: false
+   Supports Wakeon: true
+   Transceiver:
+   Virtual Address: 00:50:56:52:c3:e5
+   Wakeon: MagicPacket(tm)
+
+   [root@hp:~] esxcli network nic tso get
+NIC      Value
+-------  -----
+vmnic0   off
+vmnic32  off
+
+New version of ne1000 driver fix
+https://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=2149915
+
+update instructions:
+
+https://tinkertry.com/easy-upgrade-to-esxi-65u1
+
+# initial link to the disalbing of ne1000
+https://communities.vmware.com/thread/556755

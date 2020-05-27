@@ -1,0 +1,88 @@
+core jenkins # docker-compose logs | tail -10
+jenkins    | Jun 30, 2017 2:14:51 AM jenkins.install.SetupWizard init
+jenkins    | INFO:
+jenkins    |
+jenkins    | *************************************************************
+jenkins    | *************************************************************
+jenkins    | *************************************************************
+jenkins    |
+jenkins    | Jenkins initial setup is required. An admin user has been created and a password generated.
+jenkins    | Please use the following password to proceed to installation:
+jenkins    |
+jenkins    | b419833d3f334dd88ee9d0f00ce07ed4
+jenkins    |
+jenkins    | This may also be found at: /var/jenkins_home/secrets/initialAdminPassword
+jenkins    |
+jenkins    | *************************************************************
+jenkins    | *************************************************************
+jenkins    | *************************************************************
+jenkins    |
+
+Then from the master, I accepted the host:
+
+core jenkins # docker-compose exec  jenkins /bin/bash
+jenkins@jenkins:/$ pwd
+/
+jenkins@jenkins:/$ cd
+jenkins@jenkins:~$ ssh elatov@puppet.kar.int
+The authenticity of host 'puppet.kar.int (10.0.0.6)' can't be established.
+ECDSA key fingerprint is 37:60:f9:19:25:b3:55:5a:f2:2b:0b:0c:ac:bf:53:7f.
+Are you sure you want to continue connecting (yes/no)? yes
+
+So it's added to the known_hosts file
+
+Install java on the slave node:
+
+sudo apt-get install openjdk-8-jdk-headless
+
+Setup the slave to connect to destination machine
+
+┌─[root@zfs] - [/root] - [2017-06-30 12:39:24]
+└─[0] <> scp .ssh/id_rsa.pub elatov@puppet:/tmp/.
+id_rsa.pub
+
+### on the OmniOS node, I was failing with the following error:
+
+jenkins    | SEVERE: I/O error in channel zfs
+jenkins    | java.io.IOException: Unexpected termination of the channel
+jenkins    | 	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:73)
+jenkins    | Caused by: java.io.EOFException
+jenkins    | 	at java.io.ObjectInputStream$PeekInputStream.readFully(ObjectInputStream.java:2638)
+jenkins    | 	at java.io.ObjectInputStream$BlockDataInputStream.readShort(ObjectInputStream.java:3113)
+jenkins    | 	at java.io.ObjectInputStream.readStreamHeader(ObjectInputStream.java:853)
+jenkins    | 	at java.io.ObjectInputStream.<init>(ObjectInputStream.java:349)
+jenkins    | 	at hudson.remoting.ObjectInputStreamEx.<init>(ObjectInputStreamEx.java:48)
+jenkins    | 	at hudson.remoting.AbstractSynchronousByteArrayCommandTransport.read(AbstractSynchronousByteArrayCommandTransport.java:34)
+jenkins    | 	at hudson.remoting.SynchronousCommandTransport$ReaderThread.run(SynchronousCommandTransport.java:59)
+
+Different version:
+
+https://docs.oracle.com/javase/8/docs/technotes/guides/install/solaris_jdk.html#A1097833
+
+had the following version:
+
+└─[0] <> pkg list | grep java
+developer/java/jdk                                1.7.0.101.0-0.151022       i--
+runtime/java                                      1.7.0.101.0-0.151022       i--
+
+Then installed the latest version:
+
+
+┌─[root@zfs] - [/root] - [2017-06-30 01:05:14]
+└─[0] <> /usr/local/jdk/bin/java -version
+java version "1.8.0_131"
+Java(TM) SE Runtime Environment (build 1.8.0_131-b11)
+Java HotSpot(TM) 64-Bit Server VM (build 25.131-b11, mixed mode)
+
+Interesting plugin:
+
+https://mohitgoyal.co/2017/03/02/adding-green-color-to-job-status-in-jenkins/
+
+Instructions on how to use ssh slaves:
+
+https://support.cloudbees.com/hc/en-us/articles/222978868-How-to-Connect-to-Remote-SSH-Slaves
+
+Cool URLs to know when restarting Jenkins:
+
+https://support.cloudbees.com/hc/en-us/articles/216118748-How-to-Start-Stop-or-Restart-your-Instance
+

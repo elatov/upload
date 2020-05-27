@@ -1,0 +1,3 @@
+https://developer.rackspace.com/blog/life-without-devstack-openstack-development-with-osa/
+https://docs.openstack.org/developer/openstack-ansible/ocata/
+https://arrfab.net/posts/2017/Apr/14/deploying-openstack-poc-on-centos-with-linux-bridge/

@@ -1,0 +1,5 @@
+zone name CORPBDC-UMH-3_UMHBA2
+pwwn 21:00:00:1b:32:0b:8f:01
+pwwn 50:03:08:c0:9c:00:80:01
+pwwn 50:06:01:60:41:e0:b9:44
+pwwn 50:06:01:68:41:e0:b9:44

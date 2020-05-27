@@ -1,0 +1,28 @@
+# esxcli nmp device list -d naa.600d02310008483bOOOOOOOO7ef9583c
+naa.600d02310008483bOOOOOOOO7ef9583c
+	Device Display Name: IFT iSCSI Disk (naa.600d02310008483bOOOOOOOO7ef9583c)
+	Storage Array Type: VMW_SATP_ALUA
+	Storage Array Type Device Config: {implicit_support=on;explicit_support=off; explicit_allow=on;alua_followover=on;{TPG_id=1,TPG_state=AO}}
+	Path Selection Policy: VMW_PSP_MRU
+	Path Selection Policy Device Config: Current Path=vmhba37:CO:T1:L6
+	Working Paths: vmhba37:CO:T1:L6 
+
+# esxcli corestorage device list -d na.600d02310008483bOOOOOOOO7ef9583c
+naa.600d02310008483bOOOOOOOO7ef9583c
+	Display Name: IFT iSCSI Disk (naa.600d02310008483bOOOOOOOO7ef9583c)
+	Size: 1907468
+	Device Type: Direct-Access
+	Multipath Plugin: NMP
+	Devfs Path: /vmfs/devices/disks/naa.600d02310008483bOOOOOOOO7ef9583c
+	Vendor: IFT
+	Model: S16E-G1240
+	Revision: 373S
+	SCSI Level: 4
+	Is Pseudo: false
+	Status: on
+	Is RDM Capable: true
+	Is Local: false
+	Is Removable: false
+	Attached Filters:
+	VAAI Status: unknown
+	Other UIDs: vml.0200060000600d02310008483bOOOOOOOO7ef9583c533136452d47

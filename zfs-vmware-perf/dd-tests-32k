@@ -1,0 +1,87 @@
+8k lun 512 max-sec 128 nr_re
+dd if=/dev/zero of=/dev/sdc bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 34.6668 s, 92.9 MB/s
+
+8k lun 8k max_sector_kb 128 nr_request
+dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 51.5571 s, 62.5 MB/s
+
+8k lun 8k max-sec 4 nr with a file system
+
+dd if=/dev/zero of=/mnt/rdm/dd.test bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 65.4565 s, 49.2 MB/s
+
+32k lun 512 max-sec 128 nr
+ dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 36.7976 s, 87.5 MB/s
+
+32k lun 128k maxsec 128 nr
+dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 32.3915 s, 99.4 MB/s
+
+32k lun 32k max_sec 128nr
+dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 32.8842 s, 98.0 MB/s
+
+32k lun 32k max_sec 4 nr
+ dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 34.206 s, 94.2 MB/s
+
+32k lun 32k max_sec 4 ne with filesystem
+dd if=/dev/zero of=/mnt/rdm/dd.test bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 61.2108 s, 52.6 MB/s
+
+32k vmfs lun 512k max sec 128 nr
+dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 35.1299 s, 91.7 MB/s
+
+32k vmfs 128k masec 128nr
+dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 37.373 s, 86.2 MB/s
+
+32k vmfs 32k max-sec 128 nr
+dd if=/dev/zero of=/dev/sdd bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 37.2601 s, 86.5 MB/s
+
+
+32k vmfs 32k max-sec 128 nr with filesystem
+dd if=/dev/zero of=/mnt/rdm/dd.test bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 64.335 s, 50.1 MB/s
+
+32k vmfs 32k max-sec 4 nr with filesystem
+dd if=/dev/zero of=/mnt/rdm/dd.test bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 57.6617 s, 55.9 MB/s
+
+32k 128k max sec 4nr with filesystem noatime,data=writeback
+dd if=/dev/zero of=/mnt/rdm/dd.test bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 38.6358 s, 83.4 MB/s
+
+

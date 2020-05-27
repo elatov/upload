@@ -1,0 +1,34 @@
+
+shell>gptsync.efi
+
+
+Current GPT partition table:
+ #     Start LBA     End LBA 	Type
+ t            40      409639	EFI System (FAT)
+ 2        409640    78490383	Mac OS X HFS+
+ 3      78491648    78493695	GRUB2 BIOS Boot
+ 4      78493696   115535871	Basic Data
+ 5     115535872   117209087 	Linux Swap
+
+Current MBR partition tab:
+ # A   Start LBA     End LBA Type
+ 1             1   117210239 EE EFI Protective
+
+
+ Status: MRB Table must be updated
+
+
+Proposed new MBR partition table"
+ # Ą   Start LBA     End LBA 	Type
+ 1            	1     409639 	EE EFI Protective
+ 2        409640    78490383 	AF Mac OS X HFS+
+ 3      78491648    78493695 	C0 Unknown
+ 4 _    78493696   115535871 	83 Linux
+
+
+May I update the MBR as printed above? [y/N] Yes
+
+Writing new MBR...
+MBR updated successfully!
+
+* Hit any key to continue *

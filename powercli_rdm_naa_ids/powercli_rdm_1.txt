@@ -1,0 +1,12 @@
+$vms = Get-VM
+foreach ($vm in $vms){
+	foreach ($hd in ($vm | Get-HardDisk -DiskType "RawPhysical","RawVirtual")){
+		if ( $hd.ScsiCanonicalName -eq "naa.60a9BOO057396d734f3_If424c7_707a"){
+			write $hd.Parent.Name
+			write $hd.Name
+			write $hd.DidkType
+			write $hd.ScsiCanonicalName
+			write $hd.DeviceName
+		}
+	}
+}

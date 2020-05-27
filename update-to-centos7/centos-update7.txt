@@ -1,0 +1,28 @@
+
+
+
+Here is the site that talks about the dracut-iniqueue patches
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1091785
+
+initramfs
+https://bbs.archlinux.org/viewtopic.php?pid=1307895#p1307895
+https://wiki.archlinux.org/index.php/mkinitcpio
+https://www.mail-archive.com/systemd-devel@lists.freedesktop.org/msg20582.html
+https://github.com/rear/rear/issues/370
+http://wiki.gentoo.org/wiki/Dracut
+https://www.kernel.org/pub/linux/utils/boot/dracut/dracut.html
+http://comments.gmane.org/gmane.comp.sysutils.systemd.devel/2530
+
+
+
+Just for good measure I went ahead and update the atomic repository:
+
+sudo yum update atomic-release
+
+after it's installed it should be at el7:
+
+elatov@ccl:~$rpm -qa | grep atomic
+atomic-release-1.0-19.el7.art.noarch
+
+then doing a yum update finished up the rest of the updates. Also 

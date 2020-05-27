@@ -1,0 +1,46 @@
+bootargs=console=ttySAC3,115200
+bootcmd=run non_verified_boot
+bootdelay=0
+baudrate=115200
+loadaddr=0x42000000
+stdin=serial,mkbp-keyb
+stdout=serial,lcd
+stderr=serial,lcd
+stdin=serial,mkbp-keyb
+stdout=serial,lcd
+stderr=serial,lcd
+common_bootargs=cros_legacy console=ttySAC3,115200 debug earlyprintk
+dev_extras=
+extra_bootargs=
+bootdev_bootargs=
+regen_all=setenv bootargs ${common_bootargs} ${dev_extras} ${extra_bootargs} ${bootdev_bootargs}
+rootpart=3
+cros_bootfile=/boot/vmlinux.uimg
+script_part=c
+script_img=/u-boot/boot.scr.uimg
+run_disk_boot_script=if fatload ${devtype} ${devnum}:${script_part} ${loadaddr} ${script_img}; then source ${loadaddr}; fi
+regen_ext2_bootargs=setenv bootdev_bootargs root=/dev/${devname}${rootpart} rootwait ro; run regen_all
+ext2_boot=run regen_ext2_bootargs; if ext2load ${devtype} ${devnum}:${rootpart} ${loadaddr} ${cros_bootfile}; then if test ${kernaddr} != ""; then echo "Using bundled kernel"; bootm ${kernaddr};fi; bootm ${loadaddr};fi
+tftpserverip=0.0.0.0
+nfsserverip=0.0.0.0
+rootaddr=0x44000000
+initrd_high=0xffffffff
+regen_nfsroot_bootargs=setenv bootdev_bootargs dev=/dev/nfs4 rw nfsroot=${nfsserverip}:${rootpath} ip=dhcp noinitrd; run regen_all
+regen_initrdroot_bootargs=setenv bootdev_bootargs rw root=/dev/ram0 ramdisk_size=512000 cros_netboot; run regen_all
+tftp_setup=setenv tftpkernelpath /tftpboot/vmlinux.uimg; setenv tftprootpath /tftpboot/initrd.uimg; setenv rootpath /export/nfsroot; setenv autoload n
+initrdroot_boot=run tftp_setup; run regen_initrdroot_bootargs; bootp; if tftpboot ${rootaddr} ${tftpserverip}:${tftprootpath} &&    tftpboot ${loadaddr} ${tftpserverip}:${tftpkernelpath}; then bootm ${loadaddr} ${rootaddr}; else echo 'ERROR: Could not load root/kernel from TFTP'; exit; fi
+tftp_ext2_boot=run tftp_setup; run regen_ext2_bootargs; bootp; if tftpboot ${loadaddr} ${tftpserverip}:${tftpkernelpath}; then bootm ${loadaddr}; else echo 'ERROR: Could not load kernel from TFTP'; exit; fi
+nfsroot_boot=run tftp_setup; run regen_nfsroot_bootargs; bootp; if tftpboot ${loadaddr} ${tftpserverip}:${tftpkernelpath}; then bootm ${loadaddr}; else echo 'ERROR: Could not load kernel from TFTP'; exit; fi
+net_boot=if test ${ethact} != ""; then if test ${tftpserverip} != "0.0.0.0"; then run initrdroot_boot; if test ${nfsserverip} != "0.0.0.0"; then run nfsroot_boot; fi; fi; fi
+usb_boot=setenv devtype usb; setenv devnum 0; setenv devname sda; run run_disk_boot_script;run ext2_boot
+mmc_setup=mmc dev ${devnum}; mmc rescan ${devnum}; setenv devtype mmc; setenv devname mmcblk${devnum}p
+mmc_boot=run mmc_setup; run run_disk_boot_script;run ext2_boot
+mmc0_boot=setenv devnum 0; run mmc_boot
+mmc1_boot=setenv devnum 1; run mmc_boot
+mmc0_tftpboot=setenv devnum 0; run mmc_setup; run tftp_ext2_boot
+non_verified_boot=usb start; run net_boot; run usb_boot; run mmc1_boot; run mmc0_boot
+sd_to_spi=echo Flashing U-Boot from SD card to SPI flash; if mmc dev 1 && mmc rescan && mmc read 40008000 1 1000 && sf probe 1:0 && sf update 40008000 0 80000; then echo Flash completed; else echo Flash failed; fi
+dev_extras=daisy
+set_default_env
+env_import
+saveenv

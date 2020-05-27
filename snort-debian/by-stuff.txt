@@ -1,0 +1,19 @@
+/usr/local/snort/var/log/barnyard2.waldo
+
+
+/usr/local/bin/barnyard2 -f snort_{id}_{iface}.u2 -u snort -g snort -c /usr/local/etc/snort/snort_{id}_{iface}/barnyard2.conf -w /usr/local/etc/snort/snort_{id}_{iface}/barnyard2.waldo -d /var/log/snort
+
+usr/local/by/bin/barnyard2 -c /usr/local/by/etc/barnyard2.conf -d /usr/local/snort/var/log -f snort.log -w /usr/local/snort/var/log/by.waldo -C /usr/local/snort/etc/classification.config
+
+
+
+/usr/local/bin/barnyard2 -D -c $BARN_CONF/barnyard2.$i.conf -G $GEN_MSG 
+-S $SID_MSG -d $LOGDIR/$i -f $ALERTFILE -w $LOGDIR/$i/$WALDO -u $USER -g $GROUP
+
+ARCHIVEDIR="$SNORTDIR/archive"
+                WALDO_FILE="$SNORTDIR/barnyard2.waldo"
+                BARNYARD_OPTS="-D -c $CONF -d $SNORTDIR -w $WALDO_FILE -L $SNORTDIR -a $ARCHIVEDIR -f $LOG_FILE -X $PIDFILE $EXTRA_ARGS"
+                /usr/local/by/bin/barnyard2 -D -c $CONF -d $SNORTDIR -w $WALDO_FILE -L $SNORTDIR -a $ARCHIVEDIR -f $LOG_FILE -X $PIDFILE
+
+
+/usr/local/bin/barnyard2 -c /etc/snort/barnyard2.conf -d /var/log/snort -f snort.log -w /etc/snort/bylog.waldo -G /etc/snort/gen-msg.map -S /etc/snort/sid-msg.map -C /etc/snort/classification.config

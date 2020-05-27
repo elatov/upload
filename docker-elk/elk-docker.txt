@@ -1,0 +1,19 @@
+https://clusterhq.com/2016/01/12/a-single-node-elk-flocker/
+
+https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#docker-prod-cluster-composefile
+
+
+https://github.com/docker-library/elasticsearch/issues/111
+
+# disable logstash monitoring
+https://discuss.elastic.co/t/elasticsearch-unreachable-error-in-logstash/75157/7
+
+## disable elasticsearch auth
+http://stackoverflow.com/questions/37508655/how-to-disable-elasticsearch-5-0-authentication
+
+## run user as root for logstash
+https://github.com/deviantony/docker-elk/issues/46
+
+https://www.elastic.co/guide/en/x-pack/current/installing-xpack.html
+
+https://discuss.elastic.co/t/kibana-raw-in-5-0-0-alpha3/53758

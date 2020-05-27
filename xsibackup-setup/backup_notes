@@ -1,0 +1,40 @@
+/vmfs/volumes/datastore1/xsibackup --backup-point=/vmfs/volumes/backups --backup-type=custom --backup-vms=Kerch,VC,M2 --mail-from=esx.dnsd.me --mail-to=elatov@kerch.dnsd.me --smtp-srv=kerch.dnsd.me --smtp-port=25 --smtp-auth=none
+
+
+~ # /vmfs/volumes/datastore1/xsibackup --backup-point=/vmfs/volumes/backups --backup-type=custom --backup-vms=Kerch,Moxz,VC --mail-from=admin@esx.dnsd.me --mail-to=elatov@kerch.dnsd.me --smtp-srv=kerch.dnsd.me --smtp-port=25 --smtp-auth=none
+Sun, 02 Feb 2014 20:49:36 +0000
+Found --backup-point at /vmfs/volumes/backups
+Getting list of all VMs...
+VM: Vmid    Name             File                   Guest OS          Version   Annotation
+VM: 1      M2       [VMs] M2/M2.vmx           rhel6_64Guest           vmx-08              
+VM: 2      Moxz     [VMs] Moxz/Moxz.vmx       freebsd64Guest          vmx-08              
+VM: 3      RHEL_1   [VMs] RHEL_1/RHEL_1.vmx   rhel6Guest              vmx-08              
+VM: 4      RHEL_2   [VMs] RHEL_2/RHEL_2.vmx   rhel5Guest              vmx-08              
+VM: 5      Kerch    [VMs] Kerch/Kerch.vmx     debian6_64Guest         vmx-08              
+VM: 6      VC       [VMs] VC/VC.vmx           windows7Server64Guest   vmx-08              
+VM: 7      test     [VMs] test/test.vmx       rhel6_64Guest           vmx-08              
+VMs to backup: 
+2      Moxz     [VMs] Moxz/Moxz.vmx       freebsd64Guest          vmx-08               17507 /vmfs/volumes/529a6c18-ae956476-0872-0030489f1401/Moxz
+5      Kerch    [VMs] Kerch/Kerch.vmx     debian6_64Guest         vmx-08               17507 /vmfs/volumes/529a6c18-ae956476-0872-0030489f1401/Kerch
+6      VC       [VMs] VC/VC.vmx           windows7Server64Guest   vmx-08               45174 /vmfs/volumes/529a6c18-ae956476-0872-0030489f1401/VC
+Needed room: 78 Gb.
+Available room: 190 Gb.
+Hot backup selected for VM: Moxz will not be switched off
+Hot backup selected for VM: Kerch will not be switched off
+DiskLib_Check() failed for source disk The system cannot find the file specified (25).
+DiskLib_Check() failed for source disk The system cannot find the file specified (25).
+Hot backup selected for VM: VC will not be switched off
+220 kerch.dnsd.me ESMTP Exim 4.80 Sun, 02 Feb 2014 14:13:13 -0700
+250 kerch.dnsd.me Hello esx.dnsd.me [192.168.1.111]
+250-kerch.dnsd.me Hello esx.dnsd.me [192.168.1.111]
+250-SIZE 52428800
+250-8BITMIME
+250-PIPELINING
+250 HELP
+250 OK
+250 Accepted
+354 Enter message, ending with "." on a line by itself
+250 OK id=1WA4Lp-0001I4-6K
+221 kerch.dnsd.me closing connection
+
+find /vmfs/volumes/backups/ -mtime +7 -type d -maxdepth 1 -exec rm -rf {} \;

@@ -1,0 +1,21 @@
+~ # esxcli nmp device list | grep 'Storage Array Type:'
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_LOCAL
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_LOCAL
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type: VMW_SATP_DEFAULT_AA

@@ -1,0 +1,164 @@
+Install snort
+opkg install snort
+
+Then configure it
+
+sed -i '' '/^include \$RULE_PATH\/.*.rules$/d' /opt/etc/snort/snort.conf
+
+vi /etc/opt/snort/snort.conf
+---
+- ipvar HOME_NET any
+- ipvar EXTERNAL_NET any
++ ipvar HOME_NET [192.168.0.0/16,10.0.0.0/8]
++ ipvar EXTERNAL_NET !$HOME_NET
+- var WHITE_LIST_PATH ../rules
+- var BLACK_LIST_PATH ../rules
+- var RULE_PATH ../rules
+- var PREPROC_RULE_PATH ../preproc_rules
++ var WHITE_LIST_PATH rules
++ var BLACK_LIST_PATH rules
++ var RULE_PATH rules
++ var PREPROC_RULE_PATH preproc_rules
++ include $RULE_PATH/local.rules
++ include $RULE_PATH/snort.rules
++ output database: log, mysql, user=snorby password=sn0rt dbname=snorby host=10.0.
+
+# also update there
+# path to dynamic preprocessor libraries
+dynamicpreprocessor directory /opt/opt/lib/snort_dynamicpreprocessor   
+                                  
+# path to base preprocessor engine                              
+dynamicengine /opt/lib/snort_dynamicengine/libsf_engine.so      
+                                                                                
+# path to dynamic rules libraries                           
+#dynamicdetection directory /opt/lib/snort_dynamicrules 
+---
+
+Give any one from the local subnets access:
+
+mysql> GRANT ALL PRIVILEGES ON snorby.* TO 'snorby'@'10.%.%.%' IDENTIFIED BY 'sn0rt' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL PRIVILEGES ON snorby.* TO 'snorby'@'192.168.%.%' IDENTIFIED BY 'sn0rt' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+mkdir /opt/opt/etc/snort/rules
+
+Grab the rules from my freebsd machine
+
+sudo pulledpork.pl -c /usr/local/etc/pulledpork/pulledpork.conf -l -w
+
+Copy the rules to wrt
+
+rsync -rvzzP /usr/local/etc/snort/rules/snort.rules root@wrt:/opt/opt/etc/snort/rules/. --rsync-path=/opt/opt/bin/rsync
+
+rsync -rvzzP /usr/local/etc/snort/sid-msg.map  root@wrt:/opt/opt/etc/snort/rules/. --rsync-path=/opt/opt/bin/rsync
+
+Create a simple local rule
+
+root@DD-WRT:~# cat /opt/opt/etc/snort/rules/local.rules 
+suppress gen_id 129, sig_id 12
+
+Copy the threshold conf
+
+elatov@moxz~$scp /usr/local/etc/snort/threshold.conf root@wrt:/opt/opt/etc/snort/.
+
+Create white list rules;
+
+touch /opt/opt/etc/snort/rules/black_list.rules
+touch /opt/opt/etc/snort/rules/white_list.rules
+
+Plugin USB and enable support
+
+http://192.168.1.1
+Service -> USB -> enable Core USB Support -> Enable USB Storage Support
+
+Save and Apply settings
+
+disk will now show up under
+fdisk -l
+
+http://www.dd-wrt.com/phpBB2/viewtopic.php?t=82049&view=next&sid=3c2ec10482f44bbad36ebaa95a6a22e3
+
+# partition with fdisk, then put filesystem on it
+root@DD-WRT:~# mkfs.ext3 /dev/sda1
+mkdir /mnt/usb
+insmod jbd
+insmod mbcache
+insmod ext3
+mount /dev/sda1 /mnt/usb
+
+After starting snort it was running out of memory:
+
+Jul 18 19:32:32 DD-WRT kern.warn kernel: snort invoked oom-killer: gfp_mask=0x200da, order=0, oom_score_adj=0
+Jul 18 19:32:32 DD-WRT kern.warn kernel: CPU: 1 PID: 4169 Comm: snort Tainted: P             3.10.54 #259
+
+Start it
+
+snort -A console -c /opt/opt/etc/snort/snort.conf -i br0 --daq-dir /opt/lib/daq -l /mnt/usb/var/log/ -p
+
+So let's enable swap on the dd-wrt router
+
+root@DD-WRT:/tmp/mnt/usb/swap# dd if=/dev/zero of=swap.file bs=1M count=1024
+1024+0 records in
+1024+0 records out
+
+root@DD-WRT:/tmp/mnt/usb/swap# mkswap swap.file 
+Setting up swapspace version 1, size = 1073737728 bytes
+UUID=23ac1ac1-4f88-439e-90a6-50cd1f9aba2d
+
+
+root@DD-WRT:/tmp/mnt/usb/swap# swapon swap.file 
+root@DD-WRT:/tmp/mnt/usb/swap# free
+             total         used         free       shared      buffers
+Mem:        255812       246968         8844            0         2048
+-/+ buffers:             244920        10892
+Swap:      1048572            0      1048572
+
+Launch screen
+
+TERMINFO='/opt/opt/share/terminfo' screen
+
+After some time you will see the following:
+
+pcap DAQ configured to passive.
+Acquiring network traffic from "br0".
+Reload thread starting...
+Reload thread started, thread 0xa5608460 (4843)
+Decoding Ethernet
+
+        --== Initialization Complete ==--
+
+   ,,_     -*> Snort! <*-
+  o"  )~   Version 2.9.7.2 GRE (Build 177)
+   ''''    By Martin Roesch & The Snort Team: http://www.snort.org/contact#team
+           Copyright (C) 2014 Cisco and/or its affiliates. All rights reserved.
+           Copyright (C) 1998-2013 Sourcefire, Inc., et al.
+           Using libpcap version 1.5.3
+           Using PCRE version: 8.36 2014-09-26
+           Using ZLIB version: 1.2.8
+
+           Rules Engine: SF_SNORT_DETECTION_ENGINE  Version 2.4  <Build 1>
+           Preprocessor Object: SF_DNS  Version 1.1  <Build 4>
+           Preprocessor Object: SF_SSLPP  Version 1.1  <Build 4>
+ 		   Preprocessor Object: SF_SSH  Version 1.1  <Build 3>
+           Preprocessor Object: SF_GTP  Version 1.1  <Build 1>
+           Preprocessor Object: SF_SIP  Version 1.1  <Build 1>
+           Preprocessor Object: SF_FTPTELNET  Version 1.2  <Build 13>
+           Preprocessor Object: SF_MODBUS  Version 1.1  <Build 1>
+           Preprocessor Object: SF_REPUTATION  Version 1.1  <Build 1>
+           Preprocessor Object: SF_SMTP  Version 1.1  <Build 9>
+           Preprocessor Object: SF_IMAP  Version 1.0  <Build 1>
+           Preprocessor Object: SF_SDF  Version 1.1  <Build 1>
+           Preprocessor Object: SF_POP  Version 1.0  <Build 1>
+           Preprocessor Object: SF_DNP3  Version 1.1  <Build 1>
+           Preprocessor Object: SF_DCERPC2  Version 1.0  <Build 3>
+Commencing packet processing (pid=4789)
+07/18-14:40:18.240118  [**] [1:2013505:1] ET POLICY GNU/Linux YUM User-Agent Outbound likely related to package management [**] [Classification: Potential Corporate Privacy Violation] [Priority: 1] {TCP} 192.168.1.100:34805 -> 185.93.1.19:80
+

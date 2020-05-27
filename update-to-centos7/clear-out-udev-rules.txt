@@ -1,0 +1,5 @@
+_
+K_K__L==''eth*'', _Afl_=''ethY''
+[root@ccl ~]# cp /etc/udeu/rules.d/70-persistent-net.rules é latou/.
+[root@ccl ~]# _ /etc/udeu/rules.d/70-persistent-net.rules
+[root@ccl ~]#

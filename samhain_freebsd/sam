@@ -1,0 +1,477 @@
+# intially the build failed with the following message
+
+# then installed gcc47
+cd /usr/ports/lang/gcc47
+sudo make install
+
+# then set the environment to use gcc47
+setenv CC gcc47
+setenv CPP cpp47
+setenv CXX g++47
+# the above didn't work had to set it for the system
+sudo vi /etc/make.conf
+===
+CC=gcc47
+CXX=g++47
+CPP=cpp47
+===
+
+# then went back to try the compile
+cd /usr/ports/security/samhain-server
+# fetch the package
+sudo make fetch
+# the extract it
+sudo make extract
+# then configure the package
+sudo make configure
+# edit the Make file and remove 
+-pie
+# from the LDFLAGS
+sudo vi work/samhain-3.0.13/Makefile
+===
+LDFLAGS = -D_THREAD_SAFE -pthread -DUSE_MALLOC_LOCK=1  -fstack-protector-all 
+===
+# then build the package
+sudo make
+# lastly build it
+sudo make install
+
+# here is the package message
+To start the samhain daemon at system boot, add:
+
+samhain_enable="YES"
+
+and/or
+
+yule_enable="YES"
+
+to /etc/rc.conf.
+
+You may want to use: make install-user
+
+    - to add the user yule (if not existing already)
+  -----------------------------------------------------
+
+  You can use 'samhain-install.sh uninstall' for uninstalling
+  i.e. you might consider saving that script for future use
+
+  Use 'make install-boot' if you want samhain to start on system boot
+# install the boot script
+cd work/samhain
+sudo make install-boot
+# clean up the script
+sudo vi /etc/rc.d/samhain
+===
+#rcvar=`set_rcvar`
+...
+...
+#if ! is_set ${rcvar}; then 
+#    eval "${rcvar}=YES"
+#fi
+===
+# copy the example config
+sudo cp /usr/local/etc/samhainrc.sample /usr/local/etc/samhainrc
+# initialize the local db
+sudo samhain -t init
+#
+
+### Complile the client
+setenv CC gcc47
+setenv CPP cpp47
+setenv CXX g++47
+# prepare the source
+cd /opt/work/samhain
+./configure --prefix=/usr/local/samh --enable-network=client --with-logserver=moxz.dnsd.me
+# fix the -pie error
+vi Makefile
+===
+- -pie
+===
+# make the package
+make
+# prepare the directory
+sudo mkdir /usr/local/samh
+sudo chown elatov:elatov /usr/local/samh
+# install the package
+make install
+# setup the client
+# on the server create a 16 digit string
+moxz:~>/usr/local/sam/sbin/yule -G
+D61B802CCA8C47B0
+# then on the client set the password
+moxz:~>cd /usr/local/samh/sbin/
+moxz:/usr/local/samh/sbin>./samhain_setpwd samhain moxz D61B802CCA8C47B0
+INFO   old password found
+INFO   replaced:  f7c312aaaa12c3f7  by:  d61b802cca8c47b0
+INFO   finished
+# move the binary with the new password as the default binary
+moxz:/usr/local/samh/sbin>cp samhain.moxz samhain
+# on the server create the client entry corresponding to the client
+moxz:~>/usr/local/sam/sbin/yule -P d61b802cca8c47b0
+Client=HOSTNAME@684399E8A0084178@A23A7FD5950F71D4BA5CEECBB8B2C216C60AF890AEF93973736336353BF7B19C9E77EE1F2FFA84A625D4777B3CFE28E29BF53224BDC498BA1AFBBDCD5F350B4B252F024876D33F5772CB142F23390A6F965B895FFE90B92D4B3DAEA7B69CD37BCB6D727FD98BC73265AE921AF4AA39AD20E55BA911469676BDB2D6D6403A235A
+# copy the output and store in the yule configuration
+sudo vi /usr/local/sam/etc/yulerc
+===
+[Clients]
+Client=moxz.dnsd.me@684399E8A0084178@A23A7FD5950F71D4BA5CEECBB8B2C216C60AF890AEF9397
+3736336353BF7B19C9E77EE1F2FFA84A625D4777B3CFE28E29BF53224BDC498BA1AFBBDCD5F350B4B252
+F024876D33F5772CB142F23390A6F965B895FFE90B92D4B3DAEA7B69CD37BCB6D727FD98BC73265AE921
+AF4AA39AD20E55BA911469676BDB2D6D6403A235A
+===
+# on the client configure easy settings
+moxz:~>grep -vE '^#|^$' /usr/local/samh/etc/samhainrc 
+[Misc]
+[ReadOnly]
+dir = 0/
+[Attributes]
+file = /
+file = /proc
+file = /entropy
+file = /tmp
+file = /var
+[Attributes]
+dir = 99/dev
+[IgnoreAll]
+file = /dev/ttyp?
+[Misc]
+IgnoreAdded = /dev/(p|t)typ.*
+IgnoreMissing = /dev/(p|t)typ.*
+[ReadOnly]
+dir = 99/etc
+[ReadOnly]
+dir = 99/boot
+[ReadOnly]
+dir = 99/bin
+dir = 99/sbin
+[ReadOnly]
+dir = 99/lib
+[ReadOnly]
+dir = 99/libexec
+[ReadOnly]
+dir = 99/rescue
+[Attributes]
+dir = 99/root
+[ReadOnly]
+dir = 99/stand
+[ReadOnly]
+dir = 99/usr
+[Attributes]
+dir = /usr/.snap
+dir = /usr/share/man/cat?
+file = /usr/compat/linux/etc
+file = /usr/compat/linux/etc/ld.so.cache
+[IgnoreAll]
+dir = -1/usr/home
+[Attributes]
+dir = 0/var
+[LogFiles]
+file=/var/run/utmp
+[GrowingLogFiles]
+dir = 99/var/log
+[Attributes]
+file = /var/log/*.[0-9].bz2
+file = /var/log/*.[0-9].log
+file = /var/log/*.[0-9]
+file = /var/log/*.[0-9][0-9]
+file = /var/log/*.old
+file = /var/log/sendmail.st
+[Misc]
+IgnoreAdded = /var/log/.*\.[0-9]+$
+IgnoreAdded = /var/log/.*\.[0-9]+\.gz$
+IgnoreAdded = /var/log/.*\.[0-9]+\.bz2$
+IgnoreAdded = /var/log/.*\.[0-9]+\.log$
+[IgnoreNone]
+[User0]
+[User1]
+[EventSeverity]
+SeverityIgnoreAll=info
+[Log]
+ 
+[Misc]
+Daemon = yes
+ChecksumTest=check
+SetNiceLevel=19
+SetIOLimit=500
+SetLoopTime = 86400
+SetFileCheckTime = 7200
+SyslogFacility=LOG_LOCAL2
+[EOF]
+## start the yule server
+/usr/local/sam/sbin/yule -S
+# then on the client initialize the database
+/usr/local/samg/sbin/samhain -t init
+###
+
+
+
+# compile apache22
+cd /usr/local/www/apache22
+sudo make install clean
+====
+Using existing group 'www'.
+Using existing user 'www'.
+Installing apache22-2.2.26... done
+To run apache www server from startup, add apache22_enable="YES"
+in your /etc/rc.conf. Extra options can be found in startup script.
+===
+
+Then compile php53 (since 5.4 has deprecated specific session usage)
+http://stackoverflow.com/questions/16082420/call-to-undefined-function-session-register
+cd /usr/local/lang/php53
+sudo make install
+===
+Make sure index.php is part of your DirectoryIndex.
+
+You should add the following to your Apache configuration file:
+
+AddType application/x-httpd-php .php
+AddType application/x-httpd-php-source .phps
+===
+
+# then get the mysql,xml, and session php extensions
+cd /usr/ports/lang/php53-extensions
+sudo make install
+
+###
+
+### compile yule
+setenv CC gcc47
+setenv CPP cpp47
+setenv CXX g++47
+# prepare the source
+cd /opt/work/samhain
+./configure --prefix=/usr/local/yule --enable-xml-log --with-database=mysql --enable-network=server
+
+# end results
+config.status: executing default commands
+
+ samhain has been configured as follows:
+     System binaries: /usr/local/yule/sbin
+  Configuration file: /usr/local/yule/etc/yulerc
+        Manual pages: /usr/local/yule/share/man
+                Data: /usr/local/yule/var/lib/yule
+            PID file: /usr/local/yule/var/run/yule.pid
+            Log file: /usr/local/yule/var/log/yule/yule_log
+            Base key: 1349287823,1086504891
+#
+# fix the -pie error
+vi Makefile
+===
+- -pie
+===
+# make the package
+make
+# prepare the directory
+sudo mkdir /usr/local/yule
+sudo chown elatov:elatov /usr/local/yule
+# install the package
+make install
+
+# setup Mysql DB
+# copy the schema file over
+scp sql_init/samhain.mysql.init kerch:
+# create mysql db for yule
+elatov@kerch:~$mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 69101
+Server version: 5.5.35-0+wheezy1 (Debian)
+
+Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| samhain            |
+| wordpress          |
+| wp_cs4113          |
+| zabbix             |
++--------------------+
+7 rows in set (0.01 sec)
+
+mysql> use samhain;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++-------------------+
+| Tables_in_samhain |
++-------------------+
+| log               |
++-------------------+
+1 row in set (0.00 sec)
+
+# create a user for samhain db
+mysql> grant select, insert on samhain.log to samhain@'%' IDENTIFIED BY 'samhain';
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> flush privileges;
+Query OK, 0 rows affected (0.04 sec)
+## allow remote connections
+sudo vi /etc/mysql/my.cnf
+===
+bind-address            = 10.0.0.2
+===
+# restart the mysql service
+sudo service mysql restart
+# then add the following to the firewall
+sudo vi /etc/iptables/rules.v4
+===
+# Allow MySQL
+-A INPUT -s 192.168.1.0/24,10.0.0.0/24 -p tcp -m state --state NEW -m tcp --dport 3306 --tcp-flags FIN,SYN,RST,ACK SYN -j ACCEPT
+===
+# restart iptables
+sudo service iptables-persistent restart
+# now test the connection from remote host
+moxz:~>mysql -u samhain -p -h kerch
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 194
+Server version: 5.5.35-0+wheezy1 (Debian)
+
+Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql>
+###
+
+# configure the yulerc file
+moxz:~>grep -vE '^$|^#' /usr/local/yule/etc/yulerc 
+[Log]
+PrintSeverity=none
+LogSeverity = warn
+DatabaseSeverity = warn
+SetDBName = samhain
+SetDBTable = log
+SetDBUser = samhain
+SetDBPassword = samhain
+SetDBHost = kerch.dnsd.me
+[Misc]
+Daemon=yes
+SetLoopTime = 600
+[Clients]
+###
+
+### Configure the client
+./configure --prefix=/usr/local/samhain --enable-xml-log --enable-network=client --with-data-file=REQ_FROM_SERVER/usr/local/samhain/var/lib/samhain/samhain_file --with-config-file=REQ_FROM_SERVER/usr/local/samhain/etc/samhainrc --with-logserver=moxz.dnsd.me
+# results
+===
+config.status: executing default commands
+
+ samhain has been configured as follows:
+     System binaries: /usr/local/samhain/sbin
+  Configuration file: REQ_FROM_SERVER/usr/local/samhain/etc/samhainrc
+        Manual pages: /usr/local/samhain/share/man
+                Data: /usr/local/samhain/var/lib/samhain
+            PID file: /usr/local/samhain/var/run/samhain.pid
+            Log file: /usr/local/samhain/var/log/samhain_log
+            Base key: 545226706,7274409
+
+    Selected rc file: samhainrc.freebsd
+===
+#Clean up the -pie
+vi Makefile
+===
+LDFLAGS = -D_THREAD_SAFE -pthread -DUSE_MALLOC_LOCK=1  -fstack-protector-all
+===
+# install 
+make install
+# configure the client with yule
+# first create the random string
+moxz:~>/usr/local/yule/sbin/yule -G
+52D1DF66E5FC5DCC
+# then set the password on the client
+moxz:/usr/local/samhain/sbin>./samhain_setpwd samhain moxz 52D1DF66E5FC5DCC
+INFO   old password found
+INFO   replaced:  f7c312aaaa12c3f7  by:  52d1df66e5fc5dcc
+INFO   finished
+# and copy the binary over
+cp samhain.moxz samhain
+# lastly add the client to the yulerc config
+moxz:~>/usr/local/yule/sbin/yule -P 52D1DF66E5FC5DCC
+Client=HOSTNAME@D534D98453A3F78B@A72D238707B8D5C376AF39138483562FF28EC4BD38C980CD3738C876A02C2D7F9F1C54684EEE9F28D0E8137458D8067812C38F03F892199D336DEEB18ACFE05F5D050D9C3AF1B7C2D29B3458F12394A7EF4017445961929415B613C1CC7D1532E2A152E6A1DABED758064F02C91578F72D2DE24FF8609AA146E94877FBBCEFA3
+# add that under the Clients section
+moxz:~>tail -1 /usr/local/yule/etc/yulerc 
+Client=moxz.dnsd.me@D534D98453A3F78B@A72D238707B8D5C376AF39138483562FF28EC4BD38C980CD3738C876A02C2D7F9F1C54684EEE9F28D0E8137458D8067812C38F03F892199D336DEEB18ACFE05F5D050D9C3AF1B7C2D29B3458F12394A7EF4017445961929415B613C1CC7D1532E2A152E6A1DABED758064F02C91578F72D2DE24FF8609AA146E94877FBBCEFA3
+# now grab a snapshot of the OS
+moxz:~>/usr/local/samhain/sbin/samhain -t init
+# now copy the files to yule config
+cp /usr/local/samhain/etc/samhainrc /usr/local/yule/var/lib/yule/rc.moxz.dnsd.mecp /usr/local/samhain/var/lib/samhain/samhain_file /usr/local/yule/var/lib/yule/file.moxz.dnsd.me
+
+
+
+### setup beltane
+./configure --prefix=/usr/local/beltane --enable-mod-php --with-user=elatov --with-data-dir=/usr/local/sam/var/lib/yule --with-php-dir=/usr/local/beltane/php --with-logfile=/usr/local/beltane/log --with-user-home=/usr/local/beltane --with-php-extension=php
+
+## create the dest dir
+sudo mkdir /usr/local/beltane
+sudo chown elatov:elatov /usr/local/beltane
+# install the package
+make install
+# Allow apache to serve the file
+sudo vi /usr/local/etc/apache22/Includes/beltane.conf
+===
+<Directory /usr/local/www/apache22/data/php/>
+    AllowOverride None
+    Options +ExecCGI -Includes
+</Directory
+===
+# allow apache to write to /usr/local/beltane
+sudo chgrp -R www /usr/local/beltane
+sudo chmod g+w /usr/local/beltane/
+
+## Now the Yule Server
+/usr/local/yule/sbin/yule -S
+# then start the client
+/usr/local/samhain/sbin/samhain -D
+# upon starting the client you should see the following
+===
+moxz:~>/usr/local/samhain/sbin/samhain -D
+<log sev="INFO" tstamp="2014-03-09T15:48:09-0600" msg="Downloading configuration file" />
+<log sev="INFO" tstamp="2014-03-09T15:48:10-0600" msg="Session key negotiated" />
+<log sev="INFO" tstamp="2014-03-09T15:48:10-0600" msg="File download completed" />
+<log sev="ERRO" tstamp="2014-03-09T15:48:10-0600" interface="glob" msg="No matches found" path="/dev/ttyp?" />
+<log sev="ERRO" tstamp="2014-03-09T15:48:10-0600" interface="glob" msg="No matches found" path="/var/log/*.[0-9].log" />
+<log sev="ERRO" tstamp="2014-03-09T15:48:10-0600" interface="glob" msg="No matches found" path="/var/log/*.[0-9][0-9]" />
+<log sev="ERRO" tstamp="2014-03-09T15:48:10-0600" interface="glob" msg="No matches found" path="/var/log/*.old" />
+<log sev="INFO" tstamp="2014-03-09T15:48:10-0600" msg="Downloading database file" />
+<log sev="INFO" tstamp="2014-03-09T15:50:08-0600" msg="File download completed" />
+###
+
+### setup MySQL on freebsd
+cd /usr/ports/databases/mysql55-server
+sudo make install clean
+# enable the rc config
+sudo vi /etc/rc.conf
+===
+mysql_enable="YES"
+===
+# start the service
+sudo service mysql-server start
+# secure the installation
+sudo /usr/local/bin/mysql_secure_installation
+# create the database
+moxz:/opt/work/samhain-3.1.0.yule/sql_init>mysql -u root -p < samhain.mysql.init 
+Enter password: 
+# give a user access
+#initally did this
+mysql> grant select, insert on samhain.log to samhain@'%' IDENTIFIED BY 'samhain';
+
+But then had to reset his password
+SET PASSWORD FOR samhain@'%'=PASSWORD('');

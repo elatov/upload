@@ -1,0 +1,24 @@
+y
+;..;,  ____M _,_ __ __ _ __b_ _ _._ _ _ _ _ H _   _   ______9  _ß _ __   _'?
+=''__?n ___ _ _ _ _          __ _   _   _ _ _ _  _ _ _ _ _
+''_-- ______ _ĝ_a_t_s _5_:_   _   ___  _ __   _' _ ' _ _ _ _
+    n _ _ _4 _ _ a _ _ _ _ î s a ^ # _ _ _ s _ - _ _ _ _ _ _ s _ _
+D__sk /& _ /s&_: _.5 G_B, _ @4 _ _ _ b__es,  _5633_ _ s_cta_s
+U__jts_ se_tar_ a_ 1 _ 512 = 512 bytes
+Se_ta_ si2e _l__ical/physical_; 512 bytes _ 512 bgte_
+__0 si2e _mi__îmum/a_tĭmal__ 512 bytes / 512 byt__
+Disklabel type_ das
+Dîsk îde__ti_ĭer_ 0x11bad5_a
+
+
+_ i_    _ t St_rt    End S_tors  Si2e Id Type
+/deu/sdct  _      0 13045_5 13045_6  63_t1  0 Empt
+/deu/sdc2       112   63659   63488   31t1 er EF1  €F_T-12_1_
+__0tßarchis0 ^ # mk4ir /mnt
+mhdir_ cann_t create di Fect0Fy _/mnt_; File exîsts
+1 _a__ßaFchis0 " # cd /mnt
+__a_ßarchîsa /_nt # ls
+_00tßaFchis0 /_nt # cd
+__at_aFchis0 _ # ugFename _edaFa ugas
+_0lum_ gra4_ "_ed0Fa" success_ully Fenamed t0 ''ugag''
+___t__rchisa _ _

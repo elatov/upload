@@ -1,0 +1,26 @@
+Nov  8 10:10:53 vmkernel: O:O1:19:58.809 cpu10:4922)WARNING: NFS: 898: RPC error 13 (RPC was aborted due to
+timeout) trying to get port for Mount Program (100005) Version (3) Protocol (TCP) on Server (10.178.250.10)
+
+
+
+
+Nov  8 10:12:48 vm kernel: O:Ol:21:54.029 cpu4:93961Config: 364: ''Vmknic'' = '''', O
+ld v8lue: ''vm k2'' (St8tus: Ox01
+Nov  8 10:lJ:29 vm kernel: O:Ol:26:35.49J cpu5:190081Vmxnet3: J490: unic8stAddr O
+O:Oc:29:81:4d:d3;
+Nov  8 10:lJ:29 vm kernel: O:Ol:26:35.523 cpu5:190081Vmxnet3: J490: unic8stAddr O
+O:Oc:29:81:4d:d3;
+Nov  8 10:19:51 vm kernel: O:Ol:28:5J.433 cpul4:350J11WARNZNG: User Obj: 565: F8il
+ed to crossdup fd 6, fs: def5 oid: 1500000003000000e type CHAR: Busy
+Nov  8 10:26:54 vm kernel: O:Ol:36:OO.528 cpul2:49221WARNZNG: NFS: 898: RPC error
+13 (RPC w8s 8b orted due to timeout1 trying to get port for Mount Progr 8m (10000
+51 Version (31 Protocol (TCP1 on Server (10.lJ8.250.101
+Nov  8 10:42:56 vm kernel: O:Ol:52:02 304 cpuJ:49221WARNZNG: NFS: 898: RPC error
+13 (RPC w8s 8b orted due to timeout1 trying to get port for Mount Progr 8m (100005
+1 Version (31 Protocol (TCP1 on Server (10.lJ8.250.101
+
+
+Nov 8 10:45:19 vmkernel: O:O1:54:24.995 cpu3:42254)Tcpip_Socket: 1087: add dstAddr=Oxfab20a, netMask=Oxffffff, gwAddr=O12eb20a8 ifName=OxO, ifNameLen=O
+
+
+Nov 10:45:27 vmkernel: O:O1:54:32.538 cpu7:4922)NFS: 286: Restored connection to server 10.178.250.10 mount point /vol/data1, mounted as a20f9958-58eaf9ec-0000-000000000 ("NFS_1")

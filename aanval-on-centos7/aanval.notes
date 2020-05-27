@@ -1,0 +1,68 @@
+First download it
+
+Then extract it:
+
+tar xvzf 
+
+then place it under the http doc_root
+
+make sure php is supported
+
+
+sudo yum install httpd php php-mysql
+
+
+Then make sure the apache user owns the console dir
+
+elatov@puppet:/var/www/html$sudo chown -R apache:apache aan/console/
+
+Then create the DB
+
+mysql> create database aanvaldb;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> GRANT ALL PRIVILEGES ON aanvaldb.* TO 'aanval_user'@'localhost' IDENTIFIED BY 'aanv@l' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL PRIVILEGES ON aanvaldb.* TO 'aanval_user'@'10.0.0.6' IDENTIFIED BY 'aanv@l' with grant option;
+Query OK, 0 rows affected (0.00 sec)
+
+
+Then go and fill out all the information, after that start the daemon
+
+elatov@puppet:/var/www/html/aan/apps$sudo -u apache perl ./idsBackground.pl -srt 
+
+---------------------------------------------------
+Aanval by Tactical FLEX, Inc.
+Copyright 2003-2014
+
+http://www.tacticalflex.com/
+
+Background Processing Unit (BPU) Initializer
+Version: 8.0.800
+---------------------------------------------------
+
+Aanval BPU (core) launched in daemon mode [PID: 2175].
+Aanval BPU (process) launched in daemon mode [PID: 2181].
+Aanval BPU (report) launched in daemon mode [PID: 2192].
+Aanval BPU (search) launched in daemon mode [PID: 2207].
+
+Then go ahead and make sure it's running
+
+elatov@puppet:~$ps -eaf | grep -i aan
+apache    2175     1  0 15:12 ?        00:00:00 Aanval BPU (core)
+apache    2181     1  0 15:12 ?        00:00:00 Aanval BPU (process)
+apache    2192     1  0 15:12 ?        00:00:00 Aanval BPU (report)
+apache    2207     1  0 15:12 ?        00:00:00 Aanval BPU (search)
+elatov    5812  1455  0 15:13 pts/3    00:00:00 grep --color=auto -i aan
+
+Then visit the aanval install via a browser and login with
+
+root/specter
+
+upon a successful login you will see the following:
+
+
+Then click on the gear to open the configuration page
+
+and you will see the following

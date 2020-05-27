@@ -1,0 +1,99 @@
+[2.3.2-RELEASE][root@pf.kar.int]/root: iperf -c 192.168.56.150 -w 2m
+------------------------------------------------------------
+Client connecting to 192.168.56.150, TCP port 5001
+TCP window size: 2.00 MByte (WARNING: requested 2.00 MByte)
+------------------------------------------------------------
+[  3] local 192.168.56.1 port 38496 connected with 192.168.56.150 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-10.0 sec  1.10 GBytes   941 Mbits/sec
+
+[2.3.2-RELEASE][root@pf.kar.int]/root: ifconfig re2 tso
+
+[2.3.2-RELEASE][root@pf.kar.int]/var/log/suricata/suricata_re034499: ifconfig -m re0
+re0: flags=8943<UP,BROADCAST,RUNNING,PROMISC,SIMPLEX,MULTICAST> metric 0 mtu 1500
+       	options=8219b<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,VLAN_HWCSUM,TSO4,WOL_MAGIC,LINKSTATE>
+       	capabilities=1839db<RXCSUM,TXCSUM,VLAN_MTU,VLAN_HWTAGGING,POLLING,VLAN_HWCSUM,TSO4,WOL_UCAST,WOL_MCAST,WOL_MAGIC,LINKSTATE,NETMAP>
+       	ether 00:0d:b9:3c:c0:64
+       	inet6 fe80::20d:b9ff:fe3c:c064%re0 prefixlen 64 scopeid 0x1
+       	inet 8.44.148.108 netmask 0xfffff000 broadcast 8.44.159.255
+       	nd6 options=21<PERFORMNUD,AUTO_LINKLOCAL>
+       	media: Ethernet autoselect (1000baseT <full-duplex>)
+       	status: active
+       	supported media:
+       		media autoselect mediaopt flowcontrol
+       		media autoselect
+       		media 1000baseT mediaopt full-duplex,flowcontrol,master
+       		media 1000baseT mediaopt full-duplex,flowcontrol
+       		media 1000baseT mediaopt full-duplex,master
+       		media 1000baseT mediaopt full-duplex
+       		media 1000baseT mediaopt master
+       		media 1000baseT
+       		media 100baseTX mediaopt full-duplex,flowcontrol
+       		media 100baseTX mediaopt full-duplex
+       		media 100baseTX
+       		media 10baseT/UTP mediaopt full-duplex,flowcontrol
+       		media 10baseT/UTP mediaopt full-duplex
+       		media 10baseT/UTP
+       		media none
+
+https://forum.pfsense.org/index.php?topic=102285.0
+https://forum.pfsense.org/index.php?topic=84731.0
+
+root@wrt:~# iperf -c 192.168.1.129 -w 2m -t 30
+------------------------------------------------------------
+Client connecting to 192.168.1.129, TCP port 5001
+TCP window size:  352 KByte (WARNING: requested 2.00 MByte)
+------------------------------------------------------------
+[  3] local 192.168.1.1 port 51950 connected with 192.168.1.129 port 5001
+[ ID] Interval       Transfer     Bandwidth
+[  3]  0.0-30.0 sec   808 MBytes   226 Mbits/sec
+
+https://bsdrp.net/documentation/technical_docs/performance
+
+https://www.reddit.com/r/PFSENSE/comments/348uho/throughput_numbers_for_new_sg_devices/
+
+http://blog.fosketts.net/2015/09/21/the-ideal-pfsense-platform-netgate-rcc-ve-2440/
+
+pmcstat -TS instructions -w1
+
+PMC: [FR_RETIRED_X86_INSTRUCTIONS] Samples: 2836 (100.0%) , 73 unresolved
+
+%SAMP IMAGE      FUNCTION             CALLERS
+ 35.6 kernel     sbuf_bcat            sysctl_kern_malloc_stats:35.0 ...
+  3.5 kernel     pagezero             vm_fault_hold
+  2.4 kernel     pmap_remove_pages    vmspace_exit:1.5 exec_new_vmspace:0.9
+  2.0 kernel     copyout              copyout_nofault
+  1.4 libc.so.7  bsearch              0x64d4
+  1.4 kernel     vm_fault_hold        vm_fault
+  1.2 kernel     pmap_enter           vm_fault_hold
+  1.1 kernel     get_pv_entry         pmap_try_insert_pv_entry
+
+PMC: [FR_RETIRED_X86_INSTRUCTIONS] Samples: 12178 (100.0%) , 0 unresolved
+
+%SAMP IMAGE      FUNCTION             CALLERS
+ 23.2 kernel     sched_idletd         fork_exit
+  6.1 kernel     pf_test              pf_check_out:3.3 pf_check_in:2.8
+  4.3 kernel     bzero                pf_test:1.7 pf_test_state_tcp:1.1 ...
+  3.3 kernel     pf_test_state_tcp    pf_test
+  3.0 kernel     __rw_rlock           bpf_mtap:0.9 in_localip:0.9
+
+https://www.reddit.com/r/PFSENSE/comments/2vzy6t/netgate_router_recommendation/
+
+https://bsdrp.net/documentation/technical_docs/performance
+
+https://github.com/ocochard/netbenches/blob/master/AMD_G-T40E_2Cores_RTL8111E/fastforwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md
+
+http://blog.cochard.me/2016/05/playing-with-freebsd-packet-filter.html
+
+http://serverfault.com/questions/663939/router-limits-network-performance-but-its-cpu-load-isnt-100
+
+
+Tried the mbuf option:
+
+https://doc.pfsense.org/index.php/Tuning_and_Troubleshooting_Network_Cards
+
+Reading over the results here:
+
+https://github.com/ocochard/netbenches/blob/master/Atom_C2558_4Cores-Intel_i350/fastforwarding-pf-ipfw/results/fbsd11-routing.r287531/README.md
+
+I might want to get beefier hardware :)

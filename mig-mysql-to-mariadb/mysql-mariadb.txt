@@ -1,0 +1,846 @@
+### The upgrade looked like this:
+
+┌─[elatov@kerch] - [/home/elatov] - [2016-04-10 08:59:27]
+└─[0] <> sudo apt-get install mariadb-server
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following packages were automatically installed and are no longer required:
+  dbconfig-common libconfig-inifiles-perl libsnmp-perl snmptt
+Use 'apt-get autoremove' to remove them.
+The following extra packages will be installed:
+  mariadb-client-10.0 mariadb-client-core-10.0 mariadb-common
+  mariadb-server-10.0 mariadb-server-core-10.0
+Suggested packages:
+  mariadb-test tinyca
+The following packages will be REMOVED:
+  mysql-client mysql-client-5.5 mysql-server mysql-server-5.5
+  mysql-server-core-5.5
+The following NEW packages will be installed:
+  mariadb-client-10.0 mariadb-client-core-10.0 mariadb-common mariadb-server
+  mariadb-server-10.0 mariadb-server-core-10.0
+0 upgraded, 6 newly installed, 5 to remove and 0 not upgraded.
+Need to get 11.8 MB of archives.
+After this operation, 37.3 MB of additional disk space will be used.
+Do you want to continue? [Y/n] Y
+Get:1 http://ftp.us.debian.org/debian/ jessie/main mariadb-client-10.0 amd64 10.0.23-0+deb8u1 [1,144 kB]
+Get:2 http://ftp.us.debian.org/debian/ jessie/main mariadb-common all 10.0.23-0+deb8u1 [16.6 kB]
+Get:3 http://ftp.us.debian.org/debian/ jessie/main mariadb-client-core-10.0 amd64 10.0.23-0+deb8u1 [798 kB]
+Get:4 http://ftp.us.debian.org/debian/ jessie/main mariadb-server-core-10.0 amd64 10.0.23-0+deb8u1 [4,251 kB]
+Get:5 http://ftp.us.debian.org/debian/ jessie/main mariadb-server-10.0 amd64 10.0.23-0+deb8u1 [5,573 kB]
+Get:6 http://ftp.us.debian.org/debian/ jessie/main mariadb-server all 10.0.23-0+deb8u1 [16.3 kB]
+Fetched 11.8 MB in 38s (308 kB/s)                                              
+Preconfiguring packages ...
+(Reading database ... 101816 files and directories currently installed.)
+Removing mysql-server (5.5.47-0+deb8u1) ...
+Removing mysql-server-5.5 (5.5.47-0+deb8u1) ...
+Removing mysql-client (5.5.47-0+deb8u1) ...
+dpkg: mysql-client-5.5: dependency problems, but removing anyway as you requested:
+ zabbix-server-mysql depends on mysql-client | virtual-mysql-client; however:
+  Package mysql-client is not installed.
+  Package mysql-client-5.5 which provides mysql-client is to be removed.
+  Package virtual-mysql-client is not installed.
+  Package mysql-client-5.5 which provides virtual-mysql-client is to be removed.
+ zabbix-server-mysql depends on mysql-client | virtual-mysql-client; however:
+  Package mysql-client is not installed.
+  Package mysql-client-5.5 which provides mysql-client is to be removed.
+  Package virtual-mysql-client is not installed.
+  Package mysql-client-5.5 which provides virtual-mysql-client is to be removed.
+
+Removing mysql-client-5.5 (5.5.47-0+deb8u1) ...
+Processing triggers for man-db (2.7.0.2-5) ...
+Selecting previously unselected package mariadb-client-10.0.
+(Reading database ... 101678 files and directories currently installed.)
+Preparing to unpack .../mariadb-client-10.0_10.0.23-0+deb8u1_amd64.deb ...
+Unpacking mariadb-client-10.0 (10.0.23-0+deb8u1) ...
+Selecting previously unselected package mariadb-common.
+Preparing to unpack .../mariadb-common_10.0.23-0+deb8u1_all.deb ...
+Unpacking mariadb-common (10.0.23-0+deb8u1) ...
+Selecting previously unselected package mariadb-client-core-10.0.
+Preparing to unpack .../mariadb-client-core-10.0_10.0.23-0+deb8u1_amd64.deb ...
+Unpacking mariadb-client-core-10.0 (10.0.23-0+deb8u1) ...
+Processing triggers for man-db (2.7.0.2-5) ...
+(Reading database ... 101726 files and directories currently installed.)
+Removing mysql-server-core-5.5 (5.5.47-0+deb8u1) ...
+Processing triggers for man-db (2.7.0.2-5) ...
+Selecting previously unselected package mariadb-server-core-10.0.
+(Reading database ... 101638 files and directories currently installed.)
+Preparing to unpack .../mariadb-server-core-10.0_10.0.23-0+deb8u1_amd64.deb ...
+Unpacking mariadb-server-core-10.0 (10.0.23-0+deb8u1) ...
+Processing triggers for man-db (2.7.0.2-5) ...
+Setting up mariadb-common (10.0.23-0+deb8u1) ...
+Selecting previously unselected package mariadb-server-10.0.
+(Reading database ... 101720 files and directories currently installed.)
+Preparing to unpack .../mariadb-server-10.0_10.0.23-0+deb8u1_amd64.deb ...
+Unpacking mariadb-server-10.0 (10.0.23-0+deb8u1) ...
+Selecting previously unselected package mariadb-server.
+Preparing to unpack .../mariadb-server_10.0.23-0+deb8u1_all.deb ...
+Unpacking mariadb-server (10.0.23-0+deb8u1) ...
+Processing triggers for man-db (2.7.0.2-5) ...
+Processing triggers for systemd (215-17+deb8u4) ...
+Setting up mariadb-client-core-10.0 (10.0.23-0+deb8u1) ...
+Setting up mariadb-client-10.0 (10.0.23-0+deb8u1) ...
+Setting up mariadb-server-core-10.0 (10.0.23-0+deb8u1) ...
+Setting up mariadb-server-10.0 (10.0.23-0+deb8u1) ...
+Installing new version of config file /etc/apparmor.d/usr.sbin.mysqld ...
+Installing new version of config file /etc/init.d/mysql ...
+Installing new version of config file /etc/logrotate.d/mysql-server ...
+
+Configuration file '/etc/mysql/conf.d/mysqld_safe_syslog.cnf'
+ ==> Modified (by you or by a script) since installation.
+ ==> Package distributor has shipped an updated version.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainer's version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a shell to examine the situation
+ The default action is to keep your current version.
+*** mysqld_safe_syslog.cnf (Y/I/N/O/D/Z) [default=N] ? D
+
+Configuration file '/etc/mysql/conf.d/mysqld_safe_syslog.cnf'
+ ==> Modified (by you or by a script) since installation.
+ ==> Package distributor has shipped an updated version.
+   What would you like to do about it ?  Your options are:
+    Y or I  : install the package maintainer's version
+    N or O  : keep your currently-installed version
+      D     : show the differences between the versions
+      Z     : start a shell to examine the situation
+ The default action is to keep your current version.
+*** mysqld_safe_syslog.cnf (Y/I/N/O/D/Z) [default=N] ? Y
+Installing new version of config file /etc/mysql/conf.d/mysqld_safe_syslog.cnf ...
+Installing new version of config file /etc/mysql/debian-start ...
+160410  9:06:03 [Note] /usr/sbin/mysqld (mysqld 10.0.23-MariaDB-0+deb8u1-log) starting as process 15654 ...
+160410  9:06:03 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+160410  9:06:03 [Note] InnoDB: The InnoDB memory heap is disabled
+160410  9:06:03 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+160410  9:06:03 [Note] InnoDB: Memory barrier is not used
+160410  9:06:03 [Note] InnoDB: Compressed tables use zlib 1.2.8
+160410  9:06:03 [Note] InnoDB: Using Linux native AIO
+160410  9:06:03 [Note] InnoDB: Using CPU crc32 instructions
+160410  9:06:03 [Note] InnoDB: Initializing buffer pool, size = 2.0G
+160410  9:06:03 [Note] InnoDB: Completed initialization of buffer pool
+160410  9:06:03 [Note] InnoDB: Highest supported file format is Barracuda.
+160410  9:06:04 [Note] InnoDB: 128 rollback segment(s) are active.
+160410  9:06:04 [Note] InnoDB: Waiting for purge to start
+160410  9:06:04 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.26-76.0 started; log sequence number 286222197
+160410  9:06:04 [Note] Plugin 'FEEDBACK' is disabled.
+160410  9:06:04 [Note] InnoDB: FTS optimize thread exiting.
+160410  9:06:04 [Note] InnoDB: Starting shutdown...
+160410  9:06:06 [Note] InnoDB: Shutdown completed; log sequence number 286222207
+Setting up mariadb-server (10.0.23-0+deb8u1) ...
+Processing triggers for systemd (215-17+deb8u4) ...
+
+
+## If you check the logs you will see the following:
+
+pr 10 09:06:12 kerch mysqld_safe: Starting mysqld daemon with databases from /var/lib/mysql
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] /usr/sbin/mysqld (mysqld 10.0.23-MariaDB-0+deb8u1-log) starting as process 15971 ...
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: The InnoDB memory heap is disabled
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Memory barrier is not used
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Compressed tables use zlib 1.2.8
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Using Linux native AIO
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Using CPU crc32 instructions
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Initializing buffer pool, size = 2.0G
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Completed initialization of buffer pool
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Highest supported file format is Barracuda.
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: 128 rollback segment(s) are active.
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB: Waiting for purge to start
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.26-76.0 started; log sequence number 286222227
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] Plugin 'FEEDBACK' is disabled.
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] Server socket created on IP: '0.0.0.0'.
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [ERROR] Incorrect definition of table mysql.event: expected column 'sql_mode' at position 14 to have type set('REAL_AS_FLOAT','PIPES_AS_CONCAT','ANSI_QUOTES','IGNORE_SPACE','IGNORE_BAD_TABLE_OPTIONS','ONLY_FULL_GROUP_BY','NO_UNSIGNED_SUBTRACTION','NO_DIR_IN_CREATE','POSTGRESQL','ORACLE','MSSQL','DB2','MAXDB','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_FIELD_OPTIONS','MYSQL323','MYSQL40','ANSI','NO_AUTO_VALUE_ON_ZERO','NO_BACKSLASH_ESCAPES','STRICT_TRANS_TABLES','STRICT_ALL_TABLES','NO_ZERO_IN_DATE','NO_ZERO_DATE','INVALID_DATES','ERROR_FOR_DIVISION_BY_ZERO','TRADITIONAL','NO_AUTO_CREATE_USER','HIGH_NOT_PRECEDENCE','NO_ENGINE_SUBSTITUTION','PAD_CHAR_TO_FULL_LENGTH'), found type set('REAL_AS_FLOAT','PIPES_AS_CONCAT','ANSI_QUOTES','IGNORE_SPACE','NOT_USED','ONLY_FULL_GROUP_BY','NO_UNSIGNED_SUBTRACTION','NO_DIR_IN_CREATE','POSTGRESQL','ORACLE','MSSQL','DB2','MAXDB','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_FIELD_OPTIONS','MYSQL323','MYSQL40','ANSI','NO_AUTO_VALUE_ON_ZERO','NO_BACKSLASH_ESCAPES','STRICT
+Apr 10 09:06:12 kerch mysqld: _TRANS_TABLES','STRICT_A
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [ERROR] mysqld: Event Scheduler: An error occurred when initializing system tables. Disabling the Event Scheduler.
+Apr 10 09:06:12 kerch mysqld: 160410  9:06:12 [Note] /usr/sbin/mysqld: ready for connections.
+Apr 10 09:06:12 kerch mysqld: Version: '10.0.23-MariaDB-0+deb8u1-log'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  (Debian)
+Apr 10 09:06:13 kerch mysql[15780]: Starting MariaDB database server: mysqld.
+Apr 10 09:06:13 kerch /etc/mysql/debian-start[16020]: Upgrading MySQL tables if necessary.
+Apr 10 09:06:13 kerch mysqld: 160410  9:06:13 [Note] View `snorby`.`aggregated_events`: the version is set to 100023
+Apr 10 09:06:13 kerch mysqld: 160410  9:06:13 [Note] View `snorby`.`events_with_join`: the version is set to 100023
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: /usr/bin/mysql_upgrade: the '--basedir' option is always ignored
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Looking for 'mysql' as: /usr/bin/mysql
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Looking for 'mysqlcheck' as: /usr/bin/mysqlcheck
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: MySQL upgrade detected
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Phase 1/6: Checking and upgrading mysql database
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Processing databases
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.column_stats                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.columns_priv                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.db                                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.event                                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.func                                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.gtid_slave_pos                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.help_category                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.help_keyword                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.help_relation                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.help_topic                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.host                                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.index_stats                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.innodb_index_stats                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.innodb_table_stats                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.ndb_binlog_index                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.plugin                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.proc                                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.procs_priv                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.proxies_priv                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.roles_mapping                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.servers                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.table_stats                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.tables_priv                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.time_zone                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.time_zone_leap_second                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.time_zone_name                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.time_zone_transition                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.time_zone_transition_type                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql.user                                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Phase 2/6: Fixing views from mysql
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Processing databases
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: information_schema
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: performance_schema
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.aggregated_events                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.events_with_join                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Phase 3/6: Running 'mysql_fix_privilege_tables'
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Phase 4/6: Fixing table and database names
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Processing databases
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: information_schema
+Apr 10 09:06:14 kerch rsyslogd-2007: action 'action 26' suspended, next retry is Sun Apr 10 09:06:44 2016 [try http://www.rsyslog.com/e/2007 ]
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: mysql
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: performance_schema
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Phase 5/6: Checking and upgrading tables
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Processing databases
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsActionMaster                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsActionStore                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsCollection                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsCollectionStore                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_1000_Events                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_1000_Master                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_1000_Review_Index            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_1000_Tag_Index               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_1000_Text                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_1000_Text_Index              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_TEMPLATE_Events              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_TEMPLATE_Master              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_TEMPLATE_Review_Index        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_TEMPLATE_Tag_Index           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_TEMPLATE_Text                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDataStore_TEMPLATE_Text_Index          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDeviceAddresses                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDeviceMeta                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDeviceServices                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDeviceTypes                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsDevices                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsEmail                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsGeoCache                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsGeoData                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsGeoLocation                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsHostnames                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsImportFilters                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsLicense                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsMessageQueue                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsModules                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsNetworks                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsNotes                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsOps                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsQueries                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsReconnaissanceResults                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsReportSchedule                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSensor                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSensorManage                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSensorManageMessages                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSensorPolicy                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSignaturePolicyIndex                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSignatureSources                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSignatures                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsSyslogModule                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsTags                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsTimezones                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsUserMessages                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: aanvaldb.idsUsers                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: information_schema
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: performance_schema
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.agent_asset_names                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.asset_names                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.caches                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.classifications                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.daily_caches                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.data                                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.delayed_jobs                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.detail                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.encoding                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.event                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.favorites                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.icmphdr                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.iphdr                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.lookups                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.notes                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.notifications                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.opt                                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.reference                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.reference_system                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.schema                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.search                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.sensor                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.settings                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.severities                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.sig_class                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.sig_reference                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.signature                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.tcphdr                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.udphdr                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: snorby.users                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_commentmeta                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_comments                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_links                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_options                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_postmeta                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_posts                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_term_relationships                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_term_taxonomy                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_termmeta                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_terms                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_usermeta                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_users                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_wpo_campaign                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_wpo_campaign_category                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_wpo_campaign_feed                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_wpo_campaign_post                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_wpo_campaign_word                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wordpress.wp_wpo_log                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_commentmeta                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_comments                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_links                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_options                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_postmeta                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_posts                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_term_relationships                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_term_taxonomy                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_termmeta                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_terms                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_usermeta                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: wp_cs4113.wp_users                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.acknowledges                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.actions                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.alerts                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.application_discovery                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.application_prototype                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.application_template                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.applications                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.auditlog                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.auditlog_details                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.autoreg_host                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.conditions                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.config                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.dbversion                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.dchecks                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.dhosts                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.drules                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.dservices                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.escalations                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.events                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.expressions                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.functions                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.globalmacro                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.globalvars                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.graph_discovery                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.graph_theme                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.graphs                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.graphs_items                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.group_discovery                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.group_prototype                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.groups                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.history                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.history_log                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.history_str                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.history_text                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.history_uint                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.host_discovery                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.host_inventory                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.hostmacro                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.hosts                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.hosts_groups                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.hosts_templates                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.housekeeper                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.httpstep                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.httpstepitem                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.httptest                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.httptestitem                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.icon_map                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.icon_mapping                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.ids                                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.images                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.interface                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.interface_discovery                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.item_application_prototype                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.item_condition                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.item_discovery                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.items                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.items_applications                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.maintenances                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.maintenances_groups                         OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.maintenances_hosts                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.maintenances_windows                        OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.mappings                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.media                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.media_type                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opcommand                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opcommand_grp                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opcommand_hst                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opconditions                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.operations                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opgroup                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opinventory                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opmessage                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opmessage_grp                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.opmessage_usr                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.optemplate                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.profiles                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.proxy_autoreg_host                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.proxy_dhistory                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.proxy_history                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.regexps                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.rights                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.screen_user                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.screen_usrgrp                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.screens                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.screens_items                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.scripts                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.service_alarms                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.services                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.services_links                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.services_times                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sessions                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.slides                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.slideshow_user                              OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.slideshow_usrgrp                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.slideshows                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_element_url                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_url                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_user                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_usrgrp                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps_elements                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps_link_triggers                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps_links                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.timeperiods                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.trends                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.trends_uint                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.trigger_depends                             OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.trigger_discovery                           OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.triggers                                    OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.users                                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.users_groups                                OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.usrgrp                                      OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.valuemaps                                   OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: Phase 6/6: Running 'FLUSH PRIVILEGES'
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16074]: Checking for insecure root accounts.
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16078]: Triggering
+myisam-recover for all MyISAM tables
+
+I think the error about event is because the mysql_upgrade hasn't been ran
+yet, as per this page:
+
+https://www.allscoop.com/mariadb-incorrect-definition-table-mysql-event-expected-column-sql_mode.php
+
+
+Then if you check out the service, you will notice that's it running:
+
+─[elatov@kerch] - [/home/elatov] - [2016-04-10 09:24:29]
+└─[0] <> sudo systemctl enable mysql
+Synchronizing state for mysql.service with sysvinit using update-rc.d...
+Executing /usr/sbin/update-rc.d mysql defaults
+Executing /usr/sbin/update-rc.d mysql enable
+┌─[elatov@kerch] - [/home/elatov] - [2016-04-10 09:24:40]
+└─[0] <> sudo systemctl status mysql
+● mysql.service - LSB: Start and stop the mysql database server daemon
+   Loaded: loaded (/etc/init.d/mysql)
+   Active: active (running) since Sun 2016-04-10 09:06:13 MDT; 18min ago
+   CGroup: /system.slice/mysql.service
+           ├─15804 /bin/bash /usr/bin/mysqld_safe
+           ├─15805 logger -p daemon.err -t /etc/init.d/mysql -i
+           ├─15971 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --user=mysql --skip-log-error --open-files-l...
+           └─15972 logger -t mysqld -p daemon.error
+
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_element_url                          OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_url                                  OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_user                                 OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmap_usrgrp                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps                                     OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps_elements                            OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps_link_triggers                       OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16023]: zabbix.sysmaps_links                               OK
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16074]: Checking for insecure root accounts.
+Apr 10 09:06:14 kerch /etc/mysql/debian-start[16078]: Triggering myisam-recover for all MyISAM tables
+┌─[elatov@kerch] - [/home/elatov] - [2016-04-10 09:24:49]
+└─[0] <> ps -ef | grep mysql
+root     15804     1  0 09:06 ?        00:00:00 /bin/bash /usr/bin/mysqld_safe
+root     15805     1  0 09:06 ?        00:00:00 logger -p daemon.err -t /etc/init.d/mysql -i
+mysql    15971 15804  0 09:06 ?        00:00:01 /usr/sbin/mysqld --basedir=/usr --datadir=/var/lib/mysql --plugin-dir=/usr/lib/mysql/plugin --user=mysql --skip-log-error --open-files-limit=15000 --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock --port=3306
+root     15972 15804  0 09:06 ?        00:00:00 logger -t mysqld -p daemon.error
+elatov   20960 16380  0 09:25 pts/0    00:00:00 grep --color=auto mysql
+
+And then just a quick sanity check:
+
+┌─[elatov@kerch] - [/home/elatov] - [2016-04-10 09:27:30]
+└─[0] <> mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 154
+Server version: 10.0.23-MariaDB-0+deb8u1-log (Debian)
+
+Copyright (c) 2000, 2015, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| aanvaldb           |
+| information_schema |
+| mysql              |
+| performance_schema |
+| snorby             |
+| wordpress          |
+| wp_cs4113          |
+| zabbix             |
++--------------------+
+8 rows in set (0.00 sec)
+
+MariaDB [(none)]>
+
+If you want we can upgrade one more time:
+
+┌─[elatov@kerch] - [/home/elatov] - [2016-04-10 12:01:48]
+└─[1] <> mysql_upgrade -u root -p
+Enter password:
+Phase 1/6: Checking and upgrading mysql database
+Processing databases
+mysql
+mysql.column_stats                                 OK
+mysql.columns_priv                                 OK
+mysql.db                                           OK
+mysql.event                                        OK
+mysql.func                                         OK
+mysql.gtid_slave_pos                               OK
+mysql.help_category                                OK
+mysql.help_keyword                                 OK
+mysql.help_relation                                OK
+mysql.help_topic                                   OK
+mysql.host                                         OK
+mysql.index_stats                                  OK
+mysql.innodb_index_stats                           OK
+mysql.innodb_table_stats                           OK
+mysql.ndb_binlog_index                             OK
+mysql.plugin                                       OK
+mysql.proc                                         OK
+mysql.procs_priv                                   OK
+mysql.proxies_priv                                 OK
+mysql.roles_mapping                                OK
+mysql.servers                                      OK
+mysql.table_stats                                  OK
+mysql.tables_priv                                  OK
+mysql.time_zone                                    OK
+mysql.time_zone_leap_second                        OK
+mysql.time_zone_name                               OK
+mysql.time_zone_transition                         OK
+mysql.time_zone_transition_type                    OK
+mysql.user                                         OK
+Phase 2/6: Fixing views
+snorby.aggregated_events                           OK
+snorby.events_with_join                            OK
+Phase 3/6: Running 'mysql_fix_privilege_tables'
+Phase 4/6: Fixing table and database names
+Phase 5/6: Checking and upgrading tables
+Processing databases
+aanvaldb
+aanvaldb.idsActionMaster                           OK
+aanvaldb.idsActionStore                            OK
+aanvaldb.idsCollection                             OK
+aanvaldb.idsCollectionStore                        OK
+aanvaldb.idsDataStore                              OK
+aanvaldb.idsDataStore_1000_Events                  OK
+aanvaldb.idsDataStore_1000_Master                  OK
+aanvaldb.idsDataStore_1000_Review_Index            OK
+aanvaldb.idsDataStore_1000_Tag_Index               OK
+aanvaldb.idsDataStore_1000_Text                    OK
+aanvaldb.idsDataStore_1000_Text_Index              OK
+aanvaldb.idsDataStore_TEMPLATE_Events              OK
+aanvaldb.idsDataStore_TEMPLATE_Master              OK
+aanvaldb.idsDataStore_TEMPLATE_Review_Index        OK
+aanvaldb.idsDataStore_TEMPLATE_Tag_Index           OK
+aanvaldb.idsDataStore_TEMPLATE_Text                OK
+aanvaldb.idsDataStore_TEMPLATE_Text_Index          OK
+aanvaldb.idsDeviceAddresses                        OK
+aanvaldb.idsDeviceMeta                             OK
+aanvaldb.idsDeviceServices                         OK
+aanvaldb.idsDeviceTypes                            OK
+aanvaldb.idsDevices                                OK
+aanvaldb.idsEmail                                  OK
+aanvaldb.idsGeoCache                               OK
+aanvaldb.idsGeoData                                OK
+aanvaldb.idsGeoLocation                            OK
+aanvaldb.idsHostnames                              OK
+aanvaldb.idsImportFilters                          OK
+aanvaldb.idsLicense                                OK
+aanvaldb.idsMessageQueue                           OK
+aanvaldb.idsModules                                OK
+aanvaldb.idsNetworks                               OK
+aanvaldb.idsNotes                                  OK
+aanvaldb.idsOps                                    OK
+aanvaldb.idsQueries                                OK
+aanvaldb.idsReconnaissanceResults                  OK
+aanvaldb.idsReportSchedule                         OK
+aanvaldb.idsSensor                                 OK
+aanvaldb.idsSensorManage                           OK
+aanvaldb.idsSensorManageMessages                   OK
+aanvaldb.idsSensorPolicy                           OK
+aanvaldb.idsSignaturePolicyIndex                   OK
+aanvaldb.idsSignatureSources                       OK
+aanvaldb.idsSignatures                             OK
+aanvaldb.idsSyslogModule                           OK
+aanvaldb.idsTags                                   OK
+aanvaldb.idsTimezones                              OK
+aanvaldb.idsUserMessages                           OK
+aanvaldb.idsUsers                                  OK
+information_schema
+performance_schema
+snorby
+snorby.agent_asset_names                           OK
+snorby.asset_names                                 OK
+snorby.caches                                      OK
+snorby.classifications                             OK
+snorby.daily_caches                                OK
+snorby.data                                        OK
+snorby.delayed_jobs                                OK
+snorby.detail                                      OK
+snorby.encoding                                    OK
+snorby.event                                       OK
+snorby.favorites                                   OK
+snorby.icmphdr                                     OK
+snorby.iphdr                                       OK
+snorby.lookups                                     OK
+snorby.notes                                       OK
+snorby.notifications                               OK
+snorby.opt                                         OK
+snorby.reference                                   OK
+snorby.reference_system                            OK
+snorby.schema                                      OK
+snorby.search                                      OK
+snorby.sensor                                      OK
+snorby.settings                                    OK
+snorby.severities                                  OK
+snorby.sig_class                                   OK
+snorby.sig_reference                               OK
+snorby.signature                                   OK
+snorby.tcphdr                                      OK
+snorby.udphdr                                      OK
+snorby.users                                       OK
+wordpress
+wordpress.wp_commentmeta                           OK
+wordpress.wp_comments                              OK
+wordpress.wp_links                                 OK
+wordpress.wp_options                               OK
+wordpress.wp_postmeta                              OK
+wordpress.wp_posts                                 OK
+wordpress.wp_term_relationships                    OK
+wordpress.wp_term_taxonomy                         OK
+wordpress.wp_termmeta                              OK
+wordpress.wp_terms                                 OK
+wordpress.wp_usermeta                              OK
+wordpress.wp_users                                 OK
+wordpress.wp_wpo_campaign                          OK
+wordpress.wp_wpo_campaign_category                 OK
+wordpress.wp_wpo_campaign_feed                     OK
+wordpress.wp_wpo_campaign_post                     OK
+wordpress.wp_wpo_campaign_word                     OK
+wordpress.wp_wpo_log                               OK
+wp_cs4113
+wp_cs4113.wp_commentmeta                           OK
+wp_cs4113.wp_comments                              OK
+wp_cs4113.wp_links                                 OK
+wp_cs4113.wp_options                               OK
+wp_cs4113.wp_postmeta                              OK
+wp_cs4113.wp_posts                                 OK
+wp_cs4113.wp_term_relationships                    OK
+wp_cs4113.wp_term_taxonomy                         OK
+wp_cs4113.wp_termmeta                              OK
+wp_cs4113.wp_terms                                 OK
+wp_cs4113.wp_usermeta                              OK
+wp_cs4113.wp_users                                 OK
+zabbix
+zabbix.acknowledges                                OK
+zabbix.actions                                     OK
+zabbix.alerts                                      OK
+zabbix.application_discovery                       OK
+zabbix.application_prototype                       OK
+zabbix.application_template                        OK
+zabbix.applications                                OK
+zabbix.auditlog                                    OK
+zabbix.auditlog_details                            OK
+zabbix.autoreg_host                                OK
+zabbix.conditions                                  OK
+zabbix.config                                      OK
+zabbix.dbversion                                   OK
+zabbix.dchecks                                     OK
+zabbix.dhosts                                      OK
+zabbix.drules                                      OK
+zabbix.dservices                                   OK
+zabbix.escalations                                 OK
+zabbix.events                                      OK
+zabbix.expressions                                 OK
+zabbix.functions                                   OK
+zabbix.globalmacro                                 OK
+zabbix.globalvars                                  OK
+zabbix.graph_discovery                             OK
+zabbix.graph_theme                                 OK
+zabbix.graphs                                      OK
+zabbix.graphs_items                                OK
+zabbix.group_discovery                             OK
+zabbix.group_prototype                             OK
+zabbix.groups                                      OK
+zabbix.history                                     OK
+zabbix.history_log                                 OK
+zabbix.history_str                                 OK
+zabbix.history_text                                OK
+zabbix.history_uint                                OK
+zabbix.host_discovery                              OK
+zabbix.host_inventory                              OK
+zabbix.hostmacro                                   OK
+zabbix.hosts                                       OK
+zabbix.hosts_groups                                OK
+zabbix.hosts_templates                             OK
+zabbix.housekeeper                                 OK
+zabbix.httpstep                                    OK
+zabbix.httpstepitem                                OK
+zabbix.httptest                                    OK
+zabbix.httptestitem                                OK
+zabbix.icon_map                                    OK
+zabbix.icon_mapping                                OK
+zabbix.ids                                         OK
+zabbix.images                                      OK
+zabbix.interface                                   OK
+zabbix.interface_discovery                         OK
+zabbix.item_application_prototype                  OK
+zabbix.item_condition                              OK
+zabbix.item_discovery                              OK
+zabbix.items                                       OK
+zabbix.items_applications                          OK
+zabbix.maintenances                                OK
+zabbix.maintenances_groups                         OK
+zabbix.maintenances_hosts                          OK
+zabbix.maintenances_windows                        OK
+zabbix.mappings                                    OK
+zabbix.media                                       OK
+zabbix.media_type                                  OK
+zabbix.opcommand                                   OK
+zabbix.opcommand_grp                               OK
+zabbix.opcommand_hst                               OK
+zabbix.opconditions                                OK
+zabbix.operations                                  OK
+zabbix.opgroup                                     OK
+zabbix.opinventory                                 OK
+zabbix.opmessage                                   OK
+zabbix.opmessage_grp                               OK
+zabbix.opmessage_usr                               OK
+zabbix.optemplate                                  OK
+zabbix.profiles                                    OK
+zabbix.proxy_autoreg_host                          OK
+zabbix.proxy_dhistory                              OK
+zabbix.proxy_history                               OK
+zabbix.regexps                                     OK
+zabbix.rights                                      OK
+zabbix.screen_user                                 OK
+zabbix.screen_usrgrp                               OK
+zabbix.screens                                     OK
+zabbix.screens_items                               OK
+zabbix.scripts                                     OK
+zabbix.service_alarms                              OK
+zabbix.services                                    OK
+zabbix.services_links                              OK
+zabbix.services_times                              OK
+zabbix.sessions                                    OK
+zabbix.slides                                      OK
+zabbix.slideshow_user                              OK
+zabbix.slideshow_usrgrp                            OK
+zabbix.slideshows                                  OK
+zabbix.sysmap_element_url                          OK
+zabbix.sysmap_url                                  OK
+zabbix.sysmap_user                                 OK
+zabbix.sysmap_usrgrp                               OK
+zabbix.sysmaps                                     OK
+zabbix.sysmaps_elements                            OK
+zabbix.sysmaps_link_triggers                       OK
+zabbix.sysmaps_links                               OK
+zabbix.timeperiods                                 OK
+zabbix.trends                                      OK
+zabbix.trends_uint                                 OK
+zabbix.trigger_depends                             OK
+zabbix.trigger_discovery                           OK
+zabbix.triggers                                    OK
+zabbix.users                                       OK
+zabbix.users_groups                                OK
+zabbix.usrgrp                                      OK
+zabbix.valuemaps                                   OK
+Phase 6/6: Running 'FLUSH PRIVILEGES'
+OK
+
+And you'll see the version you are at:
+
+┌─[elatov@kerch] - [/home/elatov] - [2016-04-10 12:06:23]
+└─[1] <> sudo cat /var/lib/mysql/mysql_upgrade_info
+10.0.23-MariaDB%
+
+Starting up all the old programs, I saw that they were making connections to
+the DB:
+
+MariaDB [(none)]> show processlist;
++------+--------+--------------------+--------+---------+------+-------+------------------+----------+
+| Id   | User   | Host               | db     | Command | Time | State | Info             | Progress |
++------+--------+--------------------+--------+---------+------+-------+------------------+----------+
+|  131 | zabbix | localhost          | zabbix | Sleep   | 9955 |       | NULL             |    0.000 |
+|  132 | zabbix | localhost          | zabbix | Sleep   | 9955 |       | NULL             |    0.000 |
+|  133 | zabbix | localhost          | zabbix | Sleep   | 9955 |       | NULL             |    0.000 |
+|  134 | zabbix | localhost          | zabbix | Sleep   | 9955 |       | NULL             |    0.000 |
+|  135 | zabbix | localhost          | zabbix | Sleep   | 9955 |       | NULL             |    0.000 |
+|  136 | zabbix | localhost          | zabbix | Sleep   |   24 |       | NULL             |    0.000 |
+|  137 | zabbix | localhost          | zabbix | Sleep   |   13 |       | NULL             |    0.000 |
+|  138 | zabbix | localhost          | zabbix | Sleep   |    2 |       | NULL             |    0.000 |
+|  139 | zabbix | localhost          | zabbix | Sleep   |    3 |       | NULL             |    0.000 |
+|  140 | zabbix | localhost          | zabbix | Sleep   |    0 |       | NULL             |    0.000 |
+|  141 | zabbix | localhost          | zabbix | Sleep   |    2 |       | NULL             |    0.000 |
+|  142 | zabbix | localhost          | zabbix | Sleep   |    1 |       | NULL             |    0.000 |
+|  143 | zabbix | localhost          | zabbix | Sleep   | 9955 |       | NULL             |    0.000 |
+|  144 | zabbix | localhost          | zabbix | Sleep   |    2 |       | NULL             |    0.000 |
+|  145 | zabbix | localhost          | zabbix | Sleep   | 1033 |       | NULL             |    0.000 |
+|  146 | zabbix | localhost          | zabbix | Sleep   |  676 |       | NULL             |    0.000 |
+|  147 | zabbix | localhost          | zabbix | Sleep   |   53 |       | NULL             |    0.000 |
+|  148 | zabbix | localhost          | zabbix | Sleep   |  720 |       | NULL             |    0.000 |
+|  149 | zabbix | localhost          | zabbix | Sleep   |  821 |       | NULL             |    0.000 |
+|  150 | zabbix | localhost          | zabbix | Sleep   |  910 |       | NULL             |    0.000 |
+|  151 | zabbix | localhost          | zabbix | Sleep   |  864 |       | NULL             |    0.000 |
+|  153 | zabbix | localhost          | zabbix | Sleep   |   52 |       | NULL             |    0.000 |
+|  178 | snorby | localhost          | snorby | Sleep   |    0 |       | NULL             |    0.000 |
+|  181 | snorby | moxz.dnsd.me:15356 | snorby | Sleep   | 9213 |       | NULL             |    0.000 |
+| 1031 | root   | localhost          | NULL   | Query   |    0 | init  | show processlist |    0.000 |
++------+--------+--------------------+--------+---------+------+-------+------------------+----------+
+25 rows in set (0.00 sec)

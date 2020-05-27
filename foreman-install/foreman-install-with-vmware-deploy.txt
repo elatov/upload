@@ -1,0 +1,699 @@
+Since we want to use Katello along with Foreman let's follow this guide:
+
+https://theforeman.org/plugins/katello/3.5/installation/index.html
+
+Also a good guide on the provisioning part:
+
+https://www.linuxtechi.com/bare-metal-provisioning-through-foreman-server/
+
+========== OLD
+install epel repo:
+
+[elatov@fore ~]$ sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+install the puppet repo
+
+[elatov@fore ~]$ sudo yum install https://yum.puppetlabs.com/puppet5/puppet5-release-el-7.noarch.rpm
+
+install the foreman repo:
+
+yum -y install https://yum.theforeman.org/releases/1.16/el7/x86_64/foreman-release.rpm
+=============
+
+#### Install everything for Katello:
+
+sudo yum -y localinstall http://fedorapeople.org/groups/katello/releases/yum/3.5/katello/el7/x86_64/katello-repos-latest.rpm
+sudo yum -y localinstall http://yum.theforeman.org/releases/1.16/el7/x86_64/foreman-release.rpm
+yum -y localinstall https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+sudo yum -y localinstall https://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm
+sudo yum -y localinstall http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum -y install foreman-release-scl python-django
+sudo yum -y update
+sudo yum -y install katello
+
+After that the katello scenario will be available:
+
+[elatov@fore ~]$ sudo foreman-installer --list-scenarios
+Available scenarios
+  Foreman (use: --scenario foreman)
+        Default installation of Foreman
+  Foreman Proxy (use: --scenario foreman-proxy-content)
+        Install a stand-alone Foreman Proxy.
+  Katello (use: --scenario katello)
+        Install Foreman with Katello
+
+================
+install the installer:
+
+[elatov@fore ~]$ sudo yum -y install foreman-installer
+
+Run the installer:
+
+[elatov@fore ~]$ sudo foreman-installer -i
+Welcome to the Foreman installer!
+---------------------------------
+
+This wizard will gather all required information. You can change any parameter
+to your needs.
+
+
+Ready to start? (y/n)
+y
+
+Main Config Menu
+1. [✓] Configure foreman
+2. [✓] Configure foreman_cli
+3. [✗] Configure foreman_cli_openscap
+4. [✓] Configure foreman_proxy
+5. [✓] Configure puppet
+6. [✗] Configure foreman_plugin_ansible
+7. [✗] Configure foreman_plugin_azure
+8. [✗] Configure foreman_plugin_bootdisk
+9. [✗] Configure foreman_plugin_chef
+10. [✗] Configure foreman_plugin_cockpit
+11. [✗] Configure foreman_plugin_default_hostgroup
+12. [✗] Configure foreman_plugin_dhcp_browser
+13. [✗] Configure foreman_plugin_digitalocean
+14. [✗] Configure foreman_plugin_discovery
+15. [✗] Configure foreman_plugin_docker
+16. [✗] Configure foreman_plugin_expire_hosts
+17. [✗] Configure foreman_plugin_hooks
+18. [✗] Configure foreman_plugin_host_extra_validator
+19. [✗] Configure foreman_plugin_memcache
+20. [✗] Configure foreman_plugin_monitoring
+21. [✗] Configure foreman_plugin_omaha
+22. [✗] Configure foreman_plugin_openscap
+23. [✗] Configure foreman_plugin_ovirt_provision
+24. [✗] Configure foreman_plugin_puppetdb
+25. [✗] Configure foreman_plugin_remote_execution
+
+-- press enter/return to continue or q to stop --
+26. [✗] Configure foreman_plugin_salt
+27. [✓] Configure foreman_plugin_setup
+28. [✗] Configure foreman_plugin_tasks
+29. [✗] Configure foreman_plugin_templates
+30. [✗] Configure foreman_compute_ec2
+31. [✗] Configure foreman_compute_gce
+32. [✗] Configure foreman_compute_libvirt
+33. [✗] Configure foreman_compute_openstack
+34. [✗] Configure foreman_compute_ovirt
+35. [✗] Configure foreman_compute_rackspace
+36. [✗] Configure foreman_compute_vmware
+37. [✗] Configure foreman_proxy_plugin_abrt
+38. [✗] Configure foreman_proxy_plugin_ansible
+39. [✗] Configure foreman_proxy_plugin_chef
+40. [✗] Configure foreman_proxy_plugin_dhcp_infoblox
+41. [✗] Configure foreman_proxy_plugin_dhcp_remote_isc
+42. [✗] Configure foreman_proxy_plugin_discovery
+43. [✗] Configure foreman_proxy_plugin_dns_infoblox
+44. [✗] Configure foreman_proxy_plugin_dns_powerdns
+45. [✗] Configure foreman_proxy_plugin_dynflow
+46. [✗] Configure foreman_proxy_plugin_monitoring
+47. [✗] Configure foreman_proxy_plugin_omaha
+48. [✗] Configure foreman_proxy_plugin_openscap
+49. [✗] Configure foreman_proxy_plugin_pulp
+50. [✗] Configure foreman_proxy_plugin_remote_execution_ssh
+
+-- press enter/return to continue or q to stop --
+51. [✗] Configure foreman_proxy_plugin_salt
+52. Display current config
+53. Save and run
+54. Cancel run without Saving
+Choose an option from the menu... 53
+Installing             Done                                               [100%]
+  Success!
+  * Foreman is running at https://fore.kar.int
+      Initial credentials are admin / nWVMRgxanNvgp8xm
+  * Foreman Proxy is running at https://fore.kar.int:8443
+  * Puppetmaster is running at port 8140
+  The full log is at /var/log/foreman-installer/foreman.log
+
+Manually install the vmware provider (covered here: https://www.theforeman.org/plugins/). Make sure the yum repo is setup:
+
+[elatov@fore ~]$ head -7 /etc/yum.repos.d/foreman-plugins.repo
+[foreman-plugins]
+name=Foreman plugins 1.16
+baseurl=http://yum.theforeman.org/plugins/1.16/el7/$basearch
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-foreman
+
+Then install it:
+[elatov@fore ~]$ sudo yum install foreman-vmware.noarch
+
+Restart foreman:
+
+[elatov@fore ~]$ sudo touch ~foreman/tmp/restart.txt
+[elatov@fore ~]$ sudo systemctl restart httpd
+========
+
+So now let's run the installer, while I was at it I decided to enable some plugins that I might use later on:
+
+[elatov@fore ~]$ sudo foreman-installer --scenario katello --enable-foreman-compute-libvirt --enable-foreman-compute-openstack --enable-foreman-compute-vmware --enable-foreman-plugin-ansible --enable-foreman-plugin-remote-execution
+[sudo] password for elatov:
+Installing             Done                                               [100%]
+  Success!
+  * Katello is running at https://fore.kar.int
+      Initial credentials are admin / xdw2xnVKUd8bKGC2
+  * To install an additional Foreman proxy on separate machine continue by running:
+
+      foreman-proxy-certs-generate --foreman-proxy-fqdn "$FOREMAN_PROXY" --certs-tar "/root/$FOREMAN_PROXY-certs.tar"
+
+  The full log is at /var/log/foreman-installer/katello.log
+
+Then I wanted to make sure tftp is enabled on the foreman server and it was by default. I just had to configure my dhcp server to point to foreman for tftp boots. So I just set the following on the dnsmasq config:
+
+dhcp-boot=pxelinux.0,fore.kar.int,10.0.0.7
+
+This is covered in:
+https://wiki.debian.org/PXEBootInstall#Alternative_way_to_obtain_the_boot_image
+
+Also the tftp server running on foreman is covered here:
+
+https://projects.theforeman.org/projects/smart-proxy/wiki/Tftp
+https://theforeman.org/manuals/1.16/index.html#4.3.9TFTP
+
+[elatov@fore ~]$ ls -l /var/lib/tftpboot/
+total 172
+drwxr-xr-x 2 foreman-proxy root     6 Jan 13 17:49 boot
+-rw-r--r-- 1 root          root 20704 Jan 13 17:47 chain.c32
+drwxr-xr-x 2 foreman-proxy root     6 Jan 13 17:49 grub
+drwxr-xr-x 2 foreman-proxy root    57 Jan 13 17:49 grub2
+-rw-r--r-- 1 root          root 33628 Jan 13 17:47 mboot.c32
+-rw-r--r-- 1 root          root 26140 Jan 13 17:47 memdisk
+-rw-r--r-- 1 root          root 55012 Jan 13 17:47 menu.c32
+drwxr-xr-x 2 foreman-proxy root     6 Jan 13 17:49 poap.cfg
+-rw-r--r-- 1 root          root 26764 Jan 13 17:47 pxelinux.0
+drwxr-xr-x 2 foreman-proxy root     6 Jan 13 17:49 pxelinux.cfg
+drwxr-xr-x 2 foreman-proxy root     6 Jan 13 17:49 ztp.cfg
+
+After that I created a test VM and added a blank disk to it so it would boot from it's NIC (this was discussed in [Using PXE with Virtual Machines](https://docs.vmware.com/en/VMware-vSphere/6.5/com.vmware.vsphere.vm_admin.doc/GUID-ABDA2AC1-9799-4C9C-B2A0-97CBB5E78D68.html)) and I saw it started to boot from foreman:
+
+
+Now let's sync the centos repos. Some nice instructions are available here:
+
+https://theforeman.org/plugins/katello/3.5/user_guide/content/index.html
+https://www.linuxtechi.com/how-to-install-katello-3-2-on-centos7/
+https://www.linuxtechi.com/katello-download-yum-repositories-register-clients-for-patching/
+https://cstan.io/?p=8444&lang=en
+https://www.lisenet.com/2016/install-katello-on-centos-7/
+http://www.outsidaz.org/2017/02/12/adventures-in-katello-part-1/
+
+We can see that the repo is synced to here:
+
+https://groups.google.com/forum/#!topic/foreman-users/t6_dKONSpNw
+
+Let's configure the hammer cli, so we can use that for some of the configuration:
+
+echo "ORG=Default Organization" >> ~/.bashrc
+echo "LOCATION=Default Location" >> ~/.bashrc
+echo "DOMAIN=kar.int" >> ~/.bashrc
+echo "KATELLOSERVER=$(hostname -f)" >> ~/.bashrc
+source ~/.bashrc
+mkdir ~/.hammer/
+cat > ~/.hammer/cli_config.yml<<EOF
+:foreman:
+    :host: 'https://$(hostname)/'
+    :username: 'admin'
+    :password: 'P@ssw0rd'
+EOF
+
+Then make sure you can use it:
+
+[elatov@fore ~]$ hammer organization list
+---|----------------------|----------------------|-------------|----------------------|------------
+ID | TITLE                | NAME                 | DESCRIPTION | LABEL                | DESCRIPTION
+---|----------------------|----------------------|-------------|----------------------|------------
+1  | Default Organization | Default Organization |             | Default_Organization |
+---|----------------------|----------------------|-------------|----------------------|------------
+
+First let's get the GPG key for the CentOS 7 Repo:
+
+
+[elatov@fore ~]$ wget -q https://www.centos.org/keys/RPM-GPG-KEY-CentOS-7 -O /tmp/RPM-GPG-KEY-CentOS-7
+[elatov@fore ~]$ hammer gpg create --key /tmp/RPM-GPG-KEY-CentOS-7  --name 'GPG-CentOS-7' --organization "Default Organization"
+GPG Key created
+
+Now let's create a product for CentOS_7:
+
+[elatov@fore ~]$ hammer product create --name=CentOS_7 --organization "Default Organization" --description "CentOS 7 Repos"
+Product created
+
+And now let's create the Repos:
+
+[elatov@fore ~]$ hammer repository create --name='CentOS 7 - Base - x86_64' --organization "Default Organization" --product='CentOS_7' --content-type='yum' --publish-via-http=true --url=http://mirror.centos.org/centos/7/os/x86_64/ --checksum-type=sha256 --gpg-key=GPG-CentOS-7
+Repository created
+
+[elatov@fore ~]$ hammer repository create --name='CentOS 7 - Updates - x86_64' --organization "Default Organization" --product='CentOS_7' --content-type='yum' --publish-via-http=true --url=http://mirror.centos.org/centos/7/updates/x86_64/ --checksum-type=sha256 --gpg-key=GPG-CentOS-7
+Repository created
+
+[elatov@fore ~]$ hammer repository create --name='CentOS 7 - Extras - x86_64' --organization "Default Organization" --product='CentOS_7' --content-type='yum' --publish-via-http=true --url=http://mirror.centos.org/centos/7/extras/x86_64/ --checksum-type=sha256 --gpg-key=GPG-CentOS-7
+Repository created
+
+Now let's create a weekly sync:
+
+[elatov@fore ~]$ hammer sync-plan create --name 'Weekly Sync' --description 'Weekly Synchronization Plan' --organization "Default Organization" --interval weekly --sync-date $(date +"%Y-%m-%d")" 00:00:00" --enabled yes
+Sync plan created
+
+And now let's add our CentOS product to be part of the sync:
+
+[elatov@fore ~]$ hammer product set-sync-plan --organization "Default Organization" --sync-plan 'Weekly Sync' --name 'CentOS_7'
+Synchronization plan assigned.
+
+You can also login to the foreman admin console and kick off a sync now:
+
+Content -> Sync Status -> Select CentOS_7 Product -> Select All -> Synchronize Now:
+
+Or you can do it one my one using hammer:
+
+hammer repository synchronize --organization "Default Organization" --product 'CentOS_7'  --name 'CentOS 7 - Base - x86_64'
+hammer repository synchronize --organization "Default Organization" --product 'CentOS_7'  --name 'CentOS 7 - Updates - x86_64'
+hammer repository synchronize --organization "Default Organization" --product 'CentOS_7'  --name 'CentOS 7 - Extras - x86_64'
+
+After the sync is done you will see them synced:
+
+You can also confirm using hammer (first list all the repos):
+
+[elatov@fore ~]$ hammer repository list
+---|-----------------------------|----------|--------------|--------------------------------------------------
+ID | NAME                        | PRODUCT  | CONTENT TYPE | URL
+---|-----------------------------|----------|--------------|--------------------------------------------------
+1  | CentOS 7 - Base - x86_64    | CentOS_7 | yum          | http://mirror.centos.org/centos/7/os/x86_64/
+3  | CentOS 7 - Extras - x86_64  | CentOS_7 | yum          | http://mirror.centos.org/centos/7/extras/x86_64/
+2  | CentOS 7 - Updates - x86_64 | CentOS_7 | yum          | http://mirror.centos.org/centos/7/updates/x86_64/
+---|-----------------------------|----------|--------------|--------------------------------------------------
+
+Then get the information for the desired Repo:
+
+[elatov@fore ~]$ hammer repository info --id 1
+ID:                 1
+Name:               CentOS 7 - Base - x86_64
+Label:              CentOS_7_-_Base_-_x86_64
+Organization:       Default Organization
+Red Hat Repository: no
+Content Type:       yum
+Checksum Type:      sha256
+Mirror on Sync:     yes
+URL:                http://mirror.centos.org/centos/7/os/x86_64/
+Publish Via HTTP:   yes
+Published At:       http://fore.kar.int/pulp/repos/Default_Organization/Library/custom/CentOS_7/CentOS_7_-_Base_-_x86_64/
+Relative Path:      Default_Organization/Library/custom/CentOS_7/CentOS_7_-_Base_-_x86_64
+Download Policy:    on_demand
+Product:
+    ID:   1
+    Name: CentOS_7
+GPG Key:
+    ID:   1
+    Name: GPG-CentOS-7
+Sync:
+    Status:         Success
+    Last Sync Date: 4 minutes
+Created:            2018/01/14 18:49:29
+Updated:            2018/01/14 19:04:20
+Content Counts:
+    Packages:       9591
+    Package Groups: 84
+    Errata:         0
+
+As a test on anothe CentOS machine I wanted to make sure I can use the YUM repo, so I added the following file:
+
+<> cat /etc/yum.repos.d/fore-Base.repo
+[fore-base]
+name=CentOS-$releasever - Base
+baseurl=http://fore.kar.int/pulp/repos/Default_Organization/Library/custom/CentOS_7/CentOS_7_-_Base_-_x86_64
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+
+Then refreshing the repo:
+
+<> sudo yum update
+Loaded plugins: fastestmirror, remove-with-leaves
+fore-base                                                | 2.1 kB     00:00
+(1/3): fore-base/updateinfo                                |   92 B   00:00
+(2/3): fore-base/group                                     | 738 kB   00:00
+(3/3): fore-base/primary                                   | 3.8 MB   00:00
+Loading mirror speeds from cached hostfile
+ * atomic: www5.atomicorp.com
+ * base: pubmirrors.dal.corespace.com
+ * epel: fedora-epel.mirror.lstn.net
+ * extras: repos.forethought.net
+ * updates: repo1.dal.innoscale.net
+fore-base                                                             9591/9591
+No packages marked for update
+
+and I was also able to see the full list of the packages:
+
+<> sudo yum repository-packages fore-base list
+Loaded plugins: fastestmirror, remove-with-leaves
+Loading mirror speeds from cached hostfile
+ * atomic: www5.atomicorp.com
+ * base: pubmirrors.dal.corespace.com
+ * epel: fedora-epel.mirror.lstn.net
+ * extras: repos.forethought.net
+ * updates: dallas.tx.mirror.xygenhosting.com
+Available Packages
+389-ds-base.x86_64                          1.3.6.1-16.el7             fore-base
+389-ds-base-devel.x86_64                    1.3.6.1-16.el7             fore-base
+389-ds-base-libs.x86_64                     1.3.6.1-16.el7             fore-base
+389-ds-base-snmp.x86_64                     1.3.6.1-16.el7             fore-base
+Cython.x86_64                               0.19-5.el7                 fore-base
+ElectricFence.i686                          2.2.2-39.el7               fore-base
+ElectricFence.x86_64                        2.2.2-39.el7               fore-base
+GConf2.i686                                 3.2.6-8.el7                fore-base
+GConf2-devel.i686                           3.2.6-8.el7                fore-base
+
+And I was also able to get an rpm directly:
+
+<> wget http://fore.kar.int/pulp/repos/Default_Organization/Library/custom/CentOS_7/CentOS_7_-_Base_-_x86_64/Packages/389-ds-base-1.3.6.1-16.el7.x86_64.rpm
+--2018-01-14 16:05:24--  http://fore.kar.int/pulp/repos/Default_Organization/Library/custom/CentOS_7/CentOS_7_-_Base_-_x86_64/Packages/389-ds-base-1.3.6.1-16.el7.x86_64.rpm
+Resolving fore.kar.int (fore.kar.int)... 10.0.0.7
+Connecting to fore.kar.int (fore.kar.int)|10.0.0.7|:80... connected.
+HTTP request sent, awaiting response... 302 FOUND
+Location: http://fore.kar.int:80/streamer/var/lib/pulp/content/units/rpm/2b/768197d6ff9daba6e50d580ab0d0423ffe388ad759cafb1d46871c12612b48/389-ds-base-1.3.6.1-16.el7.x86_64.rpm?policy=eyJleHRlbnNpb25zIjogeyJyZW1vdGVfaXAiOiAiMTkyLjE2OC4xLjEwMCJ9LCAicmVzb3VyY2UiOiAiL3N0cmVhbWVyL3Zhci9saWIvcHVscC9jb250ZW50L3VuaXRzL3JwbS8yYi83NjgxOTdkNmZmOWRhYmE2ZTUwZDU4MGFiMGQwNDIzZmZlMzg4YWQ3NTljYWZiMWQ0Njg3MWMxMjYxMmI0OC8zODktZHMtYmFzZS0xLjMuNi4xLTE2LmVsNy54ODZfNjQucnBtIiwgImV4cGlyYXRpb24iOiAxNTE1OTcxMjE0fQ%3D%3D;signature=Wlz4QHW2Ww2I4bGk-6NI6GApFRohh1IhDkyYP11W9NpOoD7bgj-gYQOWr3xK7lc2TkYknsOxjvFw7TpMAiF3LAXrOVeXPTrCQnkcW1t8Ls8rk70LwR_tgEf_J8pqwBLdPzvFgw9NXa0Fjvs4wcmN0Vxthl1vZbIQwjf37FeKzD83eiiR8TWNFflURLYxUjaxdoczye0r4taYlI0UzAH8SyLPEDhW26jskFiMX5nC24vyt2-QWe5BbjBlKLanb7NhK9AJv9h7L3dO1OxSqPf8W3l2YWU456HrQH1yzooDmNuoC1Vi9LQEEivb3pvyyb25azwic4TeuVVZJaL8Y_0Djg%3D%3D [following]
+--2018-01-14 16:05:24--  http://fore.kar.int/streamer/var/lib/pulp/content/units/rpm/2b/768197d6ff9daba6e50d580ab0d0423ffe388ad759cafb1d46871c12612b48/389-ds-base-1.3.6.1-16.el7.x86_64.rpm?policy=eyJleHRlbnNpb25zIjogeyJyZW1vdGVfaXAiOiAiMTkyLjE2OC4xLjEwMCJ9LCAicmVzb3VyY2UiOiAiL3N0cmVhbWVyL3Zhci9saWIvcHVscC9jb250ZW50L3VuaXRzL3JwbS8yYi83NjgxOTdkNmZmOWRhYmE2ZTUwZDU4MGFiMGQwNDIzZmZlMzg4YWQ3NTljYWZiMWQ0Njg3MWMxMjYxMmI0OC8zODktZHMtYmFzZS0xLjMuNi4xLTE2LmVsNy54ODZfNjQucnBtIiwgImV4cGlyYXRpb24iOiAxNTE1OTcxMjE0fQ%3D%3D;signature=Wlz4QHW2Ww2I4bGk-6NI6GApFRohh1IhDkyYP11W9NpOoD7bgj-gYQOWr3xK7lc2TkYknsOxjvFw7TpMAiF3LAXrOVeXPTrCQnkcW1t8Ls8rk70LwR_tgEf_J8pqwBLdPzvFgw9NXa0Fjvs4wcmN0Vxthl1vZbIQwjf37FeKzD83eiiR8TWNFflURLYxUjaxdoczye0r4taYlI0UzAH8SyLPEDhW26jskFiMX5nC24vyt2-QWe5BbjBlKLanb7NhK9AJv9h7L3dO1OxSqPf8W3l2YWU456HrQH1yzooDmNuoC1Vi9LQEEivb3pvyyb25azwic4TeuVVZJaL8Y_0Djg%3D%3D
+Reusing existing connection to fore.kar.int:80.
+HTTP request sent, awaiting response... 200 OK
+Length: 1783596 (1.7M) [application/x-rpm]
+Saving to: ‘389-ds-base-1.3.6.1-16.el7.x86_64.rpm’
+
+100%[======================================>] 1,783,596   --.-K/s   in 0.05s
+
+2018-01-14 16:05:24 (33.6 MB/s) - ‘389-ds-base-1.3.6.1-16.el7.x86_64.rpm’ saved [1783596/1783596]
+
+and confirm it was an RPM:
+
+<> rpm -qip 389-ds-base-1.3.6.1-16.el7.x86_64.rpm
+Name        : 389-ds-base
+Version     : 1.3.6.1
+Release     : 16.el7
+Architecture: x86_64
+Install Date: (not installed)
+Group       : System Environment/Daemons
+Size        : 5480006
+License     : GPLv3+
+Signature   : RSA/SHA256, Thu 10 Aug 2017 08:51:36 AM MDT, Key ID 24c6a8a7f4a80eb5
+Source RPM  : 389-ds-base-1.3.6.1-16.el7.src.rpm
+Build Date  : Fri 04 Aug 2017 09:07:18 AM MDT
+Build Host  : c1bm.rdu2.centos.org
+Relocations : (not relocatable)
+Packager    : CentOS BuildSystem <http://bugs.centos.org>
+Vendor      : CentOS
+URL         : https://www.port389.org/
+Summary     : 389 Directory Server (base)
+Description :
+389 Directory Server is an LDAPv3 compliant server.  The base package includes
+the LDAP server and command line utilities for server administration.
+
+I just used this command to create the host:
+
+[elatov@fore pxelinux.cfg]$ hammer host create --architecture x86_64 --domain kar.int --operatingsystem "CentOS 7" --partition-table "Kickstart default" --location "Default Location" --organization "Default Organization" --name karim-test --root-password "P@ssw0rd#" --medium centos7-pulp --mac=00:0c:29:ac:e3:6e --subnet vlan-3 --model "VMware Virtual Platform"
+
+Initially the pxeboot config was not getting created:
+
+https://access.redhat.com/discussions/2085933
+https://groups.google.com/forum/#!topic/foreman-users/Qn6xj89tVLs
+https://groups.google.com/forum/#!topic/foreman-users/oguMH7ig7kU
+
+Then after fixing the subnet and "Cancelling Build" and rebuilding, I saw the file created:
+
+[root@fore ~]# cat /var/lib/tftpboot/pxelinux.cfg/01-00-0c-29-f7-c1-e0
+# This file was deployed via 'Kickstart default PXELinux' template
+
+
+TIMEOUT 10
+DEFAULT Kickstart default PXELinux
+
+LABEL Kickstart default PXELinux
+  KERNEL boot/CentOS-7-x86_64-vmlinuz
+  APPEND initrd=boot/CentOS-7-x86_64-initrd.img ks=http://fore.kar.int:8000/unattended/provision?token=b7cf62a1-5ad9-4179-a723-3a2fed4bd696  network ksdevice=bootif ks.device=bootif BOOTIF=00-00-0c-29-f7-c1-e0 kssendmac ks.sendmac inst.ks.sendmac
+  IPAPPEND 2
+
+And I saw the boot files added as well:
+
+[root@fore ~]# ls -l /var/lib/tftpboot/boot/
+total 53040
+-rw-r--r-- 1 foreman-proxy foreman-proxy 48434768 Sep  5 09:36 CentOS-7-x86_64-initrd.img
+-rw-r--r-- 1 foreman-proxy foreman-proxy  5877760 Aug 22 17:21 CentOS-7-x86_64-vmlinuz
+
+After starting up the VM, I saw the boot process:
+
+
+Initially I ran into this error, luckily the issue was discussed here:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1314092
+
+After adding more RAM, I saw the install get further:
+
+After the install was done, I saw the VM boot up:
+
+And in the foreman console, I saw the host in an "installed" state:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1314092
+
+You can also SSH to the VM, and check out the kickstart script:
+
+<> ssh root@10.0.0.157
+The authenticity of host '10.0.0.157 (10.0.0.157)' can't be established.
+ECDSA key fingerprint is SHA256:/V6kXNL3ELLdUDJy5FlvSKY4zgI39MEIVpURxXugXCs.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '10.0.0.157' (ECDSA) to the list of known hosts.
+root@10.0.0.157's password:
+Last login: Mon Jan 15 03:34:34 2018
+[root@leigh-wetzler ~]# cat anaconda-ks.cfg
+#version=DEVEL
+# System authorization information
+auth --useshadow --passalgo=SHA256 --kickstart
+# Install OS instead of upgrade
+install
+# Use network installation
+url --url="http://fore.kar.int/pulp/repos/Default_Organization/Library/custom/CentOS_7/CentOS_7_-_Base_-_x86_64/"
+# Use text mode install
+text
+# Firewall configuration
+firewall --enabled --service=ssh
+firstboot --disable
+ignoredisk --only-use=sda
+# Keyboard layouts
+# old format: keyboard us
+# new format:
+keyboard --vckeymap=us --xlayouts=''
+# System language
+lang en_US.UTF-8
+
+# Network information
+network  --bootproto=dhcp --device=00:0c:29:f7:c1:e0 --hostname=leigh-wetzler.kar.int --activate
+# Reboot after installation
+reboot
+# Root password
+rootpw --iscrypted $5$ZgIy+Eta$UnLE0RAumZ6UwxhDoeo3V8kAkEmmWgTd2R.Q5x24fyB
+# SELinux configuration
+selinux --enforcing
+# System services
+services --enabled="chronyd"
+# Do not configure the X Window System
+skipx
+# System timezone
+timezone UTC --isUtc
+# System bootloader configuration
+bootloader --append="nofb quiet splash=quiet crashkernel=auto" --location=mbr --boot-drive=sda
+autopart --type=lvm
+# Clear the Master Boot Record
+zerombr
+# Partition clearing information
+clearpart --all --initlabel
+
+%post --nochroot
+exec < /dev/tty3 > /dev/tty3
+#changing to VT 3 so that we can see whats going on....
+/usr/bin/chvt 3
+(
+cp -va /etc/resolv.conf /mnt/sysimage/etc/resolv.conf
+/usr/bin/chvt 1
+) 2>&1 | tee /mnt/sysimage/root/install.postnochroot.log
+%end
+
+%post
+logger "Starting anaconda leigh-wetzler.kar.int postinstall"
+exec < /dev/tty3 > /dev/tty3
+#changing to VT 3 so that we can see whats going on....
+/usr/bin/chvt 3
+(
+
+
+
+#  interface
+real=`grep -l 00:0c:29:f7:c1:e0 /sys/class/net/*/{bonding_slave/perm_hwaddr,address} 2>/dev/null | awk -F '/' '// {print $5}' | head -1`
+sanitized_real=`echo $real | sed s/:/_/`
+
+
+cat << EOF > /etc/sysconfig/network-scripts/ifcfg-$sanitized_real
+BOOTPROTO="dhcp"
+DOMAIN="kar.int"
+DEVICE=$real
+HWADDR="00:0c:29:f7:c1:e0"
+ONBOOT=yes
+PEERDNS=yes
+PEERROUTES=yes
+DEFROUTE=yes
+EOF
+
+
+
+#update local time
+echo "updating system time"
+/usr/sbin/ntpdate -sub 0.fedora.pool.ntp.org
+/usr/sbin/hwclock --systohc
+
+
+
+
+# update all the base packages from the updates repository
+yum -t -y -e 0 update
+
+
+# SSH keys setup snippet for Remote Execution plugin
+#
+# Parameters:
+#
+# remote_execution_ssh_keys: public keys to be put in ~/.ssh/authorized_keys
+#
+# remote_execution_ssh_user: user for which remote_execution_ssh_keys will be
+#                            authorized
+#
+# remote_execution_create_user: create user if it not already existing
+#
+# remote_execution_effective_user_method: method to switch from ssh user to
+#                                         effective user
+#
+# This template sets up SSH keys in any host so that as long as your public
+# SSH key is in remote_execution_ssh_keys, you can SSH into a host. This only
+# works in combination with Remote Execution plugin.
+
+# The Remote Execution plugin queries smart proxies to build the
+# remote_execution_ssh_keys array which is then made available to this template
+# via the host's parameters. There is currently no way of supplying this
+# parameter manually.
+# See http://projects.theforeman.org/issues/16107 for details.
+
+
+
+
+
+
+
+sync
+
+# Inform the build system that we are done.
+echo "Informing Foreman that we are built"
+wget -q -O /dev/null --no-check-certificate http://fore.kar.int:8000/unattended/built?token=b7cf62a1-5ad9-4179-a723-3a2fed4bd696
+) 2>&1 | tee /root/install.post.log
+exit 0
+
+%end
+
+%packages --ignoremissing
+@Core
+chrony
+dhclient
+kexec-tools
+ntp
+wget
+yum
+
+%end
+
+%addon com_redhat_kdump --enable --reserve-mb='auto'
+
+%end
+
+Now let's try to add some ansible provisioning in the deploy. There are already some examples with puppet:
+
+https://www.digitalocean.com/community/tutorials/how-to-use-foreman-to-manage-puppet-nodes-on-ubuntu-14-04
+https://davektech.wordpress.com/puppet-and-foreman/
+
+### configuration
+https://www.linuxtechi.com/remote-execution-job-option-foreman-dashboard/
+https://groups.google.com/forum/#!topic/foreman-users/YAaa92YANAg
+
+Had to make sure the subnet had remote-execution enabled, without that ssh key was not copied to the provisioned host.
+
+Issues I ran into with remote-execution-SSH
+https://projects.theforeman.org/issues/20206
+https://projects.theforeman.org/issues/19425
+http://projects.theforeman.org/issues/17618
+https://bugzilla.redhat.com/show_bug.cgi?id=1417978
+
+
+### Port 9090
+https://groups.google.com/forum/#!msg/foreman-users/XfmGwAY87a4/TA15kMVIDgAJ
+https://theforeman.org/plugins/foreman_remote_execution/nightly/index.html#2.Installation
+
+### Refreshing the keys
+https://groups.google.com/forum/#!topic/foreman-users/rDjhYmcQSvI
+
+### Trying out Ansible with Foreman
+
+Initially ran into this issue:
+
+http://projects.theforeman.org/issues/20397
+
+After fixing the rb file (/opt/theforeman/tfm/root/usr/share/gems/gems/foreman_ansible-1.4.5/app/controllers/foreman_ansible/concerns/hosts_controller_extensions.rb) and restarting:
+
+sudo systemctl restart httpd
+
+I was able to run an ansible playbook. Initially I ran into a permission error:
+
+and I found this page:
+
+https://community.theforeman.org/t/running-playbook-role-in-foreman-1-15-6-ansible-pluging-1-4-5-ansible-2-4-1-return-an-error/7665/2
+
+And so I confirmed it was a home directory issue:
+
+[elatov@fore ~]$ sudo su - foreman-proxy -s /bin/bash
+Last login: Thu Jan 18 22:17:57 EST 2018 on pts/1
+-bash-4.2$ pwd
+/usr/share/foreman-proxy
+-bash-4.2$ mkdir .ansible
+mkdir: cannot create directory ‘.ansible’: Permission denied
+
+and then to fix it:
+
+[elatov@fore ~]$ sudo mkdir ~foreman/.ansible
+[elatov@fore ~]$ sudo chown foreman ~foreman-proxy/.ansible
+
+Then after that the playbook succeeded but the playback failed:
+
+I needed to set the correct URL. I followed the instructions laid out in this IRC channel:
+
+https://github.com/theforeman/foreman_ansible/issues/32
+https://projects.theforeman.org/issues/14745
+https://groups.google.com/forum/#!topic/foreman-users/4IvpG9a8Kk4
+https://botbot.me/freenode/theforeman/2017-02-24/?page=4
+
+and added them to the /etc/environment file:
+
+[elatov@fore ~]$ cat /etc/environment
+FOREMAN_URL=https://fore.kar.int
+FOREMAN_SSL_VERIFY=False
+
+But even after a reboot it still didn't work. I also set it at the httpd level:
+
+[elatov@fore ~]$ tail -3 /etc/sysconfig/httpd
+LANG=C
+FOREMAN_URL=https://fore.kar.int
+FOREMAN_SSL_VERIFY=False
+
+And I saw it set for the **foreman** user's process that started the ruby app:
+
+[elatov@fore ~]$ ps -ef | grep foreman | grep -i Pass
+foreman   4701     1  1 00:00 ?        00:00:09 Passenger RackApp: /usr/share/foreman
+
+[elatov@fore ~]$ sudo cat /proc/4701/environ | grep -ao '^[^P]*'
+FOREMAN_URL=https://fore.kar.intMAN
+
+Finally I just modified the script directly:
+
+[elatov@fore ~]$ grep FOREMAN_URL\' /usr/lib/python2.7/site-packages/ansible/plugins/callback/foreman.py
+    FOREMAN_URL = os.getenv('FOREMAN_URL', "https://fore.kar.int")
+
+And after that the ansible role apply looked pretty good:

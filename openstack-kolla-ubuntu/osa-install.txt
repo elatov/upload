@@ -1,0 +1,31 @@
+### Urls
+https://docs.openstack.org/developer/openstack-ansible/mitaka/developer-docs/quickstart-aio.html
+https://docs.openstack.org/developer/openstack-ansible/developer-docs/quickstart-aio.html
+https://docs.openstack.org/project-deploy-guide/kolla-ansible/ocata/quickstart.html
+https://docs.openstack.org/project-deploy-guide/kolla-ansible/ocata/quickstart.html
+http://khaleesi.readthedocs.io/en/master/khaleesi.html
+
+# let's install the necessary packages
+
+apt-get install aptitude build-essential git ntp ntpdate \
+  openssh-server python-dev sudo
+
+# first let's get all the scripts
+git clone https://github.com/openstack/openstack-ansible -b stable/ocata
+
+# next let's configure all the roles
+
+cd openstack-ansible
+vi ./tests/roles/bootstrap-host/defaults/main.yml
+
+# next configure the services that you want enabled
+vi ansible-role-requirements.yml
+
+# now let's bootstrap the install
+root@osa:~/openstack-ansible# scripts/bootstrap-ansible.sh
+...
+- unbound was installed successfully
+- extracting resolvconf to /etc/ansible/roles/resolvconf
+- resolvconf was installed successfully
++ echo 'System is bootstrapped and ready for use.'
+System is bootstrapped and ready for use.

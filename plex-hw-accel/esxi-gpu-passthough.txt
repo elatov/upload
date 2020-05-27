@@ -1,0 +1,101 @@
+So I ran into this post from plex:
+
+https://support.plex.tv/hc/en-us/articles/115002178853
+
+Enabling Passthough:
+
+https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/whitepaper/vmware-horizon-view-graphics-acceleration-deployment-white-paper.pdf
+
+https://www.webbosworld.co.uk/?p=471
+
+http://www.dell.com/support/article/us/en/19/sln288103/how-to-enable-a-vmware-virtual-machine-for-gpu-pass-through?lang=en
+
+
+
+<> tail -f Plex\ Media\ Server.log | grep -i hardware
+Oct 23, 2017 20:43:40.341 [0x7fc7a67f8700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:43:40.342 [0x7fc7a67f8700] DEBUG - Codecs: hardware transcoding: opening hw device failed - probably not supported by this system, error: Invalid argument
+Oct 23, 2017 20:43:40.342 [0x7fc7a67f8700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:43:40.342 [0x7fc7a67f8700] DEBUG - Codecs: hardware transcoding: opening hw device failed - probably not supported by this system, error: Invalid argument
+Oct 23, 2017 20:43:40.679 [0x7fc7a6ff9700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:43:40.679 [0x7fc7a6ff9700] DEBUG - Codecs: hardware transcoding: opening hw device failed - probably not supported by this system, error: Invalid argument
+Oct 23, 2017 20:43:40.679 [0x7fc7a6ff9700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:43:40.679 [0x7fc7a6ff9700] DEBUG - Codecs: hardware transcoding: opening hw device failed - probably not supported by this system, error: Invalid argument
+Oct 23, 2017 20:43:41.146 [0x7fc7a8ffd700] DEBUG - TPU: hardware transcoding: enabled, but no hardware decode accelerator found
+Oct 23, 2017 20:43:41.146 [0x7fc7a8ffd700] DEBUG - TPU: hardware transcoding: final decoder: , final encoder:
+
+<> sudo gpasswd -a elatov video
+[sudo] password for elatov:
+Adding user elatov to group video
+
+<> tail -f Plex\ Media\ Server.log | grep -i hardware
+Oct 23, 2017 20:47:12.398 [0x7f1ab27f7700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:47:12.416 [0x7f1ab27f7700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:47:13.159 [0x7f1ab47fb700] DEBUG - TPU: hardware transcoding: using hardware decode accelerator vaapi
+Oct 23, 2017 20:47:13.159 [0x7f1ab47fb700] DEBUG - TPU: hardware transcoding: final decoder: vaapi, final encoder:
+
+Oct 23, 2017 20:26:03.083 [0x7fd8b6ffb700] DEBUG - Codecs: hardware transcoding: testing API vaapi
+Oct 23, 2017 20:26:03.083 [0x7fd8b6ffb700] ERROR - [FFMPEG] - No VA display found for device: /dev/dri/renderD128.
+Oct 23, 2017 20:26:03.083 [0x7fd8b6ffb700] DEBUG - Codecs: hardware transcoding: opening hw device failed - probably not supported by this system, error: Invalid argument
+Oct 23, 2017 20:26:03.083 [0x7fd8b6ffb700] ERROR - get - invalid frameRate value: 23.976
+
+<> ls -l /dev/dri/
+total 0
+crw-rw---- 1 root video 226,   0 Oct 23 20:41 card0
+crw-rw---- 1 root video 226, 128 Oct 23 20:41 renderD128
+
+after
+
+<> ls -l /dev/dri/
+total 0
+crw-rw---- 1 root video 226,   0 Oct 23 20:41 card0
+crw-rw---- 1 root video 226,   0 Oct 23 20:41 card1
+crw-rw---- 1 root video 226, 128 Oct 23 20:41 renderD128
+crw-rw---- 1 root video 226, 129 Oct 23 20:41 renderD129
+
+
+<> lspci | grep VGA
+03:00.0 VGA compatible controller: VMware SVGA II Adapter
+04:00.0 VGA compatible controller: Intel Corporation HD Graphics 530 (rev 06)
+
+
+
+# Disable svga.present
+https://communities.vmware.com/thread/495240
+https://www.reddit.com/r/SteamOS/comments/4pwjuj/esxi_60_steamos_radeon_gpu_passthrough/
+
+# part of video group
+https://emby.media/community/index.php?/topic/49019-hw-transcoding-not-working/
+https://emby.media/community/index.php?/topic/49513-trouble-with-intel-hwacc-vaapi/
+https://forum.qnap.com/viewtopic.php?t=129879
+
+after passthough:
+
+<> sudo lspci -v -s  04:00.0
+[sudo] password for elatov:
+04:00.0 VGA compatible controller: Intel Corporation HD Graphics 530 (rev 06) (prog-if 00 [VGA controller])
+	Subsystem: Hewlett-Packard Company Device 82bf
+	Physical Slot: 161
+	Flags: bus master, fast devsel, latency 64, IRQ 67
+	Memory at fc000000 (64-bit, non-prefetchable) [size=16M]
+	Memory at d0000000 (64-bit, prefetchable) [size=256M]
+	I/O ports at 7000 [size=64]
+	Expansion ROM at <unassigned> [disabled]
+	Capabilities: [40] Vendor Specific Information: Len=0c <?>
+	Capabilities: [70] Express Endpoint, MSI 00
+	Capabilities: [ac] MSI: Enable+ Count=1/1 Maskable- 64bit-
+	Capabilities: [d0] Power Management version 2
+	Capabilities: [100] Process Address Space ID (PASID)
+	Capabilities: [200] Address Translation Service (ATS)
+	Capabilities: [300] Page Request Interface (PRI)
+	Kernel driver in use: i915
+	Kernel modules: i915
+
+Then I saw other people checking out their logs:
+
+https://forums.plex.tv/discussion/292921/hardware-accelerated-streaming-not-working-on-64-bit-ubuntu-16-04-i7-3770-and-pms-1-9-5-4339
+
+Oct 23, 2017 21:27:22.257 [0x7f1aaa7f4700] DEBUG - TPU: hardware transcoding: using hardware decode accelerator vaapi
+Oct 23, 2017 21:27:22.257 [0x7f1aaa7f4700] DEBUG - TPU: hardware transcoding: zero-copy support present
+Oct 23, 2017 21:27:22.257 [0x7f1aaa7f4700] DEBUG - TPU: hardware transcoding: using zero-copy transcoding
+Oct 23, 2017 21:27:22.257 [0x7f1aaa7f4700] DEBUG - TPU: hardware transcoding: final decoder: vaapi, final encoder: vaapi

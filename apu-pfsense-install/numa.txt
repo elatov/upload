@@ -1,0 +1,178 @@
+root@Numa:~# sysupgrade --create-backup /tmp/backup-`cat /proc/sys/kernel/hostna
+me`-`date +%F`.tar.gz; ls /tmp/backup*
+Saving config files...
+/tmp/backup-Numa-2016-04-30.tar.gz
+
+Ensure your USB serial cable is plugged in and configure the COM port with Bits per second 115200, Data bits 8, Parity None and Stop bits 1. Configure this for PuTTY also.
+
+#Find the device name for the serial port:
+[elatov@localhost ~]$ dmesg | grep -E 'tty|Serial\:'
+[    0.000000] console [tty0] enabled
+[    0.573747] Serial: 8250/16550 driver, 32 ports, IRQ sharing enabled
+[    0.594288] 00:04: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+
+# you can also confirm with the setserial command:
+[elatov@localhost ~]$ setserial -g /dev/ttyS0
+/dev/ttyS0, UART: 16550A, Port: 0x03f8, IRQ: 4
+
+# configure minicom
+sudo minicom -s
+
+# point to the correct device
+# add yourself to the dialout user
+sudo usermod -a -G dialout elatov
+
+# extract the usb
+gunzip -d pfSense-CE-memstick-serial-2.3-RELEASE-amd64.img.gz
+
+# back up the original usb drive
+sudo dd if=/dev/sdb of=/data/backup/rsa-usb-backup.dd bs=1M
+
+┌─[elatov@gen] - [/home/elatov] - [2016-04-30 01:29:35]
+└─[1] <> sudo dd if=/dev/sdb of=/data/backup/rsa-usb-backup.dd bs=1M
+967+0 records in
+967+0 records out
+1013972992 bytes (1.0 GB) copied, 1027.84 s, 987 kB/s
+
+# copy the image into the usb drive
+┌─[elatov@gen] - [/home/elatov/downloads] - [2016-04-30 01:47:05]
+└─[0] <> sudo dd if=pfSense-CE-memstick-serial-2.3-RELEASE-amd64.img of=/dev/sdb bs=1M
+654+1 records in
+654+1 records out
+685867008 bytes (686 MB) copied, 768.911 s, 892 kB/s
+
+# after it's done
+┌─[elatov@gen] - [/data/backup] - [2016-04-30 06:49:15]
+└─[0] <> sudo fdisk -l /dev/sdb
+Disk /dev/sdb: 967 MiB, 1013972992 bytes, 1980416 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x90909090
+
+Device     Boot Start   End Sectors  Size Id Type
+/dev/sdb4  *        0 49999   50000 24.4M a5 FreeBSD
+
+### disable beeps
+https://doc.pfsense.org/index.php/Disable_Sounds/Beeps
+
+## quick disk benchmark
+[2.3-RELEASE][root@pf.kar.int]/root: gpart show
+=>      63  31520705  da0  MBR  (15G)
+        63  31519467    1  freebsd  [active]  (15G)
+  31519530      1238       - free -  (619K)
+
+=>       0  31519467  da0s1  BSD  (15G)
+         0        16         - free -  (8.0K)
+        16  23130843      1  freebsd-ufs  (11G)
+  23130859   8388608      2  freebsd-swap  (4.0G)
+
+[2.3-RELEASE][root@pf.kar.int]/root: disk
+diskinfo  disklabel
+[2.3-RELEASE][root@pf.kar.int]/root: diskinfo -t /dev/da0s1
+/dev/da0s1
+	512         	# sectorsize
+	16137967104 	# mediasize in bytes (15G)
+	31519467    	# mediasize in sectors
+	0           	# stripesize
+	32256       	# stripeoffset
+	1961        	# Cylinders according to firmware.
+	255         	# Heads according to firmware.
+	63          	# Sectors according to firmware.
+	058F63666485	# Disk ident.
+
+Seek times:
+	Full stroke:	  250 iter in   0.234468 sec =    0.938 msec
+	Half stroke:	  250 iter in   0.220873 sec =    0.883 msec
+	Quarter stroke:	  500 iter in   0.489246 sec =    0.978 msec
+	Short forward:	  400 iter in   0.302062 sec =    0.755 msec
+	Short backward:	  400 iter in   0.319260 sec =    0.798 msec
+	Seq outer:	 2048 iter in   0.789146 sec =    0.385 msec
+	Seq inner:	 2048 iter in   0.788148 sec =    0.385 msec
+Transfer rates:
+	outside:       102400 kbytes in   2.950485 sec =    34706 kbytes/sec
+	middle:        102400 kbytes in   3.057974 sec =    33486 kbytes/sec
+	inside:        102400 kbytes in   2.933670 sec =    34905 kbytes/sec
+
+[2.3-RELEASE][root@pf.kar.int]/root: diskinfo -c /dev/da0
+/dev/da0
+	512         	# sectorsize
+	16138633216 	# mediasize in bytes (15G)
+	31520768    	# mediasize in sectors
+	0           	# stripesize
+	0           	# stripeoffset
+	1962        	# Cylinders according to firmware.
+	255         	# Heads according to firmware.
+	63          	# Sectors according to firmware.
+	058F63666485	# Disk ident.
+
+I/O command overhead:
+	time to read 10MB block      0.307552 sec	=    0.015 msec/sector
+	time to read 20480 sectors  15.380992 sec	=    0.751 msec/sector
+	calculated command overhead			=    0.736 msec/sector
+
+### APU BSD info
+http://bsdrp.net/documentation/examples/pc_engines_apu
+
+[2.3-RELEASE][root@pf.kar.int]/root: dmesg | grep da0
+da0 at umass-sim0 bus 0 scbus6 target 0 lun 0
+da0: <Multiple Card  Reader 1.00> Removable Direct Access SPC-2 SCSI device
+da0: Serial Number 058F63666485
+da0: 40.000MB/s transfers
+da0: 15391MB (31520768 512 byte sectors)
+da0: quirks=0x2<NO_6_BYTE>
+
+https://wiki.openwrt.org/toh/pcengines/apu
+
+[2.3-RELEASE][root@pf.kar.int]/root: pkg install barnyard2
+Updating pfSense-core repository catalogue...
+pfSense-core repository is up-to-date.
+Updating pfSense repository catalogue...
+pfSense repository is up-to-date.
+All repositories are up-to-date.
+The following 4 package(s) will be affected (of 0 checked):
+
+New packages to be INSTALLED:
+	barnyard2: 1.13 [pfSense]
+	broccoli: 1.97,1 [pfSense]
+	GeoIP: 1.6.6 [pfSense]
+	mysql56-client: 5.6.27 [pfSense]
+
+The process will require 46 MiB more space.
+2 MiB to be downloaded.
+
+Proceed with this action? [y/N]: y
+
+[2.3-RELEASE][root@pf.kar.int]/root: glabel status
+                  Name  Status  Components
+ufsid/57251d9e1e64953e     N/A  da0s1a
+           label/swap0     N/A  da0s1b
+
+[2.3-RELEASE][root@pf.kar.int]/root: gpart show -p
+=>      63  31520705    da0  MBR  (15G)
+        63  31519467  da0s1  freebsd  [active]  (15G)
+  31519530      1238         - free -  (619K)
+
+=>       0  31519467   da0s1  BSD  (15G)
+         0        16          - free -  (8.0K)
+        16  23130843  da0s1a  freebsd-ufs  (11G)
+  23130859   8388608  da0s1b  freebsd-swap  (4.0G)
+
+[2.3-RELEASE][root@pf.kar.int]/root: usbconfig -u 6 -a 2 dump_device_desc
+ugen6.2: <Flash Card ReaderWriter Generic> at usbus6, cfg=0 md=HOST spd=HIGH (480Mbps) pwr=ON (100mA)
+
+  bLength = 0x0012
+  bDescriptorType = 0x0001
+  bcdUSB = 0x0201
+  bDeviceClass = 0x0000  <Probed by interface class>
+  bDeviceSubClass = 0x0000
+  bDeviceProtocol = 0x0000
+  bMaxPacketSize0 = 0x0040
+  idVendor = 0x058f
+  idProduct = 0x6366
+  bcdDevice = 0x0100
+  iManufacturer = 0x0001  <Generic>
+  iProduct = 0x0002  <Flash Card Reader/Writer>
+  iSerialNumber = 0x0003  <058F63666485>
+  bNumConfigurations = 0x0001

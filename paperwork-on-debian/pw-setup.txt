@@ -1,0 +1,1451 @@
+### most of the setup is covered here:
+https://github.com/twostairs/paperwork/wiki/Installing-Paperwork-on-Debian-7
+## paperwork
+# install prereqs
+apt-get install php5-mysql curl wget git php5-cli php5-gd php5-mcrypt nodejs nodejs-legacy
+
+# install composer
+
+<> curl -sS https://getcomposer.org/installer | php
+All settings correct for using Composer
+Downloading 1.2.4...
+
+Composer successfully installed to: /home/elatov/composer.phar
+Use it: php composer.phar
+
+# then move it /usr/local/bin
+<> sudo mv composer.phar /usr/local/bin/composer
+
+# then get the package
+<> git clone https://github.com/twostairs/paperwork.git
+Cloning into 'paperwork'...
+remote: Counting objects: 10065, done.
+remote: Compressing objects: 100% (18/18), done.
+remote: Total 10065 (delta 6), reused 0 (delta 0), pack-reused 10046
+Receiving objects: 100% (10065/10065), 27.28 MiB | 9.02 MiB/s, done.
+Resolving deltas: 100% (6780/6780), done.
+Checking connectivity... done.
+
+# and put it under the doc root:
+
+sudo mv paperwork /var/www/.
+
+# then install all the needed packages
+<> cd /var/www/paperwork/frontend
+<> composer install
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+  - Installing erusev/parsedown (dev-master 20ff8bb)
+    Downloading: 100%
+
+  - Installing strebl/adldap (v4.0.5)
+    Downloading: 100%
+
+  - Installing nikic/php-parser (v0.9.5)
+    Downloading: 100%
+
+  - Installing symfony/finder (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/filesystem (v2.8.15)
+    Downloading: 100%
+
+  - Installing symfony/polyfill-mbstring (v1.3.0)
+    Downloading: 100%
+
+  - Installing psr/log (1.0.2)
+    Downloading: 100%
+
+  - Installing symfony/debug (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/console (v2.7.22)
+    Downloading: 100%
+
+  - Installing classpreloader/classpreloader (1.0.2)
+    Downloading: 100%
+
+  - Installing d11wtq/boris (v1.0.10)
+    Downloading: 100%
+
+  - Installing ircmaxell/password-compat (v1.0.4)
+    Downloading: 100%
+
+  - Installing filp/whoops (1.1.10)
+    Downloading: 100%
+
+  - Installing jeremeamia/superclosure (1.0.2)
+    Downloading: 100%
+
+  - Installing monolog/monolog (1.22.0)
+    Downloading: 100%
+
+  - Installing symfony/translation (v2.7.22)
+    Downloading: 100%
+
+  - Installing nesbot/carbon (1.21.0)
+    Downloading: 100%
+
+  - Installing patchwork/utf8 (v1.3.1)
+    Downloading: 100%
+
+  - Installing phpseclib/phpseclib (0.3.10)
+    Downloading: 100%
+
+  - Installing predis/predis (v0.8.7)
+    Downloading: 100%
+
+  - Installing symfony/event-dispatcher (v2.8.15)
+    Downloading: 100%
+
+  - Installing symfony/http-foundation (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/http-kernel (v2.7.22)
+    Downloading: 100%
+
+  - Installing stack/builder (v1.0.4)
+    Downloading: 100%
+
+  - Installing swiftmailer/swiftmailer (v5.4.4)
+    Downloading: 100%
+
+  - Installing symfony/dom-crawler (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/browser-kit (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/css-selector (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/process (v2.7.22)
+    Downloading: 100%
+
+  - Installing symfony/routing (v2.7.22)
+    Downloading: 100%
+
+  - Installing paragonie/random_compat (v1.4.1)
+    Downloading: 100%
+
+  - Installing symfony/security-core (v2.7.22)
+    Downloading: 100%
+
+  - Installing mobiledetect/mobiledetectlib (2.8.24)
+    Downloading: 100%
+
+  - Installing laravel/framework (v4.2.22)
+    Downloading: 100%
+
+  - Installing doctrine/inflector (v1.1.0)
+    Downloading: 100%
+
+  - Installing jenssegers/agent (v2.4.0)
+    Downloading: 100%
+
+  - Installing thiagoalessio/tesseract_ocr (0.2.1)
+    Downloading: 100%
+
+  - Installing bacon/bacon-qr-code (1.0.1)
+    Downloading: 100%
+
+  - Installing simplesoftwareio/simple-qrcode (1.1.1)
+    Downloading: 100%
+
+  - Installing symfony/polyfill-apcu (v1.3.0)
+    Downloading: 100%
+
+  - Installing symfony/class-loader (v2.8.15)
+    Downloading: 100%
+
+  - Installing phpdocumentor/reflection-docblock (2.0.4)
+    Downloading: 100%
+
+  - Installing barryvdh/laravel-ide-helper (v1.11.6)
+    Downloading: 100%
+
+  - Installing webpatser/laravel-uuid (1.5)
+    Downloading: 100%
+
+  - Installing doctrine/lexer (v1.0.1)
+    Downloading: 100%
+
+  - Installing doctrine/collections (v1.3.0)
+    Downloading: 100%
+
+  - Installing doctrine/cache (v1.6.1)
+    Downloading: 100%
+
+  - Installing doctrine/annotations (v1.3.0)
+    Downloading: 100%
+
+  - Installing doctrine/common (v2.6.2)
+    Downloading: 100%
+
+  - Installing doctrine/dbal (v2.5.5)
+    Downloading: 100%
+
+monolog/monolog suggests installing aws/aws-sdk-php (Allow sending log messages to AWS services like DynamoDB)
+monolog/monolog suggests installing doctrine/couchdb (Allow sending log messages to a CouchDB server)
+monolog/monolog suggests installing ext-amqp (Allow sending log messages to an AMQP server (1.0+ required))
+monolog/monolog suggests installing ext-mongo (Allow sending log messages to a MongoDB server)
+monolog/monolog suggests installing graylog2/gelf-php (Allow sending log messages to a GrayLog2 server)
+monolog/monolog suggests installing mongodb/mongodb (Allow sending log messages to a MongoDB server via PHP Driver)
+monolog/monolog suggests installing php-amqplib/php-amqplib (Allow sending log messages to an AMQP server using php-amqplib)
+monolog/monolog suggests installing php-console/php-console (Allow sending log messages to Google Chrome)
+monolog/monolog suggests installing rollbar/rollbar (Allow sending log messages to Rollbar)
+monolog/monolog suggests installing ruflin/elastica (Allow sending log messages to an Elastic Search server)
+monolog/monolog suggests installing sentry/sentry (Allow sending log messages to a Sentry server)
+symfony/translation suggests installing symfony/config ()
+symfony/translation suggests installing symfony/yaml ()
+patchwork/utf8 suggests installing ext-intl (Use Intl for best performance)
+patchwork/utf8 suggests installing ext-wfio (Use WFIO for UTF-8 filesystem access on Windows)
+phpseclib/phpseclib suggests installing ext-gmp (Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.)
+phpseclib/phpseclib suggests installing pear-pear/PHP_Compat (Install PHP_Compat to get phpseclib working on PHP < 4.3.3.)
+predis/predis suggests installing ext-phpiredis (Allows faster serialization and deserialization of the Redis protocol)
+predis/predis suggests installing ext-curl (Allows access to Webdis when paired with phpiredis)
+symfony/event-dispatcher suggests installing symfony/dependency-injection ()
+symfony/http-kernel suggests installing symfony/config ()
+symfony/http-kernel suggests installing symfony/dependency-injection ()
+symfony/http-kernel suggests installing symfony/var-dumper ()
+symfony/routing suggests installing symfony/config (For using the all-in-one router or any loader)
+symfony/routing suggests installing symfony/expression-language (For using expression matching)
+symfony/routing suggests installing symfony/yaml (For using the YAML loader)
+paragonie/random_compat suggests installing ext-libsodium (Provides a modern crypto API that can be used to generate random bytes.)
+symfony/security-core suggests installing symfony/expression-language (For using the expression voter)
+symfony/security-core suggests installing symfony/validator (For using the user password constraint)
+phpdocumentor/reflection-docblock suggests installing dflydev/markdown (~1.0)
+Package strebl/adldap is abandoned, you should avoid using it. Use adldap2/adldap2 instead.
+Writing lock file
+Generating autoload files
+> php artisan clear-compiled
+> php artisan ide-helper:generate
+PDOException: SQLSTATE[HY000] [2002] Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+Please configure your database connection correctly, or use the sqlite memory driver (-M). Skipping \Illuminate\Support\Facades\Password.
+PDOException: SQLSTATE[HY000] [2002] Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2)
+Please configure your database connection correctly, or use the sqlite memory driver (-M). Skipping \Illuminate\Support\Facades\Schema.
+A new helper file was written to _ide_helper.php
+> php artisan optimize
+Generating optimized class loader
+
+# prepare the mariadb setup
+cp app/storage/config/default_database.json app/storage/config/database.json
+<> cat app/storage/config/database.json
+{
+    "driver": "mysql",
+    "database": "paperwork",
+    "host": "10.0.0.3",
+    "username": "paperwork",
+    "password": "paperwork",
+    "port": 3306
+}
+
+# then on the DB server
+<> mysql -u root -p
+Enter password:
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 48561
+Server version: 10.0.27-MariaDB FreeBSD Ports
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> DROP DATABASE IF EXISTS paperwork;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+MariaDB [(none)]> CREATE DATABASE IF NOT EXISTS paperwork DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+Query OK, 1 row affected (0.01 sec)
+
+MariaDB [(none)]> GRANT ALL PRIVILEGES ON paperwork.* TO 'paperwork'@'10.0.0.2' IDENTIFIED BY 'paperwork' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.01 sec)
+
+MariaDB [(none)]> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.02 sec)
+
+MariaDB [(none)]> quit
+Bye
+
+## then from apache server make sure you can login
+<> /usr/bin/mysql -h 10.0.0.3 -u paperwork -ppaperwork
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 48564
+Server version: 10.0.27-MariaDB FreeBSD Ports
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]>
+
+# then fill the database
+> php artisan migrate
+**************************************
+*     Application In Production!     *
+**************************************
+
+Do you really wish to run this command? y
+Migration table created successfully.
+Migrated: 2014_07_22_194050_initialize
+Migrated: 2014_07_24_103915_create_password_reminders_table
+Migrated: 2014_10_08_203732_add_visibility_to_tags_table
+Migrated: 2015_01_21_034728_add_admin_to_users
+Migrated: 2015_05_05_094021_modify_tag_user_relation
+Migrated: 2015_05_22_220540_add_version_user_relation
+Migrated: 2015_06_15_224221_add_tag_parent
+Migrated: 2015_06_30_125536_add_sessions_table
+Migrated: 2015_07_29_130508_alter_versions
+
+## then create apache conf from
+https://github.com/twostairs/paperwork/wiki/Using-Apache-in-place-of-Nginx
+<> cat /etc/apache2/conf-enabled/paperwork.conf
+
+# now let's install the necessary npm packages
+
+<> sudo bash ./install.sh
+tar=/bin/tar
+version:
+tar (GNU tar) 1.27.1
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by John Gilmore and Jay Fenlason.
+install npm@latest
+fetching: http://registry.npmjs.org/npm/-/npm-4.0.5.tgz
+/usr/bin/npm -> /usr/lib/node_modules/npm/bin/npm-cli.js
+/usr/lib
+└─┬ npm@4.0.5
+  ├── abbrev@1.0.9
+  ├── ansi-regex@2.0.0
+  ├── ansicolors@0.3.2
+  ├── ansistyles@0.1.3
+  ├── aproba@1.0.4
+  ├── archy@1.0.0
+  ├── asap@2.0.5
+  ├── chownr@1.0.1
+  ├── cmd-shim@2.0.2
+  ├─┬ columnify@1.5.4
+  │ └─┬ wcwidth@1.0.0
+  │   └─┬ defaults@1.0.3
+  │     └── clone@1.0.2
+  ├─┬ config-chain@1.1.11
+  │ └── proto-list@1.2.4
+  ├── debuglog@1.0.1
+  ├── dezalgo@1.0.3
+  ├── editor@1.0.0
+  ├── fs-vacuum@1.2.9
+  ├── fs-write-stream-atomic@1.0.8
+  ├── fstream@1.0.10
+  ├─┬ fstream-npm@1.2.0
+  │ └─┬ fstream-ignore@1.0.5
+  │   └─┬ minimatch@3.0.3
+  │     └─┬ brace-expansion@1.1.6
+  │       ├── balanced-match@0.4.2
+  │       └── concat-map@0.0.1
+  ├─┬ glob@7.1.1
+  │ ├── fs.realpath@1.0.0
+  │ ├─┬ minimatch@3.0.3
+  │ │ └─┬ brace-expansion@1.1.6
+  │ │   ├── balanced-match@0.4.2
+  │ │   └── concat-map@0.0.1
+  │ └── path-is-absolute@1.0.1
+  ├── graceful-fs@4.1.11
+  ├── has-unicode@2.0.1
+  ├── hosted-git-info@2.1.5
+  ├── iferr@0.1.5
+  ├── imurmurhash@0.1.4
+  ├── inflight@1.0.6
+  ├── inherits@2.0.3
+  ├── ini@1.3.4
+  ├─┬ init-package-json@1.9.4
+  │ ├─┬ glob@6.0.4
+  │ │ ├─┬ minimatch@3.0.3
+  │ │ │ └─┬ brace-expansion@1.1.6
+  │ │ │   ├── balanced-match@0.4.2
+  │ │ │   └── concat-map@0.0.1
+  │ │ └── path-is-absolute@1.0.0
+  │ └── promzard@0.3.0
+  ├─┬ JSONStream@1.2.1
+  │ ├── jsonparse@1.2.0
+  │ └── through@2.3.8
+  ├── lockfile@1.0.2
+  ├── lodash._baseindexof@3.1.0
+  ├─┬ lodash._baseuniq@4.6.0
+  │ ├── lodash._createset@4.0.3
+  │ └── lodash._root@3.0.1
+  ├── lodash._bindcallback@3.0.1
+  ├── lodash._cacheindexof@3.0.2
+  ├── lodash._createcache@3.1.2
+  ├── lodash._getnative@3.9.1
+  ├── lodash.clonedeep@4.5.0
+  ├── lodash.restparam@3.6.1
+  ├── lodash.union@4.6.0
+  ├── lodash.uniq@4.5.0
+  ├── lodash.without@4.4.0
+  ├─┬ mississippi@1.2.0
+  │ ├─┬ concat-stream@1.5.2
+  │ │ ├─┬ readable-stream@2.0.6
+  │ │ │ ├── core-util-is@1.0.2
+  │ │ │ ├── isarray@1.0.0
+  │ │ │ ├── process-nextick-args@1.0.7
+  │ │ │ ├── string_decoder@0.10.31
+  │ │ │ └── util-deprecate@1.0.2
+  │ │ └── typedarray@0.0.6
+  │ ├─┬ duplexify@3.4.5
+  │ │ ├─┬ end-of-stream@1.0.0
+  │ │ │ └── once@1.3.3
+  │ │ └── stream-shift@1.0.0
+  │ ├─┬ end-of-stream@1.1.0
+  │ │ └── once@1.3.3
+  │ ├── flush-write-stream@1.0.0
+  │ ├── from2@2.3.0
+  │ ├── pump@1.0.1
+  │ ├── pumpify@1.3.5
+  │ ├── stream-each@1.1.2
+  │ └─┬ through2@2.0.1
+  │   ├─┬ readable-stream@2.0.6
+  │   │ ├── core-util-is@1.0.2
+  │   │ ├── isarray@1.0.0
+  │   │ ├── process-nextick-args@1.0.7
+  │   │ ├── string_decoder@0.10.31
+  │   │ └── util-deprecate@1.0.2
+  │   └── xtend@4.0.1
+  ├─┬ mkdirp@0.5.1
+  │ └── minimist@0.0.8
+  ├─┬ node-gyp@3.4.0
+  │ ├─┬ minimatch@3.0.3
+  │ │ └─┬ brace-expansion@1.1.6
+  │ │   ├── balanced-match@0.4.2
+  │ │   └── concat-map@0.0.1
+  │ ├─┬ npmlog@3.1.2
+  │ │ ├─┬ are-we-there-yet@1.1.2
+  │ │ │ └── delegates@1.0.0
+  │ │ ├── console-control-strings@1.1.0
+  │ │ ├─┬ gauge@2.6.0
+  │ │ │ ├── has-color@0.1.7
+  │ │ │ ├── object-assign@4.1.0
+  │ │ │ ├── signal-exit@3.0.1
+  │ │ │ ├─┬ string-width@1.0.2
+  │ │ │ │ ├─┬ code-point-at@1.0.0
+  │ │ │ │ │ └── number-is-nan@1.0.0
+  │ │ │ │ └─┬ is-fullwidth-code-point@1.0.0
+  │ │ │ │   └── number-is-nan@1.0.0
+  │ │ │ └── wide-align@1.1.0
+  │ │ └── set-blocking@2.0.0
+  │ └─┬ path-array@1.0.1
+  │   └─┬ array-index@1.0.0
+  │     ├─┬ debug@2.2.0
+  │     │ └── ms@0.7.1
+  │     └─┬ es6-symbol@3.1.0
+  │       ├── d@0.1.1
+  │       └─┬ es5-ext@0.10.12
+  │         └── es6-iterator@2.0.0
+  ├── nopt@3.0.6
+  ├── normalize-git-url@3.0.2
+  ├─┬ normalize-package-data@2.3.5
+  │ └─┬ is-builtin-module@1.0.0
+  │   └── builtin-modules@1.1.1
+  ├── npm-cache-filename@1.0.2
+  ├── npm-install-checks@3.0.0
+  ├── npm-package-arg@4.2.0
+  ├─┬ npm-registry-client@7.3.0
+  │ ├─┬ concat-stream@1.5.2
+  │ │ ├─┬ readable-stream@2.0.6
+  │ │ │ ├── core-util-is@1.0.2
+  │ │ │ ├── isarray@1.0.0
+  │ │ │ ├── process-nextick-args@1.0.7
+  │ │ │ ├── string_decoder@0.10.31
+  │ │ │ └── util-deprecate@1.0.2
+  │ │ └── typedarray@0.0.6
+  │ └─┬ npmlog@3.1.2
+  │   ├─┬ are-we-there-yet@1.1.2
+  │   │ └── delegates@1.0.0
+  │   ├── console-control-strings@1.1.0
+  │   ├─┬ gauge@2.6.0
+  │   │ ├── has-color@0.1.7
+  │   │ ├── object-assign@4.1.0
+  │   │ ├── signal-exit@3.0.1
+  │   │ ├─┬ string-width@1.0.2
+  │   │ │ ├─┬ code-point-at@1.0.1
+  │   │ │ │ └── number-is-nan@1.0.1
+  │   │ │ └─┬ is-fullwidth-code-point@1.0.0
+  │   │ │   └── number-is-nan@1.0.1
+  │   │ └── wide-align@1.1.0
+  │   └── set-blocking@2.0.0
+  ├── npm-user-validate@0.1.5
+  ├─┬ npmlog@4.0.1
+  │ ├─┬ are-we-there-yet@1.1.2
+  │ │ └── delegates@1.0.0
+  │ ├── console-control-strings@1.1.0
+  │ ├─┬ gauge@2.7.1
+  │ │ ├── has-color@0.1.7
+  │ │ ├── object-assign@4.1.0
+  │ │ ├── signal-exit@3.0.1
+  │ │ ├─┬ string-width@1.0.2
+  │ │ │ ├── code-point-at@1.1.0
+  │ │ │ └─┬ is-fullwidth-code-point@1.0.0
+  │ │ │   └── number-is-nan@1.0.1
+  │ │ └── wide-align@1.1.0
+  │ └── set-blocking@2.0.0
+  ├── once@1.4.0
+  ├── opener@1.4.2
+  ├─┬ osenv@0.1.3
+  │ ├── os-homedir@1.0.1
+  │ └── os-tmpdir@1.0.1
+  ├── path-is-inside@1.0.2
+  ├─┬ read@1.0.7
+  │ └── mute-stream@0.0.5
+  ├── read-cmd-shim@1.0.1
+  ├─┬ read-installed@4.0.3
+  │ └── util-extend@1.0.3
+  ├─┬ read-package-json@2.0.4
+  │ ├─┬ glob@6.0.4
+  │ │ ├─┬ minimatch@3.0.3
+  │ │ │ └─┬ brace-expansion@1.1.6
+  │ │ │   ├── balanced-match@0.4.2
+  │ │ │   └── concat-map@0.0.1
+  │ │ └── path-is-absolute@1.0.0
+  │ └─┬ json-parse-helpfulerror@1.0.3
+  │   └── jju@1.3.0
+  ├── read-package-tree@5.1.5
+  ├─┬ readable-stream@2.2.2
+  │ ├── buffer-shims@1.0.0
+  │ ├── core-util-is@1.0.2
+  │ ├── isarray@1.0.0
+  │ ├── process-nextick-args@1.0.7
+  │ ├── string_decoder@0.10.31
+  │ └── util-deprecate@1.0.2
+  ├── readdir-scoped-modules@1.0.2
+  ├── realize-package-specifier@3.0.3
+  ├─┬ request@2.79.0
+  │ ├── aws-sign2@0.6.0
+  │ ├── aws4@1.5.0
+  │ ├── caseless@0.11.0
+  │ ├─┬ combined-stream@1.0.5
+  │ │ └── delayed-stream@1.0.0
+  │ ├── extend@3.0.0
+  │ ├── forever-agent@0.6.1
+  │ ├─┬ form-data@2.1.2
+  │ │ └── asynckit@0.4.0
+  │ ├─┬ har-validator@2.0.6
+  │ │ ├─┬ chalk@1.1.3
+  │ │ │ ├── ansi-styles@2.2.1
+  │ │ │ ├── escape-string-regexp@1.0.5
+  │ │ │ ├── has-ansi@2.0.0
+  │ │ │ └── supports-color@2.0.0
+  │ │ ├─┬ commander@2.9.0
+  │ │ │ └── graceful-readlink@1.0.1
+  │ │ ├─┬ is-my-json-valid@2.15.0
+  │ │ │ ├── generate-function@2.0.0
+  │ │ │ ├─┬ generate-object-property@1.2.0
+  │ │ │ │ └── is-property@1.0.2
+  │ │ │ ├── jsonpointer@4.0.0
+  │ │ │ └── xtend@4.0.1
+  │ │ └─┬ pinkie-promise@2.0.1
+  │ │   └── pinkie@2.0.4
+  │ ├─┬ hawk@3.1.3
+  │ │ ├── boom@2.10.1
+  │ │ ├── cryptiles@2.0.5
+  │ │ ├── hoek@2.16.3
+  │ │ └── sntp@1.0.9
+  │ ├─┬ http-signature@1.1.1
+  │ │ ├── assert-plus@0.2.0
+  │ │ ├─┬ jsprim@1.3.1
+  │ │ │ ├── extsprintf@1.0.2
+  │ │ │ ├── json-schema@0.2.3
+  │ │ │ └── verror@1.3.6
+  │ │ └─┬ sshpk@1.10.1
+  │ │   ├── asn1@0.2.3
+  │ │   ├── assert-plus@1.0.0
+  │ │   ├── bcrypt-pbkdf@1.0.0
+  │ │   ├── dashdash@1.14.1
+  │ │   ├── ecc-jsbn@0.1.1
+  │ │   ├── getpass@0.1.6
+  │ │   ├── jodid25519@1.0.2
+  │ │   ├── jsbn@0.1.0
+  │ │   └── tweetnacl@0.14.3
+  │ ├── is-typedarray@1.0.0
+  │ ├── isstream@0.1.2
+  │ ├── json-stringify-safe@5.0.1
+  │ ├─┬ mime-types@2.1.13
+  │ │ └── mime-db@1.25.0
+  │ ├── oauth-sign@0.8.2
+  │ ├── qs@6.3.0
+  │ ├── stringstream@0.0.5
+  │ ├─┬ tough-cookie@2.3.2
+  │ │ └── punycode@1.4.1
+  │ ├── tunnel-agent@0.4.3
+  │ └── uuid@3.0.1
+  ├── retry@0.10.0
+  ├── rimraf@2.5.4
+  ├── semver@5.3.0
+  ├── sha@2.0.1
+  ├── slide@1.1.6
+  ├── sorted-object@2.0.1
+  ├─┬ sorted-union-stream@2.1.3
+  │ ├─┬ from2@1.3.0
+  │ │ └─┬ readable-stream@1.1.14
+  │ │   ├── core-util-is@1.0.2
+  │ │   ├── isarray@0.0.1
+  │ │   └── string_decoder@0.10.31
+  │ └── stream-iterate@1.1.1
+  ├── strip-ansi@3.0.1
+  ├─┬ tar@2.2.1
+  │ └── block-stream@0.0.8
+  ├── text-table@0.2.0
+  ├── uid-number@0.0.6
+  ├── umask@1.1.0
+  ├─┬ unique-filename@1.1.0
+  │ └── unique-slug@2.0.0
+  ├── unpipe@1.0.0
+  ├─┬ validate-npm-package-license@3.0.1
+  │ ├─┬ spdx-correct@1.0.2
+  │ │ └── spdx-license-ids@1.2.0
+  │ └─┬ spdx-expression-parse@1.0.2
+  │   ├── spdx-exceptions@1.0.4
+  │   └── spdx-license-ids@1.2.0
+  ├─┬ validate-npm-package-name@2.2.2
+  │ └── builtins@0.0.7
+  ├─┬ which@1.2.12
+  │ └── isexe@1.1.2
+  ├── wrappy@1.0.2
+  └── write-file-atomic@1.2.0
+
+It worked
+
+# install bower and gulp
+<> sudo npm install -g gulp bower
+npm WARN deprecated minimatch@2.0.10: Please update to minimatch 3.0.2 or higher to avoid a RegExp DoS issue
+npm WARN deprecated minimatch@0.2.14: Please update to minimatch 3.0.2 or higher to avoid a RegExp DoS issue
+npm WARN deprecated graceful-fs@1.2.3: graceful-fs v3.0.0 and before will fail on node releases >= v7.0. Please update to graceful-fs@^4.0.0 as soon as possible. Use 'npm ls graceful-fs' to find it in the tree.
+/usr/local/bin/gulp -> /usr/local/lib/node_modules/gulp/bin/gulp.js
+/usr/local/bin/bower -> /usr/local/lib/node_modules/bower/bin/bower
+gulp@3.9.1 /usr/local/lib/node_modules/gulp
+├── interpret@1.0.1
+├── pretty-hrtime@1.0.3
+├── deprecated@0.0.1
+├── archy@1.0.0
+├── tildify@1.2.0 (os-homedir@1.0.2)
+├── minimist@1.2.0
+├── v8flags@2.0.11 (user-home@1.1.1)
+├── chalk@1.1.3 (escape-string-regexp@1.0.5, supports-color@2.0.0, ansi-styles@2.2.1, has-ansi@2.0.0, strip-ansi@3.0.1)
+├── semver@4.3.6
+├── orchestrator@0.3.8 (stream-consume@0.1.0, sequencify@0.0.7, end-of-stream@0.1.5)
+├── liftoff@2.3.0 (lodash.isstring@4.0.1, lodash.isplainobject@4.0.6, rechoir@0.6.2, extend@3.0.0, flagged-respawn@0.3.2, lodash.mapvalues@4.6.0, resolve@1.2.0, fined@1.0.2, findup-sync@0.4.3)
+├── gulp-util@3.0.7 (array-differ@1.0.0, lodash._reevaluate@3.0.0, lodash._reinterpolate@3.0.0, lodash._reescape@3.0.0, beeper@1.1.1, array-uniq@1.0.3, object-assign@3.0.0, replace-ext@0.0.1, has-gulplog@0.1.0, fancy-log@1.2.0, gulplog@1.0.0, lodash.template@3.6.2, vinyl@0.5.3, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+└── vinyl-fs@0.3.14 (strip-bom@1.0.0, graceful-fs@3.0.11, defaults@1.0.3, vinyl@0.4.6, mkdirp@0.5.1, through2@0.6.5, glob-stream@3.1.18, glob-watcher@0.0.6)
+
+bower@1.8.0 /usr/local/lib/node_modules/bower
+
+# now let's build the project
+[/var/www/paperwork/frontend] - [2016-12-17 05:08:21]
+└─[0] <git:(master 50527ed✈) > npm install
+npm WARN deprecated minimatch@2.0.10: Please update to minimatch 3.0.2 or higher to avoid a RegExp DoS issue
+npm WARN engine less@2.7.1: wanted: {"node":">=0.12"} (current: {"node":"0.10.29","npm":"1.4.21"})
+npm WARN deprecated minimatch@0.2.14: Please update to minimatch 3.0.2 or higher to avoid a RegExp DoS issue
+npm WARN deprecated graceful-fs@1.2.3: graceful-fs v3.0.0 and before will fail on node releases >= v7.0. Please update to graceful-fs@^4.0.0 as soon as possible. Use 'npm ls graceful-fs' to find it in the tree.
+gulp-rename@1.2.2 node_modules/gulp-rename
+
+jshint-stylish@2.2.1 node_modules/jshint-stylish
+├── log-symbols@1.0.2
+├── beeper@1.1.1
+├── text-table@0.2.0
+├── plur@2.1.2 (irregular-plurals@1.2.0)
+├── string-length@1.0.1 (strip-ansi@3.0.1)
+└── chalk@1.1.3 (escape-string-regexp@1.0.5, supports-color@2.0.0, ansi-styles@2.2.1, strip-ansi@3.0.1, has-ansi@2.0.0)
+
+gulp-concat@2.6.1 node_modules/gulp-concat
+├── vinyl@2.0.1 (is-stream@1.1.0, clone-buffer@1.0.0, replace-ext@1.0.0, remove-trailing-separator@1.0.1, clone-stats@1.0.0, clone@1.0.2, cloneable-readable@1.0.0)
+├── through2@2.0.3 (xtend@4.0.1, readable-stream@2.2.2)
+└── concat-with-sourcemaps@1.0.4 (source-map@0.5.6)
+
+gulp-livereload@3.8.1 node_modules/gulp-livereload
+├── debug@2.4.4 (ms@0.7.2)
+├── chalk@0.5.1 (ansi-styles@1.1.0, supports-color@0.2.0, escape-string-regexp@1.0.5, has-ansi@0.1.0, strip-ansi@0.3.0)
+├── lodash.assign@3.2.0 (lodash._baseassign@3.2.0, lodash._createassigner@3.1.1, lodash.keys@3.1.2)
+├── event-stream@3.3.4 (stream-combiner@0.0.4, duplexer@0.1.1, from@0.1.3, pause-stream@0.0.11, map-stream@0.1.0, split@0.3.3, through@2.3.8)
+├── mini-lr@0.1.9 (parseurl@1.3.1, qs@2.2.5, livereload-js@2.2.2, faye-websocket@0.7.3, body-parser@1.14.2)
+└── gulp-util@3.0.7 (array-differ@1.0.0, beeper@1.1.1, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, lodash._reinterpolate@3.0.0, array-uniq@1.0.3, object-assign@3.0.0, replace-ext@0.0.1, fancy-log@1.2.0, has-gulplog@0.1.0, gulplog@1.0.0, lodash.template@3.6.2, chalk@1.1.3, vinyl@0.5.3, minimist@1.2.0, through2@2.0.3, dateformat@1.0.12, multipipe@0.1.2)
+
+gulp@3.9.1 node_modules/gulp
+├── interpret@1.0.1
+├── pretty-hrtime@1.0.3
+├── deprecated@0.0.1
+├── archy@1.0.0
+├── tildify@1.2.0 (os-homedir@1.0.2)
+├── minimist@1.2.0
+├── v8flags@2.0.11 (user-home@1.1.1)
+├── semver@4.3.6
+├── chalk@1.1.3 (supports-color@2.0.0, ansi-styles@2.2.1, escape-string-regexp@1.0.5, strip-ansi@3.0.1, has-ansi@2.0.0)
+├── orchestrator@0.3.8 (stream-consume@0.1.0, sequencify@0.0.7, end-of-stream@0.1.5)
+├── liftoff@2.3.0 (lodash.isstring@4.0.1, lodash.isplainobject@4.0.6, rechoir@0.6.2, extend@3.0.0, flagged-respawn@0.3.2, lodash.mapvalues@4.6.0, resolve@1.2.0, fined@1.0.2, findup-sync@0.4.3)
+├── vinyl-fs@0.3.14 (strip-bom@1.0.0, defaults@1.0.3, graceful-fs@3.0.11, vinyl@0.4.6, mkdirp@0.5.1, glob-stream@3.1.18, through2@0.6.5, glob-watcher@0.0.6)
+└── gulp-util@3.0.7 (array-differ@1.0.0, beeper@1.1.1, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, lodash._reinterpolate@3.0.0, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, has-gulplog@0.1.0, fancy-log@1.2.0, gulplog@1.0.0, lodash.template@3.6.2, vinyl@0.5.3, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+
+gulp-uglify@1.1.0 node_modules/gulp-uglify
+├── deepmerge@0.2.10
+├── uglify-js@2.4.16 (uglify-to-browserify@1.0.2, async@0.2.10, optimist@0.3.7, source-map@0.1.34)
+├── through2@0.6.5 (xtend@4.0.1, readable-stream@1.0.34)
+├── gulp-util@3.0.7 (array-differ@1.0.0, beeper@1.1.1, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, lodash._reinterpolate@3.0.0, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, has-gulplog@0.1.0, fancy-log@1.2.0, gulplog@1.0.0, chalk@1.1.3, lodash.template@3.6.2, minimist@1.2.0, vinyl@0.5.3, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+└── vinyl-sourcemaps-apply@0.1.4 (source-map@0.1.43)
+
+gulp-bower@0.0.10 node_modules/gulp-bower
+├── through2@0.6.2 (xtend@4.0.1, readable-stream@1.0.34)
+├── walk@2.3.3 (foreachasync@3.0.0)
+└── gulp-util@3.0.1 (lodash._reinterpolate@2.4.1, minimist@1.2.0, chalk@0.5.1, vinyl@0.4.6, lodash.template@2.4.1, lodash@2.4.2, multipipe@0.1.2, dateformat@1.0.12)
+
+gulp-ng-annotate@0.5.3 node_modules/gulp-ng-annotate
+├── merge@1.2.0
+├── bufferstreams@0.0.2 (readable-stream@1.1.14)
+├── vinyl-sourcemaps-apply@0.1.4 (source-map@0.1.43)
+├── through2@0.4.2 (xtend@2.1.2, readable-stream@1.0.34)
+├── gulp-util@2.2.20 (lodash._reinterpolate@2.4.1, minimist@0.2.0, chalk@0.5.1, vinyl@0.2.3, lodash.template@2.4.1, multipipe@0.1.2, through2@0.5.1, dateformat@1.0.12)
+└── ng-annotate@0.15.4 (tryor@0.1.2, simple-fmt@0.1.0, alter@0.2.0, simple-is@0.2.0, stringset@0.2.1, stringmap@0.2.2, stable@0.1.5, convert-source-map@0.4.1, ordered-ast-traverse@1.1.1, optimist@0.6.1, source-map@0.1.43, acorn@0.11.0)
+
+gulp-jshint@1.12.0 node_modules/gulp-jshint
+├── minimatch@2.0.10 (brace-expansion@1.1.6)
+├── through2@0.6.5 (xtend@4.0.1, readable-stream@1.0.34)
+├── gulp-util@3.0.7 (array-differ@1.0.0, beeper@1.1.1, lodash._reinterpolate@3.0.0, lodash._reevaluate@3.0.0, lodash._reescape@3.0.0, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, fancy-log@1.2.0, has-gulplog@0.1.0, gulplog@1.0.0, lodash.template@3.6.2, chalk@1.1.3, minimist@1.2.0, vinyl@0.5.3, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+├── rcloader@0.1.2 (rcfinder@0.1.9, lodash@2.4.2)
+├── lodash@3.10.1
+└── jshint@2.9.4 (strip-json-comments@1.0.4, exit@0.1.2, console-browserify@1.1.0, minimatch@3.0.3, shelljs@0.3.0, cli@1.0.1, htmlparser2@3.8.3, lodash@3.7.0)
+
+gulp-less@2.0.1 node_modules/gulp-less
+├── convert-source-map@0.4.1
+├── lodash.defaults@2.4.1 (lodash._objecttypes@2.4.1, lodash.keys@2.4.1)
+├── through2@0.6.5 (readable-stream@1.0.34, xtend@4.0.1)
+├── vinyl-sourcemaps-apply@0.1.4 (source-map@0.1.43)
+├── gulp-util@3.0.7 (array-differ@1.0.0, lodash._reinterpolate@3.0.0, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, beeper@1.1.1, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, has-gulplog@0.1.0, fancy-log@1.2.0, gulplog@1.0.0, lodash.template@3.6.2, chalk@1.1.3, vinyl@0.5.3, minimist@1.2.0, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+└── less@2.7.1 (graceful-fs@4.1.11, mime@1.3.4, image-size@0.5.0, mkdirp@0.5.1, errno@0.1.4, source-map@0.5.6, promise@7.1.1)
+
+bower@1.8.0 node_modules/bower
+
+# same thing for bower
+[/var/www/paperwork/frontend] - [2016-12-17 05:09:07]
+└─[0] <git:(master 50527ed✈) > bower install
+bower invalid-meta  for:/var/www/paperwork/frontend/bower.json
+bower invalid-meta  The "name" is recommended to be lowercase, can contain digits, dots, dashes
+bower not-cached    https://github.com/nervgh/angular-file-upload.git#1.1.5
+bower resolve       https://github.com/nervgh/angular-file-upload.git#1.1.5
+bower not-cached    https://github.com/angular/bower-angular-resource.git#~1.2
+bower resolve       https://github.com/angular/bower-angular-resource.git#~1.2
+bower not-cached    https://github.com/jquery/jquery-dist.git#~1.11
+bower resolve       https://github.com/jquery/jquery-dist.git#~1.11
+bower not-cached    https://github.com/stranger82/angular-utf8-base64.git#~0.0.5
+bower resolve       https://github.com/stranger82/angular-utf8-base64.git#~0.0.5
+bower not-cached    https://github.com/aFarkas/html5shiv.git#~3.7.2
+bower resolve       https://github.com/aFarkas/html5shiv.git#~3.7.2
+bower not-cached    https://github.com/fatlinesofcode/ngDraggable.git#~0.1.3
+bower resolve       https://github.com/fatlinesofcode/ngDraggable.git#~0.1.3
+bower not-cached    https://github.com/scottjehl/Respond.git#~1.4.2
+bower resolve       https://github.com/scottjehl/Respond.git#~1.4.2
+bower not-cached    https://github.com/azoff/overscroll.git#~1.7.7
+bower resolve       https://github.com/azoff/overscroll.git#~1.7.7
+bower not-cached    https://github.com/angular/bower-angular-route.git#~1.2
+bower resolve       https://github.com/angular/bower-angular-route.git#~1.2
+bower not-cached    https://github.com/angular/bower-angular.git#~1.2
+bower resolve       https://github.com/angular/bower-angular.git#~1.2
+bower not-cached    https://github.com/angular/bower-angular-animate.git#~1.2
+bower resolve       https://github.com/angular/bower-angular-animate.git#~1.2
+bower not-cached    https://github.com/angular-ui/bootstrap-bower.git#~0.12.1
+bower resolve       https://github.com/angular-ui/bootstrap-bower.git#~0.12.1
+bower not-cached    https://github.com/twbs/bootstrap.git#~3.3.4
+bower resolve       https://github.com/twbs/bootstrap.git#~3.3.4
+bower not-cached    https://github.com/imulus/retinajs.git#~1.3.0
+bower resolve       https://github.com/imulus/retinajs.git#~1.3.0
+bower not-cached    https://github.com/flesler/jquery.scrollTo.git#~2.1.0
+bower resolve       https://github.com/flesler/jquery.scrollTo.git#~2.1.0
+bower not-cached    https://github.com/TimSchlechter/bootstrap-tagsinput.git#~0.4.2
+bower resolve       https://github.com/TimSchlechter/bootstrap-tagsinput.git#~0.4.2
+bower not-cached    https://github.com/twitter/typeahead.js.git#~0.10.5
+bower resolve       https://github.com/twitter/typeahead.js.git#~0.10.5
+bower not-cached    https://github.com/chieffancypants/angular-loading-bar.git#~0.7.1
+bower resolve       https://github.com/chieffancypants/angular-loading-bar.git#~0.7.1
+bower not-cached    https://github.com/jamesallardice/Placeholders.js.git#~4.0.1
+bower resolve       https://github.com/jamesallardice/Placeholders.js.git#~4.0.1
+bower not-cached    https://github.com/fraywing/textAngular.git#~1.3.0
+bower resolve       https://github.com/fraywing/textAngular.git#~1.3.0
+bower not-cached    https://github.com/pc035860/angular-highlightjs.git#~0.4.3
+bower resolve       https://github.com/pc035860/angular-highlightjs.git#~0.4.3
+bower not-cached    https://github.com/Haixing-Hu/bootstrap3-ie10-viewport-bug-workaround.git#~1.0.0
+bower resolve       https://github.com/Haixing-Hu/bootstrap3-ie10-viewport-bug-workaround.git#~1.0.0
+bower not-cached    https://github.com/vitalets/x-editable.git#1.5.0
+bower resolve       https://github.com/vitalets/x-editable.git#1.5.0
+bower download      https://github.com/nervgh/angular-file-upload/archive/v1.1.5.tar.gz
+bower download      https://github.com/stranger82/angular-utf8-base64/archive/v0.0.5.tar.gz
+bower download      https://github.com/jquery/jquery-dist/archive/1.11.3.tar.gz
+bower download      https://github.com/aFarkas/html5shiv/archive/3.7.3.tar.gz
+bower download      https://github.com/angular/bower-angular-resource/archive/v1.2.32.tar.gz
+bower download      https://github.com/angular/bower-angular/archive/v1.2.32.tar.gz
+bower download      https://github.com/angular/bower-angular-route/archive/v1.2.32.tar.gz
+bower download      https://github.com/fatlinesofcode/ngDraggable/archive/0.1.11.tar.gz
+bower download      https://github.com/azoff/overscroll/archive/1.7.7.tar.gz
+bower download      https://github.com/scottjehl/Respond/archive/1.4.2.tar.gz
+bower download      https://github.com/angular-ui/bootstrap-bower/archive/0.12.1.tar.gz
+bower download      https://github.com/angular/bower-angular-animate/archive/v1.2.32.tar.gz
+bower download      https://github.com/twitter/typeahead.js/archive/v0.10.5.tar.gz
+bower download      https://github.com/TimSchlechter/bootstrap-tagsinput/archive/0.4.2.tar.gz
+bower download      https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz
+bower download      https://github.com/imulus/retinajs/archive/1.3.0.tar.gz
+bower download      https://github.com/flesler/jquery.scrollTo/archive/2.1.2.tar.gz
+bower extract       angular-file-upload#1.1.5 archive.tar.gz
+bower retry         Download of https://github.com/angular/bower-angular/archive/v1.2.32.tar.gz failed with ECONNRESET, retrying in 1.1s
+bower extract       angular-utf8-base64#~0.0.5 archive.tar.gz
+bower retry         Download of https://github.com/fatlinesofcode/ngDraggable/archive/0.1.11.tar.gz failed with ECONNRESET, retrying in 1.4s
+bower resolved      https://github.com/nervgh/angular-file-upload.git#1.1.5
+bower resolved      https://github.com/stranger82/angular-utf8-base64.git#0.0.5
+bower not-cached    https://github.com/angular/bower-angular.git#>= 1.0.8
+bower resolve       https://github.com/angular/bower-angular.git#>= 1.0.8
+bower download      https://github.com/angular/bower-angular/archive/v1.6.0.tar.gz
+bower download      https://github.com/fraywing/textAngular/archive/v1.3.11.tar.gz
+bower download      https://github.com/jamesallardice/Placeholders.js/archive/v4.0.1.tar.gz
+bower download      https://github.com/chieffancypants/angular-loading-bar/archive/0.7.1.tar.gz
+bower download      https://github.com/pc035860/angular-highlightjs/archive/v0.4.3.tar.gz
+bower download      https://github.com/Haixing-Hu/bootstrap3-ie10-viewport-bug-workaround/archive/1.0.0.tar.gz
+bower extract       angular-resource#~1.2 archive.tar.gz
+bower retry         Download of https://github.com/angular-ui/bootstrap-bower/archive/0.12.1.tar.gz failed with ECONNRESET, retrying in 1.7s
+bower extract       html5shiv#~3.7.2 archive.tar.gz
+bower retry         Download of https://github.com/azoff/overscroll/archive/1.7.7.tar.gz failed with ECONNRESET, retrying in 1.6s
+bower resolved      https://github.com/angular/bower-angular-resource.git#1.2.32
+bower extract       angular-route#~1.2 archive.tar.gz
+bower retry         Download of https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz failed with ECONNRESET, retrying in 1.3s
+bower extract       respond#~1.4.2 archive.tar.gz
+bower retry         Download of https://github.com/flesler/jquery.scrollTo/archive/2.1.2.tar.gz failed with ECONNRESET, retrying in 1.0s
+bower not-cached    https://github.com/es-shims/es5-shim.git#>=3.4.0
+bower resolve       https://github.com/es-shims/es5-shim.git#>=3.4.0
+bower resolved      https://github.com/angular/bower-angular-route.git#1.2.32
+bower resolved      https://github.com/aFarkas/html5shiv.git#3.7.3
+bower resolved      https://github.com/scottjehl/Respond.git#1.4.2
+bower extract       angular-animate#~1.2 archive.tar.gz
+bower retry         Download of https://github.com/angular/bower-angular/archive/v1.6.0.tar.gz failed with ECONNRESET, retrying in 1.7s
+bower resolved      https://github.com/angular/bower-angular-animate.git#1.2.32
+bower extract       typeahead.js#~0.10.5 archive.tar.gz
+bower retry         Download of https://github.com/jamesallardice/Placeholders.js/archive/v4.0.1.tar.gz failed with ECONNRESET, retrying in 1.8s
+bower extract       retinajs#~1.3.0 archive.tar.gz
+bower retry         Download of https://github.com/chieffancypants/angular-loading-bar/archive/0.7.1.tar.gz failed with ECONNRESET, retrying in 1.9s
+bower download      https://github.com/es-shims/es5-shim/archive/v4.5.9.tar.gz
+bower resolved      https://github.com/twitter/typeahead.js.git#0.10.5
+bower not-cached    https://github.com/jquery/jquery-dist.git#>=1.7
+bower resolve       https://github.com/jquery/jquery-dist.git#>=1.7
+bower download      https://github.com/jquery/jquery-dist/archive/3.1.1.tar.gz
+bower download      https://github.com/vitalets/x-editable/archive/1.5.0.tar.gz
+bower mismatch      Version declared in the json (1.2.0) is different than the resolved one (1.3.0)
+bower resolved      https://github.com/imulus/retinajs.git#1.3.0
+bower extract       bootstrap-tagsinput#~0.4.2 archive.tar.gz
+bower extract       textAngular#~1.3.0 archive.tar.gz
+bower extract       bootstrap3-ie10-viewport-bug-workaround#~1.0.0 archive.tar.gz
+bower resolved      https://github.com/Haixing-Hu/bootstrap3-ie10-viewport-bug-workaround.git#1.0.0
+bower not-cached    https://github.com/twbs/bootstrap.git#>=3.0.0
+bower resolve       https://github.com/twbs/bootstrap.git#>=3.0.0
+bower download      https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz
+bower resolved      https://github.com/TimSchlechter/bootstrap-tagsinput.git#0.4.2
+bower not-cached    https://github.com/jquery/jquery-dist.git#~2.1.1
+bower resolve       https://github.com/jquery/jquery-dist.git#~2.1.1
+bower download      https://github.com/jquery/jquery-dist/archive/2.1.4.tar.gz
+bower invalid-meta  for:/tmp/elatov/bower/3887ae54168c10da281b756f39c7e14c-12815-UROQyp/bower.json
+bower invalid-meta  The "name" is recommended to be lowercase, can contain digits, dots, dashes
+bower invalid-meta  The "main" field has to contain only 1 file per filetype; found multiple .js files: ["./src/textAngular.js","./src/textAngular-sanitize.js","./src/textAngularSetup.js"]
+bower resolved      https://github.com/fraywing/textAngular.git#1.3.11
+bower not-cached    https://github.com/angular/bower-angular.git#^1.2.x
+bower resolve       https://github.com/angular/bower-angular.git#^1.2.x
+bower download      https://github.com/angular/bower-angular/archive/v1.6.0.tar.gz
+bower extract       es5-shim#>=3.4.0 archive.tar.gz
+bower retry         Download of https://github.com/angular/bower-angular/archive/v1.2.32.tar.gz failed with ECONNRESET, retrying in 2.7s
+bower extract       jquery#~1.11 archive.tar.gz
+bower retry         Download of https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz failed with ECONNRESET, retrying in 1.6s
+bower resolved      https://github.com/es-shims/es5-shim.git#4.5.9
+bower extract       jquery#>=1.7 archive.tar.gz
+bower extract       angular-highlightjs#~0.4.3 archive.tar.gz
+bower not-cached    https://github.com/timdown/rangy-release.git#^1.2.0
+bower resolve       https://github.com/timdown/rangy-release.git#^1.2.0
+bower not-cached    https://github.com/FortAwesome/Font-Awesome.git#^4.0.x
+bower resolve       https://github.com/FortAwesome/Font-Awesome.git#^4.0.x
+bower not-cached    https://github.com/fyockm/bootstrap-css-only.git#^3.0.x
+bower resolve       https://github.com/fyockm/bootstrap-css-only.git#^3.0.x
+bower extract       ngDraggable#~0.1.3 archive.tar.gz
+bower retry         Download of https://github.com/twbs/bootstrap/archive/v3.3.7.tar.gz failed with ECONNRESET, retrying in 2.6s
+bower invalid-meta  for:/tmp/elatov/bower/f34e09bb89a4e7d8583ec2eb04431b98-12815-e3G0pc/bower.json
+bower invalid-meta  The "name" is recommended to be lowercase, can contain digits, dots, dashes
+bower mismatch      Version declared in the json (0.1.10) is different than the resolved one (0.1.11)
+bower resolved      https://github.com/fatlinesofcode/ngDraggable.git#0.1.11
+bower not-cached    https://github.com/angular/bower-angular.git#*
+bower resolve       https://github.com/angular/bower-angular.git#*
+bower download      https://github.com/angular/bower-angular/archive/v1.6.0.tar.gz
+bower extract       jquery.scrollTo#~2.1.0 archive.tar.gz
+bower download      https://github.com/FortAwesome/Font-Awesome/archive/v4.7.0.tar.gz
+bower download      https://github.com/fyockm/bootstrap-css-only/archive/v3.3.7.tar.gz
+bower download      https://github.com/timdown/rangy-release/archive/1.3.0.tar.gz
+bower extract       jquery#~2.1.1 archive.tar.gz
+bower extract       angular#^1.2.x archive.tar.gz
+bower invalid-meta  for:/tmp/elatov/bower/815e447f934b948a5a66c0c2bdabc1e8-12815-Nr6LLv/bower.json
+bower invalid-meta  The "name" is recommended to be lowercase, can contain digits, dots, dashes
+bower resolved      https://github.com/flesler/jquery.scrollTo.git#2.1.2
+bower not-cached    https://github.com/jquery/jquery-dist.git#>=1.8
+bower resolve       https://github.com/jquery/jquery-dist.git#>=1.8
+bower download      https://github.com/jquery/jquery-dist/archive/3.1.1.tar.gz
+bower resolved      https://github.com/pc035860/angular-highlightjs.git#0.4.3
+bower not-cached    https://github.com/angular/bower-angular.git#>1.0.8
+bower resolve       https://github.com/angular/bower-angular.git#>1.0.8
+bower download      https://github.com/angular/bower-angular/archive/v1.6.0.tar.gz
+bower extract       angular-ui-bootstrap-bower#~0.12.1 archive.tar.gz
+bower retry         Download of https://github.com/fyockm/bootstrap-css-only/archive/v3.3.7.tar.gz failed with ECONNRESET, retrying in 1.5s
+bower extract       jquery-overscroll-fixed#~1.7.7 archive.tar.gz
+bower retry         Download of https://github.com/FortAwesome/Font-Awesome/archive/v4.7.0.tar.gz failed with ECONNRESET, retrying in 1.7s
+bower extract       rangy#^1.2.0 archive.tar.gz
+bower extract       x-editable#1.5.0 archive.tar.gz
+bower resolved      https://github.com/azoff/overscroll.git#1.7.7
+bower not-cached    https://github.com/jquery/jquery-dist.git#>=2.1.0
+bower resolve       https://github.com/jquery/jquery-dist.git#>=2.1.0
+bower download      https://github.com/jquery/jquery-dist/archive/3.1.1.tar.gz
+bower resolved      https://github.com/angular-ui/bootstrap-bower.git#0.12.1
+bower invalid-meta  for:/tmp/elatov/bower/2a03342441b84cb1ec59db2e182e0566-12815-Xs442x/bower.json
+bower invalid-meta  The "main" field has to contain only 1 file per filetype; found multiple .js files: ["rangy-core.js","rangy-classapplier.js","rangy-highlighter.js","rangy-selectionsaverestore.js","rangy-serializer.js","rangy-textrange.js"]
+bower extract       angular#* archive.tar.gz
+bower retry         Download of https://github.com/angular/bower-angular/archive/v1.6.0.tar.gz failed with ECONNRESET, retrying in 1.2s
+bower resolved      https://github.com/timdown/rangy-release.git#1.3.0
+bower extract       placeholders#~4.0.1 archive.tar.gz
+bower extract       angular#>= 1.0.8 archive.tar.gz
+bower extract       angular-loading-bar#~0.7.1 archive.tar.gz
+bower extract       jquery#>=1.8 archive.tar.gz
+bower resolved      https://github.com/jquery/jquery-dist.git#3.1.1
+bower resolved      https://github.com/angular/bower-angular.git#1.6.0
+bower resolved      https://github.com/chieffancypants/angular-loading-bar.git#0.7.1
+bower mismatch      Version declared in the json (4.0.0) is different than the resolved one (4.0.1)
+bower resolved      https://github.com/jamesallardice/Placeholders.js.git#4.0.1
+bower extract       jquery#>=2.1.0 archive.tar.gz
+bower resolved      https://github.com/jquery/jquery-dist.git#1.11.3
+bower resolved      https://github.com/angular/bower-angular.git#1.6.0
+bower resolved      https://github.com/angular/bower-angular.git#1.6.0
+bower extract       bootstrap#>=3.0.0 archive.tar.gz
+bower resolved      https://github.com/jquery/jquery-dist.git#2.1.4
+bower extract       angular#~1.2 archive.tar.gz
+bower resolved      https://github.com/jquery/jquery-dist.git#3.1.1
+bower extract       bootstrap-css-only#^3.0.x archive.tar.gz
+bower extract       angular#>1.0.8 archive.tar.gz
+bower resolved      https://github.com/jquery/jquery-dist.git#3.1.1
+bower resolved      https://github.com/angular/bower-angular.git#1.2.32
+bower invalid-meta  for:/tmp/elatov/bower/958975d23740923f699016770b013d39-12815-kpQ23U/bower.json
+bower invalid-meta  The "main" field cannot contain font, image, audio, or video files
+bower invalid-meta  The "main" field cannot contain font, image, audio, or video files
+bower invalid-meta  The "main" field cannot contain font, image, audio, or video files
+bower invalid-meta  The "main" field cannot contain font, image, audio, or video files
+bower resolved      https://github.com/fyockm/bootstrap-css-only.git#3.3.7
+bower resolved      https://github.com/angular/bower-angular.git#1.6.0
+bower extract       font-awesome#^4.0.x archive.tar.gz
+bower resolved      https://github.com/vitalets/x-editable.git#1.5.0
+bower resolved      https://github.com/twbs/bootstrap.git#3.3.7
+bower resolved      https://github.com/FortAwesome/Font-Awesome.git#4.7.0
+bower extract       bootstrap#~3.3.4 archive.tar.gz
+bower resolved      https://github.com/twbs/bootstrap.git#3.3.7
+
+Please note that,
+    Paperwork depends on jquery#~1.11 which resolved to jquery#1.11.3
+    bootstrap-tagsinput#0.4.2 depends on jquery#~2.1.1 which resolved to jquery#2.1.4
+    bootstrap#3.3.7, bootstrap#3.3.7 depends on jquery#1.9.1 - 3 which resolved to jquery#3.1.1
+    typeahead.js#0.10.5 depends on jquery#>=1.7 which resolved to jquery#3.1.1
+    jquery.scrollTo#2.1.2 depends on jquery#>=1.8 which resolved to jquery#3.1.1
+    jquery-overscroll-fixed#1.7.7 depends on jquery#>=2.1.0 which resolved to jquery#3.1.1
+    x-editable#1.5.0 depends on jquery#>=1.6 which resolved to jquery#3.1.1
+Resort to using jquery#~1.11 which resolved to jquery#1.11.3
+Code incompatibilities may occur.
+
+bower extra-resolution      Unnecessary resolution: angular#~1.2
+bower extra-resolution      Unnecessary resolution: angular-animate#~1.2
+bower extra-resolution      Unnecessary resolution: angular-resource#~1.2
+bower extra-resolution      Unnecessary resolution: angular-route#~1.2
+bower install               angular-file-upload#1.1.5
+bower install               angular-utf8-base64#0.0.5
+bower install               angular-resource#1.2.32
+bower install               angular-route#1.2.32
+bower install               html5shiv#3.7.3
+bower install               respond#1.4.2
+bower install               angular-animate#1.2.32
+bower install               typeahead.js#0.10.5
+bower install               retinajs#1.3.0
+bower install               bootstrap3-ie10-viewport-bug-workaround#1.0.0
+bower install               bootstrap-tagsinput#0.4.2
+bower install               textAngular#1.3.11
+bower install               es5-shim#4.5.9
+bower install               ngDraggable#0.1.11
+bower install               jquery.scrollTo#2.1.2
+bower install               angular-highlightjs#0.4.3
+bower install               jquery-overscroll-fixed#1.7.7
+bower install               angular-ui-bootstrap-bower#0.12.1
+bower install               rangy#1.3.0
+bower install               jquery#1.11.3
+bower install               angular#1.2.32
+bower install               angular-loading-bar#0.7.1
+bower install               placeholders#4.0.1
+bower install               bootstrap-css-only#3.3.7
+bower install               x-editable#1.5.0
+bower install               bootstrap#3.3.7
+bower install               font-awesome#4.7.0
+
+angular-file-upload#1.1.5 app/js/bower_components/angular-file-upload
+├── angular#1.2.32
+└── es5-shim#4.5.9
+
+angular-utf8-base64#0.0.5 app/js/bower_components/angular-utf8-base64
+└── angular#1.2.32
+
+angular-resource#1.2.32 app/js/bower_components/angular-resource
+└── angular#1.2.32
+
+angular-route#1.2.32 app/js/bower_components/angular-route
+└── angular#1.2.32
+
+html5shiv#3.7.3 app/js/bower_components/html5shiv
+
+respond#1.4.2 app/js/bower_components/respond
+
+angular-animate#1.2.32 app/js/bower_components/angular-animate
+└── angular#1.2.32
+
+typeahead.js#0.10.5 app/js/bower_components/typeahead.js
+└── jquery#1.11.3
+
+retinajs#1.3.0 app/js/bower_components/retinajs
+
+bootstrap3-ie10-viewport-bug-workaround#1.0.0 app/js/bower_components/bootstrap3-ie10-viewport-bug-workaround
+└── bootstrap#3.3.7
+
+bootstrap-tagsinput#0.4.2 app/js/bower_components/bootstrap-tagsinput
+└── jquery#1.11.3
+
+textAngular#1.3.11 app/js/bower_components/textAngular
+├── angular#1.2.32
+├── bootstrap-css-only#3.3.7
+├── font-awesome#4.7.0
+└── rangy#1.3.0
+
+es5-shim#4.5.9 app/js/bower_components/es5-shim
+
+ngDraggable#0.1.11 app/js/bower_components/ngDraggable
+└── angular#1.2.32
+
+jquery.scrollTo#2.1.2 app/js/bower_components/jquery.scrollTo
+└── jquery#1.11.3
+
+angular-highlightjs#0.4.3 app/js/bower_components/angular-highlightjs
+└── angular#1.2.32
+
+jquery-overscroll-fixed#1.7.7 app/js/bower_components/jquery-overscroll-fixed
+└── jquery#1.11.3
+
+angular-ui-bootstrap-bower#0.12.1 app/js/bower_components/angular-ui-bootstrap-bower
+└── angular#1.2.32
+
+rangy#1.3.0 app/js/bower_components/rangy
+
+jquery#1.11.3 app/js/bower_components/jquery
+
+angular#1.2.32 app/js/bower_components/angular
+
+angular-loading-bar#0.7.1 app/js/bower_components/angular-loading-bar
+└── angular#1.2.32
+
+placeholders#4.0.1 app/js/bower_components/placeholders
+
+bootstrap-css-only#3.3.7 app/js/bower_components/bootstrap-css-only
+
+x-editable#1.5.0 app/js/bower_components/x-editable
+└── jquery#1.11.3
+
+bootstrap#3.3.7 app/js/bower_components/bootstrap
+└── jquery#1.11.3
+
+font-awesome#4.7.0 app/js/bower_components/font-awesome
+
+# finally run the task
+
+[/var/www/paperwork/frontend] - [2016-12-17 05:10:15]
+└─[0] <git:(master 50527ed✈) > gulp
+[17:10:54] Using gulpfile /var/www/paperwork/frontend/gulpfile.js
+[17:10:54] Starting 'compileLessBootstrapTheme'...
+[17:10:54] Finished 'compileLessBootstrapTheme' after 8.01 ms
+[17:10:54] Starting 'compileLessPaperworkThemeV1'...
+[17:10:54] Finished 'compileLessPaperworkThemeV1' after 2.13 ms
+[17:10:54] Starting 'compileLessFreqselector'...
+[17:10:54] Finished 'compileLessFreqselector' after 1.25 ms
+[17:10:54] Starting 'compileLessTypeahead'...
+[17:10:54] Finished 'compileLessTypeahead' after 1.24 ms
+[17:10:54] Starting 'less'...
+[17:10:54] Finished 'less' after 7.23 μs
+[17:10:54] Starting 'lint'...
+[17:10:54] Finished 'lint' after 16 ms
+[17:10:54] Starting 'compileJsBootstrap'...
+[17:10:54] Finished 'compileJsBootstrap' after 2.68 ms
+[17:10:54] Starting 'compileJsPaperwork'...
+[17:10:54] Finished 'compileJsPaperwork' after 3.15 ms
+[17:10:54] Starting 'compileJsPaperworkNative'...
+[17:10:54] Finished 'compileJsPaperworkNative' after 1.36 ms
+[17:10:54] Starting 'compileJsAngular'...
+[17:10:54] Finished 'compileJsAngular' after 4.34 ms
+[17:10:54] Starting 'compileJsJquery'...
+[17:10:54] Finished 'compileJsJquery' after 1.4 ms
+[17:10:54] Starting 'compileJsTagsinput'...
+[17:10:54] Finished 'compileJsTagsinput' after 2 ms
+[17:10:54] Starting 'compileJsLibraries'...
+[17:10:54] Finished 'compileJsLibraries' after 3.11 ms
+[17:10:54] Starting 'compileJsLtIe9Compat'...
+[17:10:54] Finished 'compileJsLtIe9Compat' after 1.87 ms
+[17:10:54] Starting 'compileJsLtIe11Compat'...
+[17:10:54] Finished 'compileJsLtIe11Compat' after 1.03 ms
+[17:10:54] Starting 'js'...
+[17:10:54] Finished 'js' after 7.22 μs
+[17:10:54] Starting 'concatLibCSS'...
+[17:10:54] Finished 'concatLibCSS' after 1.1 ms
+[17:10:54] Starting 'default'...
+[17:10:54] Finished 'default' after 8.8 μs
+
+
+## then manually configure the app
+I kept getting into a redirect loop and the issue is described here:
+https://github.com/twostairs/paperwork/issues/649
+
+So following the instructions laid out in: https://github.com/twostairs/paperwork/wiki/Installing-and-configuring-Paperwork-without-using-the-Setup-Wizard
+
+# first set the config file to be 8
+
+[/var/www/paperwork/frontend] - [2016-12-17 09:38:59]
+└─[0] <git:(master 50527ed✱✈) > cat app/storage/config/setup
+8
+# then copy the default paperwork config
+[/var/www/paperwork/frontend] - [2016-12-17 09:39:03]
+└─[0] <git:(master 50527ed✱✈) > cp app/storage/config/default_paperwork.json app/storage/config/paperwork.json
+┌─[elatov@kerch] - [/var/www/paperwork/frontend] - [2016-12-17 09:39:42]
+└─[0] <git:(master 50527ed✱✈) > cat app/storage/config/paperwork.json
+{
+    "registration": true,
+    "forgot_password": true,
+    "showIssueReportingLink": false
+}
+
+# and change ownership
+<> sudo chown www-data:www-data -R /var/www/paperwork
+
+# Then when you go to the install it should redirect you to the login page:
+
+# then register the first user which will be the admin and if you want you can
+disable the registration by configuring the paperwork.json file.
+
+### To do an update
+# chown the project to your self
+sudo chown elatov:elatov -R /var/www/paperwork
+
+# then do the update
+<> cd /var/www/paperwork/frontend
+[/var/www/paperwork/frontend] - [2016-12-17 09:34:45]
+└─[0] <git:(master 50527ed✱✈) > php artisan paperwork:update
+Running git pull
+Already up-to-date.
+Already up-to-date.
+Running composer update
+Loading composer repositories with package information
+Updating dependencies (including require-dev)
+Nothing to install or update
+Package strebl/adldap is abandoned, you should avoid using it. Use adldap2/adldap2 instead.
+Generating autoload files
+> php artisan clear-compiled
+> php artisan ide-helper:generate
+A new helper file was written to _ide_helper.php
+> php artisan optimize
+Generating optimized class loader
+Generating optimized class loader
+Running npm update
+object-assign@3.0.0 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/object-assign
+array-unique@0.2.1 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/array-unique
+extglob@0.3.2 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/extglob
+replace-ext@0.0.1 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/replace-ext
+supports-color@2.0.0 node_modules/jshint-stylish/node_modules/chalk/node_modules/supports-color
+array-differ@1.0.0 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/array-differ
+user-home@1.1.1 node_modules/gulp/node_modules/v8flags/node_modules/user-home
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/parse-glob/node_modules/glob-base requires is-glob@'^2.0.0' but will load
+npm WARN unmet dependency undefined,
+npm WARN unmet dependency which is version undefined
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/parse-glob/node_modules/glob-base/node_modules/glob-parent requires is-glob@'^2.0.0' but will load
+npm WARN unmet dependency undefined,
+npm WARN unmet dependency which is version undefined
+is-extglob@1.0.0 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/parse-glob/node_modules/is-extglob
+stream-combiner@0.0.4 node_modules/gulp-livereload/node_modules/event-stream/node_modules/stream-combiner
+isarray@1.0.0 node_modules/gulp-concat/node_modules/through2/node_modules/readable-stream/node_modules/isarray
+is-windows@0.2.0 node_modules/gulp/node_modules/liftoff/node_modules/fined/node_modules/parse-filepath/node_modules/is-absolute/node_modules/is-windows
+is-glob@2.0.1 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/is-glob
+map-stream@0.1.0 node_modules/gulp-livereload/node_modules/event-stream/node_modules/map-stream
+object-assign@3.0.0 node_modules/gulp/node_modules/gulp-util/node_modules/object-assign
+supports-color@2.0.0 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/chalk/node_modules/supports-color
+split@0.3.3 node_modules/gulp-livereload/node_modules/event-stream/node_modules/split
+is-extglob@1.0.0 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/is-extglob
+array-differ@1.0.0 node_modules/gulp/node_modules/gulp-util/node_modules/array-differ
+clone@1.0.2 node_modules/gulp-concat/node_modules/vinyl/node_modules/clone
+replace-ext@0.0.1 node_modules/gulp/node_modules/gulp-util/node_modules/replace-ext
+isarray@1.0.0 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/through2/node_modules/readable-stream/node_modules/isarray
+arr-diff@2.0.0 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/arr-diff
+└── arr-flatten@1.0.1
+expand-tilde@1.2.2 node_modules/gulp/node_modules/liftoff/node_modules/fined/node_modules/expand-tilde
+└── os-homedir@1.0.2
+supports-color@2.0.0 node_modules/gulp/node_modules/chalk/node_modules/supports-color
+expand-brackets@0.1.5 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/expand-brackets
+└── is-posix-bracket@0.1.1
+npm WARN deprecated minimatch@2.0.10: Please update to minimatch 3.0.2 or higher to avoid a RegExp DoS issue
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-livereload/node_modules/mini-lr/node_modules/body-parser requires debug@'~2.2.0' but will load
+npm WARN unmet dependency undefined,
+npm WARN unmet dependency which is version undefined
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-livereload/node_modules/mini-lr/node_modules/body-parser requires qs@'5.2.0' but will load
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-livereload/node_modules/mini-lr/node_modules/qs,
+npm WARN unmet dependency which is version 2.2.5
+qs@2.2.5 node_modules/gulp-livereload/node_modules/mini-lr/node_modules/qs
+is-glob@2.0.1 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/is-glob
+└── is-extglob@1.0.0
+isarray@1.0.0 node_modules/gulp/node_modules/gulp-util/node_modules/through2/node_modules/readable-stream/node_modules/isarray
+npm WARN engine less@2.7.1: wanted: {"node":">=0.12"} (current: {"node":"0.10.29","npm":"1.4.21"})
+vinyl@0.5.3 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/vinyl
+├── clone-stats@0.0.1
+└── clone@1.0.2
+is-glob@2.0.1 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/parse-glob/node_modules/is-glob
+└── is-extglob@1.0.0
+lodash.assign@3.2.0 node_modules/gulp-livereload/node_modules/lodash.assign
+├── lodash.keys@3.1.2 (lodash._getnative@3.9.1, lodash.isarray@3.0.4, lodash.isarguments@3.1.0)
+├── lodash._baseassign@3.2.0 (lodash._basecopy@3.0.1)
+└── lodash._createassigner@3.1.1 (lodash._bindcallback@3.0.1, lodash.restparam@3.6.1, lodash._isiterateecall@3.0.9)
+end-of-stream@0.1.5 node_modules/gulp/node_modules/orchestrator/node_modules/end-of-stream
+└── once@1.3.3 (wrappy@1.0.2)
+chalk@0.5.1 node_modules/gulp-livereload/node_modules/chalk
+├── ansi-styles@1.1.0
+├── escape-string-regexp@1.0.5
+├── supports-color@0.2.0
+├── has-ansi@0.1.0 (ansi-regex@0.2.1)
+└── strip-ansi@0.3.0 (ansi-regex@0.2.1)
+is-glob@2.0.1 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/parse-glob/node_modules/glob-base/node_modules/is-glob
+└── is-extglob@1.0.0
+lodash.template@3.6.2 node_modules/gulp/node_modules/gulp-util/node_modules/lodash.template
+├── lodash._basecopy@3.0.1
+├── lodash._basetostring@3.0.1
+├── lodash._basevalues@3.0.0
+├── lodash.templatesettings@3.1.1
+├── lodash.restparam@3.6.1
+├── lodash._isiterateecall@3.0.9
+├── lodash.escape@3.2.0 (lodash._root@3.0.1)
+└── lodash.keys@3.1.2 (lodash._getnative@3.9.1, lodash.isarray@3.0.4, lodash.isarguments@3.1.0)
+vinyl@0.5.3 node_modules/gulp/node_modules/gulp-util/node_modules/vinyl
+├── clone-stats@0.0.1
+└── clone@1.0.2
+glob-parent@2.0.0 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/parse-glob/node_modules/glob-base/node_modules/glob-parent
+└── is-glob@2.0.1 (is-extglob@1.0.0)
+lodash.template@3.6.2 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/lodash.template
+├── lodash._basecopy@3.0.1
+├── lodash._basetostring@3.0.1
+├── lodash._basevalues@3.0.0
+├── lodash.templatesettings@3.1.1
+├── lodash.restparam@3.6.1
+├── lodash._isiterateecall@3.0.9
+├── lodash.escape@3.2.0 (lodash._root@3.0.1)
+└── lodash.keys@3.1.2 (lodash._getnative@3.9.1, lodash.isarray@3.0.4, lodash.isarguments@3.1.0)
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp/node_modules/vinyl-fs/node_modules/mkdirp requires minimist@'0.0.8' but will load
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp/node_modules/minimist,
+npm WARN unmet dependency which is version 1.2.0
+semver@4.3.6 node_modules/gulp/node_modules/semver
+braces@1.8.5 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/micromatch/node_modules/braces
+├── repeat-element@1.1.2
+├── preserve@0.2.0
+└── expand-range@1.8.2 (fill-range@2.2.3)
+resolve-dir@0.1.1 node_modules/gulp/node_modules/liftoff/node_modules/findup-sync/node_modules/resolve-dir
+├── expand-tilde@1.2.2 (os-homedir@1.0.2)
+└── global-modules@0.2.3 (is-windows@0.2.0, global-prefix@0.1.5)
+npm WARN deprecated minimatch@0.2.14: Please update to minimatch 3.0.2 or higher to avoid a RegExp DoS issue
+multipipe@0.1.2 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/multipipe
+└── duplexer2@0.0.2 (readable-stream@1.1.14)
+faye-websocket@0.7.3 node_modules/gulp-livereload/node_modules/mini-lr/node_modules/faye-websocket
+└── websocket-driver@0.6.5 (websocket-extensions@0.1.1)
+multipipe@0.1.2 node_modules/gulp/node_modules/gulp-util/node_modules/multipipe
+└── duplexer2@0.0.2 (readable-stream@1.1.14)
+npm WARN deprecated graceful-fs@1.2.3: graceful-fs v3.0.0 and before will fail on node releases >= v7.0. Please update to graceful-fs@^4.0.0 as soon as possible. Use 'npm ls graceful-fs' to find it in the tree.
+body-parser@1.14.2 node_modules/gulp-livereload/node_modules/mini-lr/node_modules/body-parser
+├── bytes@2.2.0
+├── content-type@1.0.2
+├── depd@1.1.0
+├── on-finished@2.3.0 (ee-first@1.1.1)
+├── http-errors@1.3.1 (inherits@2.0.3, statuses@1.3.1)
+├── raw-body@2.1.7 (unpipe@1.0.0, bytes@2.4.0)
+├── debug@2.2.0 (ms@0.7.1)
+├── qs@5.2.0
+├── type-is@1.6.14 (media-typer@0.3.0, mime-types@2.1.13)
+└── iconv-lite@0.4.13
+dateformat@1.0.12 node_modules/gulp-livereload/node_modules/gulp-util/node_modules/dateformat
+├── get-stdin@4.0.1
+└── meow@3.7.0 (decamelize@1.2.0, map-obj@1.0.1, trim-newlines@1.0.0, object-assign@4.1.0, camelcase-keys@2.1.0, loud-rejection@1.6.0, redent@1.0.0, read-pkg-up@1.0.1, normalize-package-data@2.3.5)
+dateformat@1.0.12 node_modules/gulp/node_modules/gulp-util/node_modules/dateformat
+├── get-stdin@4.0.1
+└── meow@3.7.0 (decamelize@1.2.0, map-obj@1.0.1, trim-newlines@1.0.0, object-assign@4.1.0, camelcase-keys@2.1.0, loud-rejection@1.6.0, redent@1.0.0, minimist@1.2.0, read-pkg-up@1.0.1, normalize-package-data@2.3.5)
+vinyl-fs@0.3.14 node_modules/gulp/node_modules/vinyl-fs
+├── strip-bom@1.0.0 (first-chunk-stream@1.0.0, is-utf8@0.2.1)
+├── graceful-fs@3.0.11 (natives@1.1.0)
+├── vinyl@0.4.6 (clone-stats@0.0.1, clone@0.2.0)
+├── defaults@1.0.3 (clone@1.0.2)
+├── mkdirp@0.5.1 (minimist@0.0.8)
+├── glob-stream@3.1.18 (unique-stream@1.0.0, ordered-read-streams@0.1.0, glob2base@0.0.12, glob@4.5.3, minimatch@2.0.10)
+├── through2@0.6.5 (readable-stream@1.0.34, xtend@4.0.1)
+└── glob-watcher@0.0.6 (gaze@0.5.2)
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-jshint/node_modules/jshint requires minimatch@'~3.0.2' but will load
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-jshint/node_modules/minimatch,
+npm WARN unmet dependency which is version 2.0.10
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-jshint/node_modules/jshint requires lodash@'3.7.x' but will load
+npm WARN unmet dependency /var/www/paperwork/frontend/node_modules/gulp-jshint/node_modules/lodash,
+npm WARN unmet dependency which is version 3.10.1
+gulp-uglify@1.1.0 node_modules/gulp-uglify
+├── deepmerge@0.2.10
+├── through2@0.6.5 (xtend@4.0.1, readable-stream@1.0.34)
+├── uglify-js@2.4.16 (uglify-to-browserify@1.0.2, async@0.2.10, optimist@0.3.7, source-map@0.1.34)
+├── gulp-util@3.0.7 (array-differ@1.0.0, lodash._reinterpolate@3.0.0, beeper@1.1.1, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, fancy-log@1.2.0, has-gulplog@0.1.0, gulplog@1.0.0, lodash.template@3.6.2, vinyl@0.5.3, chalk@1.1.3, minimist@1.2.0, through2@2.0.3, dateformat@1.0.12, multipipe@0.1.2)
+└── vinyl-sourcemaps-apply@0.1.4 (source-map@0.1.43)
+gulp-bower@0.0.10 node_modules/gulp-bower
+├── through2@0.6.2 (xtend@4.0.1, readable-stream@1.0.34)
+├── walk@2.3.3 (foreachasync@3.0.0)
+└── gulp-util@3.0.1 (lodash._reinterpolate@2.4.1, vinyl@0.4.6, chalk@0.5.1, minimist@1.2.0, lodash.template@2.4.1, multipipe@0.1.2, dateformat@1.0.12, lodash@2.4.2)
+gulp-ng-annotate@0.5.3 node_modules/gulp-ng-annotate
+├── merge@1.2.0
+├── vinyl-sourcemaps-apply@0.1.4 (source-map@0.1.43)
+├── through2@0.4.2 (xtend@2.1.2, readable-stream@1.0.34)
+├── bufferstreams@0.0.2 (readable-stream@1.1.14)
+├── gulp-util@2.2.20 (lodash._reinterpolate@2.4.1, minimist@0.2.0, vinyl@0.2.3, chalk@0.5.1, lodash.template@2.4.1, through2@0.5.1, multipipe@0.1.2, dateformat@1.0.12)
+└── ng-annotate@0.15.4 (tryor@0.1.2, alter@0.2.0, simple-fmt@0.1.0, simple-is@0.2.0, stringset@0.2.1, stringmap@0.2.2, stable@0.1.5, convert-source-map@0.4.1, ordered-ast-traverse@1.1.1, optimist@0.6.1, source-map@0.1.43, acorn@0.11.0)
+gulp-less@2.0.1 node_modules/gulp-less
+├── convert-source-map@0.4.1
+├── lodash.defaults@2.4.1 (lodash._objecttypes@2.4.1, lodash.keys@2.4.1)
+├── vinyl-sourcemaps-apply@0.1.4 (source-map@0.1.43)
+├── through2@0.6.5 (xtend@4.0.1, readable-stream@1.0.34)
+├── gulp-util@3.0.7 (array-differ@1.0.0, beeper@1.1.1, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, lodash._reinterpolate@3.0.0, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, has-gulplog@0.1.0, fancy-log@1.2.0, gulplog@1.0.0, vinyl@0.5.3, lodash.template@3.6.2, chalk@1.1.3, minimist@1.2.0, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+└── less@2.7.1 (graceful-fs@4.1.11, mime@1.3.4, image-size@0.5.0, errno@0.1.4, mkdirp@0.5.1, promise@7.1.1, source-map@0.5.6)
+gulp-jshint@1.12.0 node_modules/gulp-jshint
+├── minimatch@2.0.10 (brace-expansion@1.1.6)
+├── through2@0.6.5 (xtend@4.0.1, readable-stream@1.0.34)
+├── rcloader@0.1.2 (rcfinder@0.1.9, lodash@2.4.2)
+├── gulp-util@3.0.7 (array-differ@1.0.0, lodash._reescape@3.0.0, lodash._reevaluate@3.0.0, lodash._reinterpolate@3.0.0, beeper@1.1.1, object-assign@3.0.0, array-uniq@1.0.3, replace-ext@0.0.1, has-gulplog@0.1.0, fancy-log@1.2.0, minimist@1.2.0, gulplog@1.0.0, vinyl@0.5.3, lodash.template@3.6.2, chalk@1.1.3, through2@2.0.3, multipipe@0.1.2, dateformat@1.0.12)
+├── lodash@3.10.1
+└── jshint@2.9.4 (strip-json-comments@1.0.4, exit@0.1.2, console-browserify@1.1.0, shelljs@0.3.0, minimatch@3.0.3, cli@1.0.1, htmlparser2@3.8.3, lodash@3.7.0)
+└── jshint@2.9.4 (strip-json-comments@1.0.4, exit@0.1.2, console-browserify@1.1.0, shelljs@0.3.0, minimatch@3.0.3, cli@1.0.1, htmlparser2@3.8.3, lodash@3.7.0)
+Running npm run bower-update
+
+> @ bower-update /var/www/paperwork/frontend
+> gulp bower-update
+
+[21:35:46] Using gulpfile /var/www/paperwork/frontend/gulpfile.js
+[21:35:46] Starting 'bower-update'...
+[21:35:46] Using cwd:  /var/www/paperwork/frontend
+[21:35:46] Using bower dir:  app/js/bower_components
+[21:35:47] bower invalid-meta for:/var/www/paperwork/frontend/bower.json
+[21:35:47] bower invalid-meta The "name" is recommended to be lowercase, can contain digits, dots, dashes
+[21:35:47] bower cached https://github.com/angular/bower-angular.git#1.2.32
+[21:35:47] bower validate 1.2.32 against https://github.com/angular/bower-angular.git#~1.2
+[21:35:47] bower cached https://github.com/angular/bower-angular-animate.git#1.2.32
+[21:35:47] bower validate 1.2.32 against https://github.com/angular/bower-angular-animate.git#~1.2
+[21:35:47] bower cached https://github.com/angular/bower-angular-route.git#1.2.32
+[21:35:47] bower validate 1.2.32 against https://github.com/angular/bower-angular-route.git#~1.2
+[21:35:47] bower cached https://github.com/angular/bower-angular-resource.git#1.2.32
+[21:35:47] bower validate 1.2.32 against https://github.com/angular/bower-angular-resource.git#~1.2
+[21:35:47] bower cached https://github.com/nervgh/angular-file-upload.git#1.1.5
+[21:35:47] bower validate 1.1.5 against https://github.com/nervgh/angular-file-upload.git#1.1.5
+[21:35:47] bower cached https://github.com/jquery/jquery-dist.git#1.11.3
+[21:35:47] bower validate 1.11.3 against https://github.com/jquery/jquery-dist.git#~1.11
+[21:35:47] bower cached https://github.com/stranger82/angular-utf8-base64.git#0.0.5
+[21:35:47] bower validate 0.0.5 against https://github.com/stranger82/angular-utf8-base64.git#~0.0.5
+[21:35:47] bower cached https://github.com/fatlinesofcode/ngDraggable.git#0.1.11
+[21:35:47] bower validate 0.1.11 against https://github.com/fatlinesofcode/ngDraggable.git#~0.1.3
+[21:35:47] bower cached https://github.com/aFarkas/html5shiv.git#3.7.3
+[21:35:47] bower validate 3.7.3 against https://github.com/aFarkas/html5shiv.git#~3.7.2
+[21:35:47] bower cached https://github.com/scottjehl/Respond.git#1.4.2
+[21:35:47] bower validate 1.4.2 against https://github.com/scottjehl/Respond.git#~1.4.2
+[21:35:47] bower cached https://github.com/azoff/overscroll.git#1.7.7
+[21:35:47] bower validate 1.7.7 against https://github.com/azoff/overscroll.git#~1.7.7
+[21:35:47] bower cached https://github.com/angular-ui/bootstrap-bower.git#0.12.1
+[21:35:47] bower validate 0.12.1 against https://github.com/angular-ui/bootstrap-bower.git#~0.12.1
+[21:35:47] bower cached https://github.com/twbs/bootstrap.git#3.3.7
+[21:35:47] bower validate 3.3.7 against https://github.com/twbs/bootstrap.git#~3.3.4
+[21:35:47] bower cached https://github.com/flesler/jquery.scrollTo.git#2.1.2
+[21:35:47] bower validate 2.1.2 against https://github.com/flesler/jquery.scrollTo.git#~2.1.0
+[21:35:47] bower cached https://github.com/imulus/retinajs.git#1.3.0
+[21:35:47] bower validate 1.3.0 against https://github.com/imulus/retinajs.git#~1.3.0
+[21:35:47] bower cached https://github.com/TimSchlechter/bootstrap-tagsinput.git#0.4.2
+[21:35:47] bower validate 0.4.2 against https://github.com/TimSchlechter/bootstrap-tagsinput.git#~0.4.2
+[21:35:47] bower cached https://github.com/twitter/typeahead.js.git#0.10.5
+[21:35:47] bower validate 0.10.5 against https://github.com/twitter/typeahead.js.git#~0.10.5
+[21:35:47] bower cached https://github.com/Haixing-Hu/bootstrap3-ie10-viewport-bug-workaround.git#1.0.0
+[21:35:47] bower validate 1.0.0 against https://github.com/Haixing-Hu/bootstrap3-ie10-viewport-bug-workaround.git#~1.0.0
+[21:35:47] bower cached https://github.com/chieffancypants/angular-loading-bar.git#0.7.1
+[21:35:47] bower validate 0.7.1 against https://github.com/chieffancypants/angular-loading-bar.git#~0.7.1
+[21:35:47] bower cached https://github.com/jamesallardice/Placeholders.js.git#4.0.1
+[21:35:47] bower validate 4.0.1 against https://github.com/jamesallardice/Placeholders.js.git#~4.0.1
+[21:35:47] bower cached https://github.com/fraywing/textAngular.git#1.3.11
+[21:35:47] bower validate 1.3.11 against https://github.com/fraywing/textAngular.git#~1.3.0
+[21:35:47] bower cached https://github.com/pc035860/angular-highlightjs.git#0.4.3
+[21:35:47] bower validate 0.4.3 against https://github.com/pc035860/angular-highlightjs.git#~0.4.3
+[21:35:47] bower cached https://github.com/vitalets/x-editable.git#1.5.0
+[21:35:47] bower validate 1.5.0 against https://github.com/vitalets/x-editable.git#1.5.0
+[21:35:47] bower cached https://github.com/es-shims/es5-shim.git#4.5.9
+[21:35:47] bower validate 4.5.9 against https://github.com/es-shims/es5-shim.git#>=3.4.0
+[21:35:50] bower cached https://github.com/jquery/jquery-dist.git#3.1.1
+[21:35:50] bower validate 3.1.1 against https://github.com/jquery/jquery-dist.git#>=2.1.0
+[21:35:51] bower cached https://github.com/jquery/jquery-dist.git#2.1.4
+[21:35:51] bower validate 2.1.4 against https://github.com/jquery/jquery-dist.git#~2.1.1
+[21:35:51] bower cached https://github.com/fyockm/bootstrap-css-only.git#3.3.7
+[21:35:51] bower validate 3.3.7 against https://github.com/fyockm/bootstrap-css-only.git#^3.0.x
+[21:35:51] bower cached https://github.com/FortAwesome/Font-Awesome.git#4.7.0
+[21:35:51] bower validate 4.7.0 against https://github.com/FortAwesome/Font-Awesome.git#^4.0.x
+[21:35:51] bower cached https://github.com/timdown/rangy-release.git#1.3.0
+[21:35:51] bower validate 1.3.0 against https://github.com/timdown/rangy-release.git#^1.2.0
+[21:35:52] bower solved Unable to find suitable version for jquery
+[21:35:52] bower extra-resolution Unnecessary resolution: angular#~1.2
+[21:35:52] bower extra-resolution Unnecessary resolution: angular-animate#~1.2
+[21:35:52] bower extra-resolution Unnecessary resolution: angular-resource#~1.2
+[21:35:52] bower extra-resolution Unnecessary resolution: angular-route#~1.2
+[21:35:53] Finished 'bower-update' after 6.91 s
+[21:35:53] Finished 'bower-update' after 6.91 s
+Running npm run build
+
+> @ build /var/www/paperwork/frontend
+> gulp
+
+[21:35:55] Using gulpfile /var/www/paperwork/frontend/gulpfile.js
+[21:35:55] Starting 'compileLessBootstrapTheme'...
+[21:35:55] Finished 'compileLessBootstrapTheme' after 7.44 ms
+[21:35:55] Starting 'compileLessPaperworkThemeV1'...
+[21:35:55] Finished 'compileLessPaperworkThemeV1' after 9.97 ms
+[21:35:55] Starting 'compileLessFreqselector'...
+[21:35:55] Finished 'compileLessFreqselector' after 945 μs
+[21:35:55] Starting 'compileLessTypeahead'...
+[21:35:55] Finished 'compileLessTypeahead' after 1.5 ms
+[21:35:55] Starting 'less'...
+[21:35:55] Finished 'less' after 7.85 μs
+[21:35:55] Starting 'lint'...
+[21:35:55] Finished 'lint' after 6.91 ms
+[21:35:55] Starting 'compileJsBootstrap'...
+[21:35:55] Finished 'compileJsBootstrap' after 2.26 ms
+[21:35:55] Starting 'compileJsPaperwork'...
+[21:35:55] Finished 'compileJsPaperwork' after 3.11 ms
+[21:35:55] Starting 'compileJsPaperworkNative'...
+[21:35:55] Finished 'compileJsPaperworkNative' after 1.19 ms
+[21:35:55] Starting 'compileJsAngular'...
+[21:35:55] Finished 'compileJsAngular' after 4.04 ms
+[21:35:55] Starting 'compileJsJquery'...
+[21:35:55] Finished 'compileJsJquery' after 1.29 ms
+[21:35:55] Starting 'compileJsTagsinput'...
+[21:35:55] Finished 'compileJsTagsinput' after 1.96 ms
+[21:35:55] Starting 'compileJsLibraries'...
+[21:35:55] Finished 'compileJsLibraries' after 2.3 ms
+[21:35:55] Starting 'compileJsLtIe9Compat'...
+[21:35:55] Finished 'compileJsLtIe9Compat' after 1.52 ms
+[21:35:55] Starting 'compileJsLtIe11Compat'...
+[21:35:55] Finished 'compileJsLtIe11Compat' after 1.8 ms
+[21:35:55] Starting 'js'...
+[21:35:55] Finished 'js' after 7.25 μs
+[21:35:55] Starting 'concatLibCSS'...
+[21:35:55] Finished 'concatLibCSS' after 1.89 ms
+[21:35:55] Starting 'default'...
+[21:35:55] Finished 'default' after 9.11 μs
+[21:35:55] Finished 'default' after 9.11 μs
+Done.
+
+# Then chown it back
+sudo chown www-data:www-data -R /var/www/paperwork

@@ -1,0 +1,16 @@
+Model: Google Snow
+In:  mkbp-keyb
+Out: lcd
+Err: lcd
+Net: No Ethernet found
+Hit any key to stop autoboot: 0
+SMDK5250 # mmc dev 1
+ERROR: v7_dcache_inval_range - stop address is not alliged - 0xbda3d548
+mmc_init err 0, time 43906
+mmc1 is current device
+SMDK5250 # ext2load mmc 1:2 0x42000000 /env.txt
+Loading file "/env.txt" from mmc device 1:2 (Kernel)
+1832 bytes read
+SMDK5250 # env import -t 0x42000000
+## Info: input data size = 1833 = 0x729
+SMDK5250 #

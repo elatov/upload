@@ -1,0 +1,33 @@
+From Freebsd to RDM iSCSI LUN
+
+gdd of=/dev/zero if=/dev/da1 bs=1M count=5K oflag=direct
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 72.1177 s, 74.4 MB/s
+
+
+From Fedora to RDM iSCSI LUN store files on local disk LSI Parallel
+dd if=/dev/zero of=/dev/sdc bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 63.9067 s, 84.0 MB/s
+
+From Fedora to RDM iSCSI LUN store files on same Datastore LSI Parallel
+dd if=/dev/zero of=/dev/sdc bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 78.9693 s, 68.0 MB/s
+
+From Fedora to RDM iSCSI LUN store files local pvscsi
+
+dd if=/dev/zero of=/dev/sdc bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 109.22 s, 49.2 MB/s
+
+From Fedora to RDM iSCSI LUN store files local LSI SAS
+dd if=/dev/zero of=/dev/sdc bs=1M count=5K
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB) copied, 113.506 s, 47.3 MB/s
+

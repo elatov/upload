@@ -1,0 +1,166 @@
+Grab the original DMG from a MAC, it's under
+
+/Applications/Install.../Resources/Shared Support/InstallESD.dmg
+
+# it's actually not a valid dmg file so we need to extract the right one:
+http://www.insanelymac.com/forum/topic/197403-converting-os-x-106dmg-to-iso-using-dmg2img/
+
+# here is the extraction
+elatov@fed:/data/backup/dmg$7z x InstallESD.dmg 
+
+7-Zip [64] 9.20  Copyright (c) 1999-2010 Igor Pavlov  2010-11-18
+p7zip Version 9.20 (locale=en_US.UTF-8,Utf16=on,HugeFiles=on,2 CPUs)
+
+Processing archive: InstallESD.dmg
+
+Extracting  Resources
+Extracting  Resources/ar.lproj
+Extracting  Resources/ar.lproj/Localizable.strings
+Extracting  Resources/ar.lproj/VolumeCheck.strings
+Extracting  Resources/ca.lproj
+Extracting  Resources/ca.lproj/Localizable.strings
+Extracting  Resources/ca.lproj/VolumeCheck.strings
+Extracting  Resources/cs.lproj
+Extracting  Resources/cs.lproj/Localizable.strings
+Extracting  Resources/cs.lproj/VolumeCheck.strings
+Extracting  Resources/da.lproj
+Extracting  Resources/da.lproj/Localizable.strings
+Extracting  Resources/da.lproj/VolumeCheck.strings
+Extracting  Resources/Dutch.lproj
+Extracting  Resources/Dutch.lproj/Localizable.strings
+Extracting  Resources/Dutch.lproj/VolumeCheck.strings
+Extracting  Resources/el.lproj
+Extracting  Resources/el.lproj/Localizable.strings
+Extracting  Resources/el.lproj/VolumeCheck.strings
+Extracting  Resources/English.lproj
+Extracting  Resources/English.lproj/Localizable.strings
+Extracting  Resources/English.lproj/VolumeCheck.strings
+Extracting  Resources/fi.lproj
+Extracting  Resources/fi.lproj/Localizable.strings
+Extracting  Resources/fi.lproj/VolumeCheck.strings
+Extracting  Resources/French.lproj
+Extracting  Resources/French.lproj/Localizable.strings
+Extracting  Resources/French.lproj/VolumeCheck.strings
+Extracting  Resources/German.lproj
+Extracting  Resources/German.lproj/Localizable.strings
+Extracting  Resources/German.lproj/VolumeCheck.strings
+Extracting  Resources/he.lproj
+Extracting  Resources/he.lproj/Localizable.strings
+Extracting  Resources/he.lproj/VolumeCheck.strings
+Extracting  Resources/hr.lproj
+Extracting  Resources/hr.lproj/Localizable.strings
+Extracting  Resources/hr.lproj/VolumeCheck.strings
+Extracting  Resources/hu.lproj
+Extracting  Resources/hu.lproj/Localizable.strings
+Extracting  Resources/hu.lproj/VolumeCheck.strings
+Extracting  Resources/Italian.lproj
+Extracting  Resources/Italian.lproj/Localizable.strings
+Extracting  Resources/Italian.lproj/VolumeCheck.strings
+Extracting  Resources/Japanese.lproj
+Extracting  Resources/Japanese.lproj/Localizable.strings
+Extracting  Resources/Japanese.lproj/VolumeCheck.strings
+Extracting  Resources/ko.lproj
+Extracting  Resources/ko.lproj/Localizable.strings
+Extracting  Resources/ko.lproj/VolumeCheck.strings
+Extracting  Resources/no.lproj
+Extracting  Resources/no.lproj/Localizable.strings
+Extracting  Resources/no.lproj/VolumeCheck.strings
+Extracting  Resources/pl.lproj
+Extracting  Resources/pl.lproj/Localizable.strings
+Extracting  Resources/pl.lproj/VolumeCheck.strings
+Extracting  Resources/pt.lproj
+Extracting  Resources/pt.lproj/Localizable.strings
+Extracting  Resources/pt.lproj/VolumeCheck.strings
+Extracting  Resources/pt_PT.lproj
+Extracting  Resources/pt_PT.lproj/Localizable.strings
+Extracting  Resources/pt_PT.lproj/VolumeCheck.strings
+Extracting  Resources/ro.lproj
+Extracting  Resources/ro.lproj/Localizable.strings
+Extracting  Resources/ro.lproj/VolumeCheck.strings
+Extracting  Resources/ru.lproj
+Extracting  Resources/ru.lproj/Localizable.strings
+Extracting  Resources/ru.lproj/VolumeCheck.strings
+Extracting  Resources/sk.lproj
+Extracting  Resources/sk.lproj/Localizable.strings
+Extracting  Resources/sk.lproj/VolumeCheck.strings
+Extracting  Resources/Spanish.lproj
+Extracting  Resources/Spanish.lproj/Localizable.strings
+Extracting  Resources/Spanish.lproj/VolumeCheck.strings
+Extracting  Resources/sv.lproj
+Extracting  Resources/sv.lproj/Localizable.strings
+Extracting  Resources/sv.lproj/VolumeCheck.strings
+Extracting  Resources/th.lproj
+Extracting  Resources/th.lproj/Localizable.strings
+Extracting  Resources/th.lproj/VolumeCheck.strings
+Extracting  Resources/tr.lproj
+Extracting  Resources/tr.lproj/Localizable.strings
+Extracting  Resources/tr.lproj/VolumeCheck.strings
+Extracting  Resources/uk.lproj
+Extracting  Resources/uk.lproj/Localizable.strings
+Extracting  Resources/uk.lproj/VolumeCheck.strings
+Extracting  Resources/zh_CN.lproj
+Extracting  Resources/zh_CN.lproj/Localizable.strings
+Extracting  Resources/zh_CN.lproj/VolumeCheck.strings
+Extracting  Resources/zh_TW.lproj
+Extracting  Resources/zh_TW.lproj/Localizable.strings
+Extracting  Resources/zh_TW.lproj/VolumeCheck.strings
+Extracting  InstallMacOSX.pkg
+Extracting  InstallMacOSX.pkg/Bom
+Extracting  InstallMacOSX.pkg/Payload
+Extracting  InstallMacOSX.pkg/Scripts
+Extracting  InstallMacOSX.pkg/PackageInfo
+Extracting  InstallMacOSX.pkg/InstallESD.dmg
+Extracting  Distribution
+Extracting  [TOC].xml
+
+Everything is Ok
+
+Folders: 32
+Files: 67
+Size:       4180898338
+Compressed: 4179961589
+
+# then convert the actual DMG into an ISO
+elatov@fed:/data/backup/dmg$cd InstallMacOSX.pkg/
+elatov@fed:/data/backup/dmg/InstallMacOSX.pkg$ls
+Bom  InstallESD.dmg  PackageInfo  Payload  Scripts
+elatov@fed:/data/backup/dmg/InstallMacOSX.pkg$dmg2img -v -i InstallESD.dmg -o InstallESD.iso
+
+dmg2img v1.6.2 is derived from dmg2iso by vu1tur (to@vu1tur.eu.org)
+
+InstallESD.dmg --> InstallESD.iso
+
+reading property list, 971484 bytes from address 4167740795 ...
+partition 0: begin=195, size=430, decoded=284
+partition 1: begin=914, size=430, decoded=284
+partition 2: begin=1632, size=430, decoded=284
+partition 3: begin=2367, size=430, decoded=284
+partition 4: begin=3088, size=430, decoded=284
+partition 5: begin=3801, size=961128, decoded=647284
+partition 6: begin=965212, size=430, decoded=284
+
+decompressing:
+opening partition 0 ...         [2] 100.00%  ok
+opening partition 1 ...         [2] 100.00%  ok
+opening partition 2 ...         [2] 100.00%  ok
+opening partition 3 ...         [2] 100.00%  ok
+opening partition 4 ...         [2] 100.00%  ok
+opening partition 5 ...     [16177] 100.00%  ok
+
+Archive successfully decompressed as InstallESD.iso
+
+You should be able to mount the image [as root] by:
+elatov@fed:/data/backup/dmg/InstallMacOSX.pkg$
+
+# now let's write the iso onto a usb drive:
+elatov@fed:~$sudo dd if=/data/backup/dmg/InstallMacOSX.pkg/InstallESD.iso of=/dev/sdb bs=1M
+4397+1 records in
+4397+1 records out
+4611469312 bytes (4.6 GB) copied, 1009.75 s, 4.6 MB/s
+
+
+https://major.io/2011/01/26/single-boot-linux-on-an-intel-mac-mini/
+https://wiki.debian.org/MacMiniIntel
+http://mac.linux.be/content/single-boot-linux-without-delay
+http://www.techrepublic.com/blog/apple-in-the-enterprise/how-to-create-a-bootable-usb-to-install-os-x/
+

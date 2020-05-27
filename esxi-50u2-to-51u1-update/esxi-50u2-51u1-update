@@ -1,0 +1,93 @@
+I was on ESXi 5.0U2:
+
+~ # vmware -lv
+VMware ESXi 5.0.0 build-914586
+VMware ESXi 5.0.0 Update 2
+
+Checking out the upgrade guide:
+http://pubs.vmware.com/vsphere-51/topic/com.vmware.ICbase/PDF/vsphere-esxi-vcenter-server-51-upgrade-guide.pdf
+
+There is a section called "Update a Host with Image Profiles" which had the steps to update the
+system to 5.1. First I downloaded the offline bundle:
+
+then I uploaded it to the ESXi host:
+
+
+$scp VMware-ESXi-5.1.0-799733-depot.zip esx:/vmfs/volumes/datastore1/.
+VMware-ESXi-5.1.0-799733-depot.zip            100%  298MB  16.5MB/s   00:18  
+
+
+Check out the profiles:
+
+~ # esxcli software sources profile list --depot=/vmfs/volumes/datastore1/VMware-ESXi-5.1.0-799733-depot.zip
+Name                        Vendor        Acceptance Level
+--------------------------  ------------  ----------------
+ESXi-5.1.0-799733-no-tools  VMware, Inc.  PartnerSupported
+ESXi-5.1.0-799733-standard  VMware, Inc.  PartnerSupported
+
+Enter maintenance mode
+
+~ # vim-cmd hostsvc/maintenance_mode_enter 
+'vim.Task:haTask-ha-host-vim.HostSystem.enterMaintenanceMode-213709113'
+
+Now let's update the system
+
+~ # esxcli software profile update -d /vmfs/volumes/datastore1/VMware-ESXi-5.1.0-799733-depot.zip -p ESXi-5.1.0-799733-standard
+Update Result
+   Message: The update completed successfully, but the system needs to be rebooted for the changes to be effective.
+   Reboot Required: true
+   VIBs Installed: VMware_bootbank_ata-pata-amd_0.3.10-3vmw.510.0.0.799733, VMware_bootbank_ata-pata-atiixp_0.4.6-4vmw.510.0.0.799733,...
+   VIBs Removed: VMware_bootbank_ata-pata-amd_0.3.10-3vmw.500.0.0.469512, VMware_bootbank_ata-pata-atiixp_0.4.6-3vmw.500.0.0.469512, ....
+   VIBs Skipped: VMware_bootbank_net-tg3_3.110h.v50.4-4vmw.510.0.0.799733
+
+After the restart my hostd would backtrace:
+
+2014-01-05T19:33:16.296Z [FFAB6D20 info 'Hbrsvc'] Replication Scheduler started; using the 'hybrid' algorithm with max bandwidth = 20000.
+2014-01-05T19:33:16.297Z [FFAB6D20 info 'Hbrsvc'] HBR has started
+2014-01-05T19:33:16.297Z [FFAB6D20 error 'HttpNfcSvc'] Reverse proxy endpoint li
+st is not available
+*** In-memory logs end ***
+error: N5Vmomi5Fault11SystemError9ExceptionE(vmodl.fault.SystemError)
+2014-01-05T19:33:16.303Z [450C1B90 info 'Hbrsvc'] ReplicationScheduler: computing schedule
+backtrace:
+2014-01-05T19:33:16.315Z [44B86B90 info 'Hbrsvc'] ReplicationScheduler: Schedule computed.
+backtrace[00] rip 18dc7333 Vmacore::System::Stacktrace::CaptureWork(unsigned int)
+backtrace[01] rip 18bed698 Vmacore::System::SystemFactoryImpl::CreateQuickBacktrace(Vmacore::Ref<Vmacore::System::Backtrace>&)
+backtrace[02] rip 18b8c0c5 Vmacore::Throwable::Throwable(std::string const&)
+backtrace[03] rip 085844d0 hostd [0x85844d0]
+backtrace[04] rip 085830f5 hostd [0x85830f5]
+backtrace[05] rip 18baa84b Vmacore::Service::AppImpl::StartPlugins()
+backtrace[06] rip 18ba916f Vmacore::Service::InitApp(Vmacore::Service::Config*)
+backtrace[07] rip 09120523 hostd [0x9120523]
+backtrace[08] rip 09116118 hostd [0x9116118]
+backtrace[09] rip 09124542 hostd [0x9124542]
+backtrace[10] rip 1e951efc /lib/libc.so.6(__libc_start_main+0xdc) [0x1e951efc]
+backtrace[11] rip 084960b1 hostd [0x84960b1]
+
+I then ran into this communities discussion: https://communities.vmware.com/thread/421269
+
+and decided to try out the settings reset:
+
+
+
+~ # esxcli software vib install -d /vmfs/volumes/datastore1/update-from-esxi5.1-5.1_update01.zip 
+Installation Result
+   Message: The update completed successfully, but the system needs to be rebooted for the changes to be effective.
+   Reboot Required: true
+   VIBs Installed: VMware_bootbank_esx-base_5.1.0-1.12.1065491, VMware_bootbank_esx-xserver_5.1.0-0.11.1063671, ..
+   VIBs Removed: VMware_bootbank_esx-base_5.1.0-0.0.799733, VMware_bootbank_esx-xserver_5.1.0-0.0.799733, 
+   VIBs Skipped: VMware_bootbank_ata-pata-amd_0.3.10-3vmw.510.0.0.799733, ...
+
+and then to reboot the system:
+
+~ # esxcli system maintenanceMode set -e true
+~ # esxcli system shutdown reboot -r update
+
+~ # vmware -lv
+VMware ESXi 5.1.0 build-1065491
+VMware ESXi 5.1.0 Update 1
+
+and of course hostd is running :)
+
+~ # /etc/init.d/hostd status
+hostd is running.

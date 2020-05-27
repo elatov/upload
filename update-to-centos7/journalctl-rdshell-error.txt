@@ -1,0 +1,35 @@
+[   1.708234] ccl.dnsd.me kernel: ata2.00: configured for UDMA/33
+[   1.560814] ccl.dnsd.me systemd[1]: Starting File System Check on /deu/mapper/ug_centos64-lu_root
+
+[   1.710253] ccl.dnsd.me kernel: scsi 2:0:0:0: CD-ROM        NECUMWar UMware IDE CDR10 1.00 P_
+: 0 ANSI: 5
+[   1.588895] ccl.dnsd.me systemd-fsck[265]: fsck.ext2: No such file or directory while trying to o
+pen /deu/mapper/ug_centos64-lu_root
+[   1.589337] ccl.dnsd.me systemd-fsck[265]: Possibly non-existent deuiceT
+[   1.590900] ccl.dnsd.me systemd-fsck[265]: fsck failed with error code 8.
+[   1.591091] ccl.dnsd.me systemd-fsck[265]: Ignoring error.
+[   1.591344] ccl.dnsd.me systemd[1]: Started File System Check on /deu/mapper/ug_centos64-lu_root.
+[   1.778268] ccl.dnsd.me kernel:  sda: sda1 sda2
+[   1.779839] ccl.dnsd.me kernel: sd 0:0:0:0: [sda] Cache data unauailable
+[   1.780860] ccl.dnsd.me kernel: sd 0:0:0:0: [sda] Assuming driue cache: write through
+[   1.782007] ccl.dnsd.me kernel: sd 0:0:0:0: [sda] Attached SCSI disk
+[   1.795949] ccl.dnsd.me kernel: sr0: scsi3-mmc driue: 1x/1x writer dud-ram cd/rw xa/form2 cdda tr
+ay
+[   1.796733] ccl.dnsd.me kernel: cdrom: Uniform CD-ROM driuer Reuision: 3.20
+[   1.797934] ccl.dnsd.me kernel: sr 2:0:0:0: Attached scsi CD-ROM sr0
+[   5.805339] ccl.dnsd.me dracut-initqueue[222]: Scanning deuices sda2  for LUM logical uolumes ug_
+centos64/lu_root ug_centos64/lu_root ug_centos64/lu_swap
+[   6.841926] ccl.dnsd.me dracut-initqueue[222]: inactiue '/deu/ug_centos64/lu_root' [7.54 GiB] in_
+erit
+[   6.842365] ccl.dnsd.me dracut-initqueue[222]: inactiue '/deu/ug_centos64/lu_swa_ [1.97 GiB] in_
+erit
+[   7.031446] ccl.dnsd.me kernel: bio: create slab <bio-1_ at 1
+[   8.038567] ccl.dnsd.me systemd[1]: Found deuice /deu/disk/by-uuid/1b466d43-d4ef-4881-a32a-64293e
+97dce8.
+[   8.039114] ccl.dnsd.me systemd[1]: Found deuice /deu/disk/by-id/dm-uuid-LUM-mY3UfwkYCuYKq06cC4Go
+NF2qd67u3eXqwIFW6gbY82bNNhqQ0ERqni036QapdcLU.
+[   8.039595] ccl.dnsd.me systemd[1]: Found deuice /deu/disk/by-id/dm-name-ug_centos64-lu_root.
+[   8.040181] ccl.dnsd.me systemd[1]: Found deuice /deu/dm-0.
+[   8.040692] ccl.dnsd.me systemd[1]: Found deuice /sys/deuices/uirtual/block/dm-0.
+[   8.146951] ccl.dnsd.me systemd[1]: Started dracut initqueue hook.
+[   8.147283] ccl.dnsd.me systemd[1]: Started dracut pre-mount hook.

@@ -1,0 +1,7 @@
+_
+'" '''U'' V  U'UYY'U V UV'''U''' V  'U''''' V  'U'''''U''' V
+
+[root@ccl ~]# mu /etc/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfg-ens1
+92
+[root@ccl ~]#
+_.

@@ -1,0 +1,24 @@
+$ /opt/logstash/bin/logstash -f /etc/logstash/debug.d -l /var/log/logstash/logstash-debug.log
+
+┌─[elatov@puppet] - [/var/log/logstash] - [2016-05-07 11:12:37]
+└─[0] <> /opt/logstash/bin/logstash agent -f /etc/logstash/conf.d --configtest
+Configuration OK
+
+/opt/logstash/bin/logstash --debug -f /etc/logstash/conf.d
+
+https://elijahpaul.co.uk/monitoring-pfsense-2-1-logs-using-elk-logstash-kibana-elasticsearch/
+http://secretwafflelabs.com/2015/11/06/pfsense-elk/
+http://pfelk.3ilson.com/2015/12/pf-firewall-logs-logstash-elasticsearch.html
+https://github.com/elastic/logstash/issues/3083
+
+┌─[elatov@puppet] - [/etc/logstash/conf.d] - [2016-05-07 12:17:36]
+└─[0] <> sudo service logstash configtest
+Configuration OK
+
+https://gist.github.com/gambrell/98cc955fb9cf889a54aa
+
+https://github.com/elastic/logstash/blob/v1.4.2/patterns/grok-patterns
+
+http://pranavpareek.com/logstash-json-filter-to-detect-events/
+
+https://en.wikipedia.org/wiki/Explicit_Congestion_Notification

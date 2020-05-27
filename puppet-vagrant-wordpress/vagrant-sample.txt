@@ -1,0 +1,24 @@
+boxes = [
+  { :name => :web,:ip => '192.168.33.1',:ssh_port => 2201,:cpus => 1, :mem => 512},
+  { :name => :db,:ip => '192.168.33.2',:ssh_port => 2202,:cpus => 1,:mem => 512 },
+  ]
+
+
+boxes.each do |opts|
+ 
+    config.vm.define opts[:name] do |config|
+    	config.vm.box        = "elatov/opensuse13-32"
+    	config.vm.box_url    = "https://vagrantcloud.com/elatov/opensuse13-32/version/2/provider/virtualbox.box"
+    
+    	config.vm.network       :private_network, opts[:ip]
+    	config.vm.host_name =   "%s.vagrant" % opts[:name].to_s
+ 
+    	config.vm.synced_folder "~/stuff", "/vagrant"
+    	config.vm.forward_port  22, opts[:ssh_port], :auto => true
+ 
+    	config.vm.customize ["modifyvm", :id, "--cpus", opts[:cpus] ] if opts[:cpus]
+    	config.vm.customize ["modifyvm", :id, "--memory", opts[:mem] ] if opts[:mem] 
+    	# cpus defaults to 1
+ 
+   end
+end

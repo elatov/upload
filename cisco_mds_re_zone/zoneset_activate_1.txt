@@ -1,0 +1,5 @@
+san_switch)# conf t
+san_switch(config)# zoneset activate name zonesetnew
+Zoneset activation initiated. check zone status
+san_switch(config)# end
+san_switch#

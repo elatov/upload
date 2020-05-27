@@ -1,0 +1,57 @@
+# confirm the version
+[root@macm:~] vmware -lv
+VMware ESXi 6.0.0 build-2809209
+VMware ESXi 6.0.0 GA
+
+# running VMs
+[root@macm:~] esxcli vm process list
+
+# Since I have the VMs auto shutdown with the host, I can run the following
+# to shut all my VMs down
+[root@macm:~] vmware-autostart.sh stop
+
+# then confirm all the VMs are off
+[root@macm:~] esxcli vm process list
+[root@macm:~]
+
+# after put the host into maintenance mode
+[root@macm:~] esxcli system maintenanceMode set -e true
+[root@macm:~]
+
+# Now let's scp our bundle over:
+┌─[elatov@macair] - [/Users/elatov/Downloads] - [2015-11-29 04:29:47]
+└─[0] <> scp ESXi600-201510001.zip macm:/vmfs/volumes/datastore1/.
+Password:
+ESXi600-201510001.zip
+
+Now let's query the bundle from the host
+
+[root@macm:~] esxcli software sources profile list -d /vmfs/volumes/datastore1/E
+SXi600-201510001.zip
+Name                             Vendor        Acceptance Level
+-------------------------------  ------------  ----------------
+ESXi-6.0.0-20151004001-standard  VMware, Inc.  PartnerSupported
+ESXi-6.0.0-20151004001-no-tools  VMware, Inc.  PartnerSupported
+
+I can use the standard profile:
+
+[root@macm:~] esxcli software profile update -d /vmfs/volumes/datastore1/ESXi600
+-201510001.zip -p ESXi-6.0.0-20151004001-standard
+Update Result
+   Message: The update completed successfully, but the system needs to be rebooted for the changes to be effective.
+   Reboot Required: true
+   VIBs Installed: VMware_bootbank_esx-base_6.0.0-1.20.3073146, V
+
+And finally reboot
+
+[root@macm:~] esxcli system shutdown reboot -r 'update_to_6_0U1a'
+[root@macm:~]
+
+And after the reboot here is the version I was on:
+
+[root@macm:~] vmware -lv
+VMware ESXi 6.0.0 build-3073146
+VMware ESXi 6.0.0 Update 1
+
+
+

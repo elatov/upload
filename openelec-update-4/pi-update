@@ -1,0 +1,41 @@
+# copy the new tar over
+pi:~ # rsync -avP elatov@crbook:download/OpenELEC-RPi.arm-4.0.6.tar .
+elatov@192.168.1.106's password: 
+receiving incremental file list
+OpenELEC-RPi.arm-4.0.6.tar
+   112588800 100%    1.27MB/s    0:01:24 (xfer#1, to-check=0/1)
+
+sent 42 bytes  received 112616400 bytes  1272502.17 bytes/sec
+total size is 112588800  speedup is 1.00
+###
+
+###
+OpenELEC:~ # rsync -avP crbook:download/l/OpenELEC-RPi.arm-4.0.6/target/. .updat
+e/.
+elatov@192.168.1.106's password: 
+receiving incremental file list
+./
+KERNEL
+     5997936 100%  993.45kB/s    0:00:05 (xfer#1, to-check=3/5)
+KERNEL.md5
+          48 100%    0.06kB/s    0:00:00 (xfer#2, to-check=2/5)
+SYSTEM
+   102686720 100%  941.88kB/s    0:01:46 (xfer#3, to-check=1/5)
+SYSTEM.md5
+          48 100%    0.05kB/s    0:00:00 (xfer#4, to-check=0/5)
+
+sent 106 bytes  received 108711569 bytes  941226.62 bytes/sec
+total size is 108684752  speedup is 1.00
+###
+
+http://archive.openelec.tv/
+
+http://www.htpcbeginner.com/10-tweaks-to-improve-xbmc-performance-on-raspberry-pi/
+
+http://www.htpcbeginner.com/raspberry-pi-openelec-tweaks/
+
+http://www.htpcbeginner.com/overclock-raspberry-pi-openelec/
+
+http://forum.xbmc.org/showthread.php?tid=196936
+
+https://github.com/OpenELEC/OpenELEC.tv/issues/3270

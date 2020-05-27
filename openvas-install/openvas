@@ -1,0 +1,169 @@
+# enable the right pacages from the atomic repo
+sudo vi /etc/yum.repos.d/atomic.repo
+---
+includepkgs = ossec-hids* openvas* dirb* greenbone-security-assistant* wmi* pnscan* w3af* nikto* wapiti* python-SocksiPy*
+---
+
+# then install the package
+elatov@ccl:~$sudo yum install openvas
+# then setup openvas
+sudo openvas-setup
+# that will get all the signatures and feeds
+
+[i] Initializing CERT advisory database
+[i] Updating /var/lib/openvas/cert-data/dfn-cert-2008.xml
+[i] Updating /var/lib/openvas/cert-data/dfn-cert-2009.xml
+[i] Updating /var/lib/openvas/cert-data/dfn-cert-2010.xml
+[i] Updating /var/lib/openvas/cert-data/dfn-cert-2011.xml
+[i] Updating /var/lib/openvas/cert-data/dfn-cert-2012.xml
+[i] Updating /var/lib/openvas/cert-data/dfn-cert-2013.xml
+
+[i] Initializing scap database
+[i] Updating CPEs
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2002.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2003.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2004.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2005.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2006.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2007.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2008.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2009.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2011.xml
+-:1070414: parser error : Premature end of data in tag logical-test line 1069306
+       
+       ^
+-:1070414: parser error : Premature end of data in tag vulnerable-configuration line 1069305
+       
+       ^
+-:1070414: parser error : Premature end of data in tag entry line 1069304
+       
+       ^
+-:1070414: parser error : Premature end of data in tag nvd line 2
+       
+       ^
+
+unable to parse -
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2012.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2013.xml
+[i] Updating /var/lib/openvas/scap-data/nvdcve-2.0-2014.xml
+[i] Updating CVSS scores and CVE counts
+[i] Updating OVAL data
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/c/oval.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/i/oval.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/m/oval.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/p/oval.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/v/family/ios.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/v/family/macos.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/v/family/pixos.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/v/family/unix.xml
+[i] Updating /var/lib/openvas/scap-data/oval/5.10/org.mitre.oval/v/family/windows.xml
+[i] No user data directory '/var/lib/openvas/scap-data/private' found.
+Updating OpenVAS Manager database....
+
+Step 2: Configure GSAD
+The Greenbone Security Assistant is a Web Based front end
+for managing scans. By default it is configured to only allow
+connections from localhost.
+
+Allow connections from any IP? [Default: yes] Stopping greenbone-security-assistant:                                                       [  OK  ]
+Starting greenbone-security-assistant:                     [  OK  ]
+
+Step 3: Choose the GSAD admin users password.
+The admin user is used to configure accounts,
+Update NVT's manually, and manage roles.
+
+Enter administrator username [Default: admin] : 
+Enter Administrator Password: 
+Verify Administrator Password: 
+
+ad   main:MESSAGE:8686:2014-04-08 11h55.21 MDT: No rules file provided, the new user will have no restrictions.
+ad   main:MESSAGE:8686:2014-04-08 11h55.21 MDT: User admin has been successfully created.
+
+Step 4: Create a user
+
+Using /var/tmp as a temporary file holder.
+
+Add a new openvassd user
+---------------------------------
+
+
+Login : openvas
+Authentication (pass/cert) [pass] : 
+Login password : 
+Login password (again) : 
+
+User rules
+---------------
+openvassd has a rules system which allows you to restrict the hosts that openvas has the right to test.
+For instance, you may want him to be able to scan his own host only.
+
+Please see the openvas-adduser(8) man page for the rules syntax.
+
+Enter the rules for this user, and hit ctrl-D once you are done:
+(the user can have an empty rules set)
+
+
+Login             : openvas
+Password          : ***********
+
+Rules             : 
+
+
+Is that ok? (y/n) [y] y
+user added.
+
+Starting openvas-administrator...
+Starting openvas-administrator:
+                                                           [  OK  ]
+
+
+Setup complete, you can now access GSAD at:
+  https://<IP>:9392
+
+# manually sync the signatures
+elatov@ccl:~$sudo openvas-nvt-sync
+[i] This script synchronizes an NVT collection with the 'OpenVAS NVT Feed'.
+[i] The 'OpenVAS NVT Feed' is provided by 'The OpenVAS Project'.
+[i] Online information about this feed: 'http://www.openvas.org/openvas-nvt-feed.html'.
+[i] NVT dir: /var/lib/openvas/plugins
+[i] Will use rsync
+[i] Using rsync: /usr/bin/rsync
+[i] Configured NVT rsync feed: rsync://feed.openvas.org:/nvt-feed
+[w] Private directory '/var/lib/openvas/plugins/private' not found.
+[w] Non-feed NVTs not migrated there will be deleted by rsync.
+Run migration now ([y/n], any other input aborts)? y
+
+[i] Migrating non-OpenVAS files to private sub-directory 'private' of NVT directory '/var/lib/openvas/plugins'. This can take a few minutes.
+[i] Migration done.
+OpenVAS feed server - http://openvas.org/
+This service is hosted by Intevation GmbH - http://intevation.de/
+All transactions are logged.
+Please report problems to admin@intevation.de
+
+receiving incremental file list
+deleting nvt/
+deleting gsf/
+./
+2013/
+
+sent 64 bytes  received 1365947 bytes  248365.64 bytes/sec
+total size is 185148946  speedup is 135.54
+[i] Checking dir: ok
+[i] Checking MD5 checksum: 
+
+### update the databases
+elatov@ccl:/var/log/openvas$sudo openvasmd --rebuild
+# start the scanner
+elatov@ccl:/var/log/openvas$sudo service openvas-scanner start
+Starting openvas-scanner: base gpgme-Message: Setting GnuPG homedir to '/etc/openvas/gnupg'
+base gpgme-Message: Using OpenPGP engine version '2.0.14'
+
+## make sure wapiki works
+sudo wapiti http://localhost -o myreport -f html
+# needed to install the follow python module
+elatov@ccl:~$sudo yum install python-requests.noarch
+###
+
+### check to make sure the the configuration is okay
+elatov@ccl:/var$sudo /usr/bin/openvas-check-setup
+###

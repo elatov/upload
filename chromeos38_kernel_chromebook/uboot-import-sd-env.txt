@@ -1,0 +1,23 @@
+Model: Google Snow
+	In:  mkbp-keyb
+	Out: lcd
+	Err: lcd
+	Net: No Ethernet found
+	Hit any key to stop autoboot: 0
+MDK5250 # printenv common_bootargs
+common_bootargs=cros_legacy console=ttySAC3,115200 console=tty1 debug earlyprintk clk_ignore_unused
+MDK5250 # run import_sd_env
+ERROR: v7_dcache_inval_range - stop address is not alliged - 0xbda3d288
+mmc_init err 0, time 41864
+mmc1 is current device
+ERROR: v7_dcache_inval_range - stop address is not alliged - 0xbda3d348
+mmc_init err 0, time 41901
+Loading file "/env.txt" from mmc device 1:2 (Kernel)
+1808 bytes read
+## Info: input data size = 16008 = 0x3E88
+MDK5250 # printenv common_bootargs
+common_bootargs=cros_legacy console=ttySAC3,115200 console=tty1 earlyprintk clk_ignore_unused
+SMDK5250 # saveenv
+Saving Environment to SPI Flash
+SF: Detected W25Q32 with page size 4KIB, total MiB
+Erasing SPI flash... Writing to SPI flash ... done

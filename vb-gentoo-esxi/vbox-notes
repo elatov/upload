@@ -1,0 +1,41 @@
+https://sourceforge.net/p/phpvirtualbox/wiki/Common%20phpVirtualBox%20Errors%20and%20Issues/#error-logging-in-or-connecting-to-vboxwebsrv
+
+http://www.virtuallyghetto.com/2012/08/how-to-enable-nested-esxi-other.html
+
+https://superuser.com/questions/1158374/cant-enable-3d-acceleration-in-virtualbox
+
+https://forums.gentoo.org/viewtopic-t-939604-start-0.html
+
+https://wiki.archlinux.org/index.php/PhpVirtualBox
+
+http://distfiles.gentoo.org/releases/amd64/autobuilds/20170503/systemd/stage3-amd64-systemd-20170503.tar.bz2
+
+vgchange -ay
+mount /dev/mapper/system-root /mnt/gentoo
+mount /dev/sda2 /mnt/gentoo/boot
+
+mount -t proc /proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
+
+chroot /mnt/gentoo /bin/bash
+source /etc/profile
+export PS1="(chroot) $PS1"
+
+rootfstype=ext4
+
+mount -t proc /proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
+
+chroot /mnt/gentoo /bin/bash
+source /etc/profile
+export PS1="(chroot) $PS1"
+
+https://github.com/FreeRDP/FreeRDP/issues/2862
+
+https://github.com/FreeRDP/Remmina/issues/556

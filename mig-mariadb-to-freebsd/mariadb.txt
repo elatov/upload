@@ -1,0 +1,254 @@
+# migrating everything
+http://dba.stackexchange.com/questions/100511/backup-restore-users-passwords-privileges
+
+http://dba.stackexchange.com/questions/46129/does-mysqldump-all-databases-include-all-objects
+
+# so then dumped everything
+mysqldump --events --routines --triggers --all-databases -u root -p > mysql-bef-moxz.sql
+mysqldump -u root -p mysql user > user_table_dump.sql
+
+# then copied it over
+rsync -avzP mysql-bef-moxz.sql moxz:
+rsync -avzP user_table_dump.sql moxz:
+
+# then on the other side
+mysql -u root -p < mysql-bef-moxz.sql
+mysql -u root -p mysql < user_table_dump.sql
+
+### BenchMark
+100,000
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+No DB drivers specified, using mysql
+Running the test with following options:
+Number of threads: 6
+
+Doing OLTP test.
+Running mixed OLTP test
+Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+Using "BEGIN" for starting transactions
+Using auto_inc on the id column
+Threads started!
+Time limit exceeded, exiting...
+(last message repeated 5 times)
+Done.
+
+OLTP test statistics:
+    queries performed:
+        read:                            379050
+        write:                           135375
+        other:                           54150
+        total:                           568575
+    transactions:                        27075  (451.20 per sec.)
+    deadlocks:                           0      (0.00 per sec.)
+    read/write requests:                 514425 (8572.73 per sec.)
+    other operations:                    54150  (902.39 per sec.)
+
+Test execution summary:
+    total time:                          60.0072s
+    total number of events:              27075
+    total time taken by event execution: 359.8499
+    per-request statistics:
+         min:                                  2.63ms
+         avg:                                 13.29ms
+         max:                                 39.85ms
+         approx.  95 percentile:              22.48ms
+
+Threads fairness:
+    events (avg/stddev):           4512.5000/6.05
+    execution time (avg/stddev):   59.9750/0.01
+
+====
+1,000,000
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+No DB drivers specified, using mysql
+Running the test with following options:
+Number of threads: 6
+
+Doing OLTP test.
+Running mixed OLTP test
+Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+Using "BEGIN" for starting transactions
+Using auto_inc on the id column
+Threads started!
+Time limit exceeded, exiting...
+(last message repeated 5 times)
+Done.
+
+OLTP test statistics:
+    queries performed:
+        read:                            375340
+        write:                           134050
+        other:                           53620
+        total:                           563010
+    transactions:                        26810  (446.80 per sec.)
+    deadlocks:                           0      (0.00 per sec.)
+    read/write requests:                 509390 (8489.18 per sec.)
+    other operations:                    53620  (893.60 per sec.)
+
+Test execution summary:
+    total time:                          60.0046s
+    total number of events:              26810
+    total time taken by event execution: 359.8723
+    per-request statistics:
+         min:                                  2.25ms
+         avg:                                 13.42ms
+         max:                                 40.72ms
+         approx.  95 percentile:              22.89ms
+
+Threads fairness:
+    events (avg/stddev):           4468.3333/6.50
+    execution time (avg/stddev):   59.9787/0.00
+
+
+### On freebsd
+
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+No DB drivers specified, using mysql
+Running the test with following options:
+Number of threads: 6
+
+Doing OLTP test.
+Running mixed OLTP test
+Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+Using "BEGIN" for starting transactions
+Using auto_inc on the id column
+Threads started!
+Time limit exceeded, exiting...
+(last message repeated 5 times)
+Done.
+
+OLTP test statistics:
+    queries performed:
+        read:                            355194
+        write:                           126855
+        other:                           50742
+        total:                           532791
+    transactions:                        25371  (422.76 per sec.)
+    deadlocks:                           0      (0.00 per sec.)
+    read/write requests:                 482049 (8032.49 per sec.)
+    other operations:                    50742  (845.52 per sec.)
+
+Test execution summary:
+    total time:                          60.0124s
+    total number of events:              25371
+    total time taken by event execution: 359.8753
+    per-request statistics:
+         min:                                  3.24ms
+         avg:                                 14.18ms
+         max:                                267.57ms
+         approx.  95 percentile:              24.26ms
+
+Threads fairness:
+    events (avg/stddev):           4228.5000/35.88
+    execution time (avg/stddev):   59.9792/0.00
+
+## another one
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+No DB drivers specified, using mysql
+Running the test with following options:
+Number of threads: 6
+
+Doing OLTP test.
+Running mixed OLTP test
+Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+Using "BEGIN" for starting transactions
+Using auto_inc on the id column
+Threads started!
+Time limit exceeded, exiting...
+(last message repeated 5 times)
+Done.
+
+OLTP test statistics:
+    queries performed:
+        read:                            345716
+        write:                           123470
+        other:                           49388
+        total:                           518574
+    transactions:                        24694  (411.39 per sec.)
+    deadlocks:                           0      (0.00 per sec.)
+    read/write requests:                 469186 (7816.39 per sec.)
+    other operations:                    49388  (822.78 per sec.)
+
+Test execution summary:
+    total time:                          60.0259s
+    total number of events:              24694
+    total time taken by event execution: 359.9878
+    per-request statistics:
+         min:                                  2.89ms
+         avg:                                 14.58ms
+         max:                                295.81ms
+         approx.  95 percentile:              21.83ms
+
+Threads fairness:
+    events (avg/stddev):           4115.6667/23.02
+    execution time (avg/stddev):   59.9980/0.00
+
+After flushing privileges, I saw my setup:
+
+MariaDB [mysql]> select Host, user from user ;
++-----------+------------------+
+| Host      | user             |
++-----------+------------------+
+| localhost | csuser           |
+| localhost | debian-sys-maint |
+| localhost | root             |
+| localhost | snorby           |
+| localhost | wordpress        |
+| localhost | zabbix           |
++-----------+------------------+
+6 rows in set (0.00 sec)
+
+MariaDB [mysql]> show grants for 'zabbix'@'localhost';
++---------------------------------------------------------------------------------------------------------------+
+| Grants for zabbix@localhost                                                                                   |
++---------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO 'zabbix'@'localhost' IDENTIFIED BY PASSWORD '*2470C0C06DEE42FD1618BB99005ADCA2EC9D1E19' |
+| GRANT ALL PRIVILEGES ON `zabbix`.* TO 'zabbix'@'localhost'                                                    |
++---------------------------------------------------------------------------------------------------------------+
+2 rows in set (0.00 sec)
+
+┌─[elatov@moxz] - [/home/elatov] - [2016-04-17 12:05:27]
+└─[0] <> sudo service mysql-server start
+Starting mysql.
+
+┌─[elatov@moxz] - [/home/elatov] - [2016-04-17 12:05:46]
+└─[0] <> sudo service mysql-server status
+mysql is running as pid 96398.
+
+┌─[elatov@moxz] - [/home/elatov] - [2016-04-17 12:40:33]
+└─[1] <> ls -ld /var/log/mysql
+drwxr-xr-x  2 mysql  wheel  512 Apr 17 12:30 /var/log/mysql
+
+160417 12:30:31 mysqld_safe Starting mysqld daemon with databases from /var/db/mysql
+160417 12:30:31 [Note] /usr/local/libexec/mysqld (mysqld 10.0.23-MariaDB-log) starting as process 98767 ...
+160417 12:30:31 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+160417 12:30:31 [Note] InnoDB: The InnoDB memory heap is disabled
+160417 12:30:31 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+160417 12:30:31 [Note] InnoDB: Memory barrier is not used
+160417 12:30:31 [Note] InnoDB: Compressed tables use zlib 1.2.8
+160417 12:30:31 [Note] InnoDB: Using CPU crc32 instructions
+160417 12:30:31 [Note] InnoDB: Initializing buffer pool, size = 2.0G
+160417 12:30:31 [Note] InnoDB: Completed initialization of buffer pool
+160417 12:30:31 [Note] InnoDB: Highest supported file format is Barracuda.
+160417 12:30:32 [Note] InnoDB: 128 rollback segment(s) are active.
+160417 12:30:32 [Note] InnoDB: Waiting for purge to start
+160417 12:30:32 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.26-76.0 started; log sequence number 1026386743
+160417 12:30:32 [Note] Server socket created on IP: '0.0.0.0'.
+160417 12:30:32 [Note] /usr/local/libexec/mysqld: ready for connections.
+Version: '10.0.23-MariaDB-log'  socket: '/tmp/mysql.sock'  port: 3306  FreeBSD Ports
+
+MariaDB [(none)]> SHOW PROCEDURE STATUS;
++--------+---------------------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| Db     | Name                      | Type      | Definer        | Modified            | Created             | Security_type | Comment | character_set_client | collation_connection | Database Collation |
++--------+---------------------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+| zabbix | partition_create          | PROCEDURE | root@localhost | 2016-04-17 11:50:09 | 2016-04-17 11:50:09 | DEFINER       |         | utf8                 | utf8_general_ci      | utf8_general_ci    |
+| zabbix | partition_drop            | PROCEDURE | root@localhost | 2016-04-17 11:50:09 | 2016-04-17 11:50:09 | DEFINER       |         | utf8                 | utf8_general_ci      | utf8_general_ci    |
+| zabbix | partition_maintenance     | PROCEDURE | root@localhost | 2016-04-17 11:50:09 | 2016-04-17 11:50:09 | DEFINER       |         | utf8                 | utf8_general_ci      | utf8_general_ci    |
+| zabbix | partition_maintenance_all | PROCEDURE | root@localhost | 2016-04-17 11:50:09 | 2016-04-17 11:50:09 | DEFINER       |         | utf8                 | utf8_general_ci      | utf8_general_ci    |
+| zabbix | partition_verify          | PROCEDURE | root@localhost | 2016-04-17 11:50:09 | 2016-04-17 11:50:09 | DEFINER       |         | utf8                 | utf8_general_ci      | utf8_general_ci    |
++--------+---------------------------+-----------+----------------+---------------------+---------------------+---------------+---------+----------------------+----------------------+--------------------+
+5 rows in set (0.01 sec)

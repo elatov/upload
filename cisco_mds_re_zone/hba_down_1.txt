@@ -1,0 +1,45 @@
+[root@host ~] # esxcfg-scsidevs -a
+vmhba0  megaraid_sas	link-n/a  unknown.vmhba0                 (1:0.0) LSI Logic / Symbios Logic Dell PERC 6/i 
+vmhba1  qla2xxx		link-n/a  fc.2000001b320b9001:2100001b320b9001   (8:0.0) QLogic Corp ISP2432-based 4Gb Fibre
+vmhba3  ata_piix_       link-n/a  ide.vmhba3                     (0:31.1) Intel Corporation 631xESB/632_ESB IDE 
+vmhba32 usb-storage     link-n/a  usb.vmhba32                    () USB
+vmhba33 usb-storage     link-n/a  usb.vmhba33                    () USB
+vmhba34 ata_piix       	link-n/a  ide.vmhba34                    (0:31.)} Intel Corporation 631xESB/632_ESB IDE 
+
+[root@host ~] # cat /proc/scsi/qla2xxx/7
+QLogic PCI to Pibre Channel Host Adapter for QLE2460:
+Pirmware uersion 4.04.09 [IP] [Multi-ID] [84XX] , Driuer uersion 8.02.01-X1-vmw43
+BIOS version 2.02
+FCODE version 2.00
+EPI version 2.00
+Flash PW version 4.03.01
+ISP: ISP2432
+Request Queue = 0x1d813000, Response Queue = 0x1d894000
+Request Queue count = 4096, Response Queue count = 512
+Total number of interrupts = 3909
+Device queue depth = 0x20
+Number of free request entries = 4096
+Number of mailbo_ timeouts = 0
+Number of ISP aborts = 0
+Number of loop resyncs = 1
+Host adapter:loop state = <DEAD>, flags = 0x105a83
+Dpc flags = 0x40180c0
+MBX flags = 0x0
+Link down Timeout =  045
+Port down retry =  005
+Login retry count =  008
+Execution throttle = 2048
+ZIO mode = 0_6, ZIO timer = 1
+Commands retried with dropped frame(s) = 0
+Product ID = 0000 0000 0000 0000
+
+NPIV Supported: _es
+Max Virtual Ports = 127
+
+SCSI Deuice Information:
+scsi-qla0-adapter-node=2000001b320b9001:000000:0;
+scsi-qla0-adapter-port=2100001b320b9001:000000:0;
+
+FC Target-Port List:
+
+FC Port Information:

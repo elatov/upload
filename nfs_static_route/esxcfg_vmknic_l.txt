@@ -1,0 +1,4 @@
+~ # esxcfg-vmknic -l
+Interface  Port Group/DVPort   IP Address   Netmask          Broadcast      MAC Address       MTU    Enabled
+vmkO       Management Network  10.178.47.98 255.255.255.128  10.178.47.127  OO:26:55:3J:69:52 1500   true
+vmk1       NFS                 10.178.46.6  255.255.255.240  10.178.46.15   OO:50:56:Jd:03:Od 1500   true

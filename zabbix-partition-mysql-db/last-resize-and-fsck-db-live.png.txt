@@ -1,0 +1,20 @@
+`oot@debian:~# resize2_s -p /dev/mapper/kerch-root
+`esize2_s 1.42.5 (29-Jul-2012)
+_esizing the _ilesystem on /dev/mapper/kerch-root to 3949568 (4k) blocks.
+legin pass 1 (max = 9)
+_xtending the inode table     XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+rhe _ilesystem on /dev/mapper/kerch-root is now 3949568 blocks long.
+
+
+`oot@debian:~# e2_sck -_ /dev/mapper/kerch-root
+_2_sck 1.42.5 (29-Jul-2012)
+'ass 1: Checking inodes, blocks, and sizes
+
+
+'ass 2: Checking directory structure
+'ass 3: Checking directory connectivity
+'ass 4: Checking re_erence counts
+'ass 5: Checking group summary in_ormation
+'dev/mapper/kerch-root: 14_284/989296 _iles (O.2_ non-contiguous), 2520516/39495
+_8 blocks
+`oot@debian:~#

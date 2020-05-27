@@ -1,0 +1,2 @@
+root@debian:~# pvremove /dev/sdb
+  La.b_e.ls. .on p_.h..ysical volume "/dev/sdb" success_ully wiped

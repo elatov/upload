@@ -1,0 +1,398 @@
+
+https://medium.com/@kasun.dsilva/setup-kubernetes-on-coreos-f801e6db8dec
+
+https://vadosware.io/post/fresh-dedicated-server-to-single-node-kubernetes-cluster-on-coreos-part-2/
+
+https://coreos.com/kubernetes/docs/1.6.1/deploy-master.html
+# Generate certs
+# cat k8/certs/gen-certs.sh
+#!/bin/bash
+# Creating TLS certs
+echo "Creating CA ROOT**********************************************************************"
+openssl genrsa -out ca-key.pem 2048
+openssl req -x509 -new -nodes -key ca-key.pem -days 10000 -out ca.pem -subj "/CN=kube-ca"
+echo "creating API Server certs*************************************************************"
+echo "Enter Master Node IP address:"
+master_Ip=192.168.1.106
+cat >openssl.cnf<<EOF
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = kubernetes
+DNS.2 = kubernetes.default
+DNS.3 = kubernetes.default.svc
+DNS.4 = kubernetes.default.svc.cluster.local
+IP.1 = 10.3.0.1
+IP.2 = $master_Ip
+EOF
+
+openssl genrsa -out apiserver-key.pem 2048
+openssl req -new -key apiserver-key.pem -out apiserver.csr -subj "/CN=kube-apiserver" -config openssl.cnf
+openssl x509 -req -in apiserver.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out apiserver.pem -days 365 -extensions v3_req -extfile openssl.cnf
+echo "Creating Admin certs********************************************************"
+openssl genrsa -out admin-key.pem 2048
+openssl req -new -key admin-key.pem -out admin.csr -subj "/CN=kube-admin"
+openssl x509 -req -in admin.csr -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out admin.pem -days 365
+echo "DONE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+
+core certs # ./gen-certs.sh
+Creating CA ROOT**********************************************************************
+Generating RSA private key, 2048 bit long modulus
+.+++
+................+++
+e is 65537 (0x10001)
+creating API Server certs*************************************************************
+Enter Master Node IP address:
+Generating RSA private key, 2048 bit long modulus
+....+++
+.............................+++
+e is 65537 (0x10001)
+Signature ok
+subject=/CN=kube-apiserver
+Getting CA Private Key
+Creating Admin certs********************************************************
+Generating RSA private key, 2048 bit long modulus
+..............+++
+..............................................................+++
+e is 65537 (0x10001)
+Signature ok
+subject=/CN=kube-admin
+Getting CA Private Key
+FLANNELD_IFACE=${ADVERTISE_IP}
+FLANNELD_ETCD_ENDPOINTS=${ETCD_ENDPOINTS}
+DONE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+core certs # ls
+admin-key.pem  admin.csr  admin.pem  apiserver-key.pem  apiserver.csr  apiserver.pem  ca-key.pem  ca.pem  ca.srl  gen-certs.sh  openssl.cnf
+
+
+core certs # mkdir -p /etc/kubernetes/ssl
+core certs # cp *.pem /etc/kubernetes/ssl/.
+
+Since it's only one node:
+
+core ~ # kubectl get no
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   1h
+core ~ # kubectl uncordon 192.168.1.106
+node "192.168.1.106" uncordoned
+core ~ # kubectl get no
+NAME            STATUS    AGE
+192.168.1.106   Ready     1h
+
+# install kubectl
+
+
+core ~ # etcdctl get /coreos.com/network/config
+{"Network":"10.2.0.0/16", "Backend": {"Type": "vxlan"}}
+
+Status of kubelet:
+
+core ~ # systemctl status kubelet -f
+● kubelet.service
+   Loaded: loaded (/etc/systemd/system/kubelet.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2017-11-11 09:48:35 MST; 3s ago
+  Process: 29019 ExecStop=/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid (code=exited, status=0/SUCCESS)
+  Process: 29041 ExecStartPre=/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid (code=exited, status=0/SUCCESS)
+  Process: 29038 ExecStartPre=/usr/bin/mkdir -p /var/log/containers (code=exited, status=0/SUCCESS)
+  Process: 29035 ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests (code=exited, status=0/SUCCESS)
+ Main PID: 29076 (kubelet)
+    Tasks: 24 (limit: 32768)
+   Memory: 65.8M
+      CPU: 2.020s
+   CGroup: /system.slice/kubelet.service
+           ├─29076 /kubelet --api-servers=http://127.0.0.1:8080 --register-schedulable=false --network-plugin=cni --container-runtime=docker --allow-privileged=true --pod-manifest-path=/etc/kubernetes/manifests --hostname-override=192.168.1
+           └─29126 journalctl -k -f
+
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.457532   29076 factory.go:54] Registering systemd factory
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.457990   29076 factory.go:86] Registering Raw factory
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.458352   29076 manager.go:1106] Started watching for new ooms in manager
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.460015   29076 oomparser.go:185] oomparser using systemd
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.460860   29076 manager.go:288] Starting recovery of all containers
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.543873   29076 kubelet_node_status.go:204] Setting node annotation to enable volume controller attach/detach
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.553148   29076 kubelet_node_status.go:74] Attempting to register node 192.168.1.106
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.565394   29076 kubelet_node_status.go:113] Node 192.168.1.106 was previously registered
+Nov 11 09:48:36 core kubelet-wrapper[29076]: I1111 16:48:36.565416   29076 kubelet_node_status.go:77] Successfully registered node 192.168.1.106
+
+core ~ # curl http://127.0.0.1:8080/version
+{
+  "major": "1",
+  "minor": "5",
+  "gitVersion": "v1.5.1+coreos.0",
+  "gitCommit": "cc65f5321f9230bf9a3fa171155c1213d6e3480e",
+  "gitTreeState": "clean",
+  "buildDate": "2016-12-14T04:08:28Z",
+  "goVersion": "go1.7.4",
+  "compiler": "gc",
+  "platform": "linux/amd64"
+}
+
+install kubectl:
+
+core ~ # cd /opt/bin/
+core bin # curl -O https://storage.googleapis.com/kubernetes-release/release/v1.5.1/bin/linux/amd64/kubectl
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 48.0M  100 48.0M    0     0  7946k      0  0:00:06  0:00:06 --:--:-- 9731k
+core bin # chmod +x kubectl
+core ~ # kubectl config set-cluster default-cluster --server=https://192.168.1.106 --certificate-authority=/etc/kubernetes/ssl/ca.pem
+Cluster "default-cluster" set.
+core ~ # kubectl config set-credentials default-admin --certificate-authority=/etc/kubernetes/ssl/ca.pem --client-key=/etc/kubernetes/ssl/admin-key.pem --client-certificate=/etc/kubernetes/ssl/admin.pem
+User "default-admin" set.
+core ~ # kubectl config set-context default-system --cluster=default-cluster --user=default-admin
+Context "default-system" set.
+core ~ # kubectl config use-context default-system
+Switched to context "default-system".
+
+then just do a simple deployment
+
+https://kubernetes.io/docs/tasks/run-application/run-stateless-application-deployment/
+
+wget https://k8s.io/docs/tasks/run-application/deployment.yaml
+
+kubectl apply -f deployment.yaml
+
+core ~ # kubectl get po
+NAME                               READY     STATUS    RESTARTS   AGE
+nginx-deployment-431080787-g6z6c   1/1       Running   0          5m
+nginx-deployment-431080787-ggq6t   1/1       Running   0          5m
+
+core ~ # kubectl get no
+NAME            STATUS    AGE       VERSION
+192.168.1.106   Ready     2h        v1.7.2+coreos.0
+
+
+### Migrate etcd3
+
+Update kubernetes
+https://dzone.com/articles/upgrading-kubernetes-on-bare-metal-coreos-cluster-1
+
+Time to migrate https://coreos.com/os/docs/latest/migrating-to-clcs.html
+
+core ~ # kubectl drain 192.168.1.106 --force
+node "192.168.1.106" already cordoned
+WARNING: Deleting pods not managed by ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet: kube-apiserver-192.168.1.106, kube-controller-manager-192.168.1.106, kube-proxy-192.168.1.106, kube-scheduler-192.168.1.106
+node "192.168.1.106" drained
+
+core ~ # kubectl get nodes
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   1h
+
+core ~ # docker stop 7adf8df74542 2fa87e230ccc 9674f540b9e1 f4b25c986bd0
+7adf8df74542
+2fa87e230ccc
+9674f540b9e1
+f4b25c986bd0
+core ~ # docker ps | grep kube
+
+core ~ # etcdctl cluster-health
+member ce2a822cea30bfca is healthy: got healthy result from http://192.168.1.106:2379
+cluster is healthy
+
+core ~ # cp /run/systemd/system/etcd2.service.d/20-cloudinit.conf /etc/systemd/system/etcd-member.service.d/.
+core ~ # cp /etc/systemd/system/etcd2.service.d/50-network-config.conf /etc/systemd/system/etcd-member.service.d/.
+
+core ~ # systemctl status etcd2
+● etcd2.service - etcd2
+   Loaded: loaded (/usr/lib/systemd/system/etcd2.service; disabled; vendor preset: disabled)
+  Drop-In: /run/systemd/system/etcd2.service.d
+           └─20-cloudinit.conf
+        /etc/systemd/system/etcd2.service.d
+           └─50-network-config.conf
+   Active: inactive (dead) since Sat 2017-11-11 11:02:46 MST; 6min ago
+ Main PID: 978 (code=killed, signal=TERM)
+      CPU: 16.159s
+
+Nov 11 10:08:53 core etcd2[978]: ce2a822cea30bfca became leader at term 19
+Nov 11 10:08:53 core etcd2[978]: raft.node: ce2a822cea30bfca elected leader ce2a822cea30bfca at term 19
+Nov 11 10:08:53 core etcd2[978]: published {Name:core ClientURLs:[http://192.168.1.106:2379]} to cluster 7e27652122e8b2ae
+Nov 11 10:52:07 core etcd2[978]: start to snapshot (applied: 14021402, lastsnap: 14011401)
+Nov 11 10:52:07 core etcd2[978]: saved snapshot at index 14021402
+Nov 11 10:52:07 core etcd2[978]: compacted raft log at 14016402
+Nov 11 10:52:22 core etcd2[978]: purged file /var/lib/etcd2/member/snap/0000000000000011-0000000000d52fc5.snap successfully
+Nov 11 11:02:46 core systemd[1]: Stopping etcd2...
+Nov 11 11:02:46 core etcd2[978]: received terminated signal, shutting down...
+Nov 11 11:02:46 core systemd[1]: Stopped etcd2.
+core ~ # systemctl daemon-reload
+core ~ # systemctl enable etcd-member
+Created symlink /etc/systemd/system/multi-user.target.wants/etcd-member.service → /usr/lib/systemd/system/etcd-member.service.
+core ~ # systemctl start etcd-member
+core ~ # systemctl status etcd-member
+● etcd-member.service - etcd (System Application Container)
+   Loaded: loaded (/usr/lib/systemd/system/etcd-member.service; enabled; vendor preset: disabled)
+  Drop-In: /etc/systemd/system/etcd-member.service.d
+           └─20-cloudinit.conf, 50-network-config.conf
+   Active: active (running) since Sat 2017-11-11 11:10:42 MST; 1s ago
+     Docs: https://github.com/coreos/etcd
+  Process: 26514 ExecStartPre=/usr/bin/rkt rm --uuid-file=/var/lib/coreos/etcd-member-wrapper.uuid (code=exited, status=254)
+  Process: 26510 ExecStartPre=/usr/bin/mkdir --parents /var/lib/coreos (code=exited, status=0/SUCCESS)
+ Main PID: 26522 (etcd)
+    Tasks: 13 (limit: 32768)
+   Memory: 111.1M
+      CPU: 2.362s
+   CGroup: /system.slice/etcd-member.service
+           └─26522 /usr/local/bin/etcd
+
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.420693 I | raft: raft.node: ce2a822cea30bfca elected leader ce2a822cea30bfca at term 20
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.420925 I | etcdserver: updating the cluster version from 2.3 to 3.1
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427604 N | etcdserver/membership: updated the cluster version from 2.3 to 3.1
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427635 I | etcdserver/api: enabled capabilities for version 3.1
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427661 I | embed: ready to serve client requests
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427831 I | etcdserver: published {Name:core ClientURLs:[http://192.168.1.106:2379]} to cluster 7e27652122e8b2ae
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427862 I | embed: ready to serve client requests
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427967 N | embed: serving insecure client requests on [::]:2379, this is strongly discouraged!
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.428207 N | embed: serving insecure client requests on [::]:4001, this is strongly discouraged!
+Nov 11 11:10:42 core systemd[1]: Started etcd (System Application Container).
+
+core ~ # etcdctl cluster-health
+member ce2a822cea30bfca is healthy: got healthy result from http://192.168.1.106:2379
+cluster is healthy
+
+core ~ # cd /opt/
+core opt # ls
+backup  bin  tmp
+core opt # mkdir etcd3
+core opt # cd etcd3/
+core etcd3 # wget https://github.com/coreos/etcd/releases/download/v3.2.0/etcd-v3.2.0-linux-amd64.tar.gz
+--2017-11-11 11:12:12--  https://github.com/coreos/etcd/releases/download/v3.2.0/etcd-v3.2.0-linux-amd64.tar.gz
+Resolving github.com... 192.30.253.112, 192.30.253.113
+Connecting to github.com|192.30.253.112|:443... connected.
+HTTP request sent, awaiting response... 302 Found
+Location: https://github-production-release-asset-2e65be.s3.amazonaws.com/11225014/e0a5fbe6-4d06-11e7-91b6-73853151119d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20171111%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20171111T181212Z&X-Amz-Expires=300&X-Amz-Signature=5b5acfbecceea60f80ec9b734bfe036fb0f733a73aca6cdb57d610f70578b07d&X-Amz-SignedHeaders=host&actor_id=0&response-content-disposition=attachment%3B%20filename%3Detcd-v3.2.0-linux-amd64.tar.gz&response-content-type=application%2Foctet-stream [following]
+--2017-11-11 11:12:12--  https://github-production-release-asset-2e65be.s3.amazonaws.com/11225014/e0a5fbe6-4d06-11e7-91b6-73853151119d?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIWNJYAX4CSVEH53A%2F20171111%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20171111T181212Z&X-Amz-Expires=300&X-Amz-Signature=5b5acfbecceea60f80ec9b734bfe036fb0f733a73aca6cdb57d610f70578b07d&X-Amz-SignedHeaders=host&actor_id=0&response-content-disposition=attachment%3B%20filename%3Detcd-v3.2.0-linux-amd64.tar.gz&response-content-type=application%2Foctet-stream
+Resolving github-production-release-asset-2e65be.s3.amazonaws.com... 54.231.41.67
+Connecting to github-production-release-asset-2e65be.s3.amazonaws.com|54.231.41.67|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 10168120 (9.7M) [application/octet-stream]
+Saving to: 'etcd-v3.2.0-linux-amd64.tar.gz'
+
+etcd-v3.2.0-linux-amd64.tar.gz                              100%[===========================================================================================================================================>]   9.70M  8.62MB/s    in 1.1s
+
+2017-11-11 11:12:14 (8.62 MB/s) - 'etcd-v3.2.0-linux-amd64.tar.gz' saved [10168120/10168120]
+
+core etcd3 # ls
+etcd-v3.2.0-linux-amd64.tar.gz
+core etcd3 # tar xzf etcd-v3.2.0-linux-amd64.tar.gz
+core etcd3 # ls
+etcd-v3.2.0-linux-amd64  etcd-v3.2.0-linux-amd64.tar.gz
+core etcd3 # cd etcd-v3.2.0-linux-amd64
+core etcd-v3.2.0-linux-amd64 # ls
+Documentation  README-etcdctl.md  README.md  READMEv2-etcdctl.md  etcd  etcdctl
+core etcd-v3.2.0-linux-amd64 # ETCDCTL_API=3 ./etcdctl migrate --data-dir=/var/lib/etcd
+using default transformer
+2017-11-11 11:12:36.123567 I | etcdserver/api: enabled capabilities for version 2.3
+2017-11-11 11:12:36.123606 I | etcdserver/membership: added member ce2a822cea30bfca [http://localhost:2380 http://localhost:7001] to cluster 0 from store
+2017-11-11 11:12:36.123614 I | etcdserver/membership: set the cluster version to 2.3 from store
+2017-11-11 11:12:36.129480 N | etcdserver/membership: updated the cluster version from 2.3 to 3.1
+2017-11-11 11:12:36.129514 I | etcdserver/api: enabled capabilities for version 3.1
+waiting for etcd to close and release its lock on "/var/lib/etcd/member/snap/db"
+
+finished transforming keys
+core etcd-v3.2.0-linux-amd64 #
+
+core ~ # grep v1.5.1_coreos.0 /etc/systemd/system/kubelet.service
+Environment=KUBELET_VERSION=v1.5.1_coreos.0
+
+core ~ # grep v1.6.1_coreos.0 /etc/systemd/system/kubelet.service
+Environment=KUBELET_IMAGE_TAG=v1.6.1_coreos.0
+
+
+
+core ~ # grep -R v1.5.1_coreos.0 /etc/kubernetes/manifests/*
+/etc/kubernetes/manifests/kube-apiserver.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+/etc/kubernetes/manifests/kube-controller-manager.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+/etc/kubernetes/manifests/kube-proxy.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+/etc/kubernetes/manifests/kube-scheduler.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+core ~ # sed -i 's/v1.5.1_coreos.0/v1.6.1_coreos.0/ /etc/kubernetes/manifests/*
+> ^C
+core ~ # sed -i 's/v1.5.1_coreos.0/v1.6.1_coreos.0/' /etc/kubernetes/manifests/*
+core ~ # grep -R v1.5.1_coreos.0 /etc/kubernetes/manifests/*
+core ~ # grep -R v1.6.1_coreos.0 /etc/kubernetes/manifests/*
+/etc/kubernetes/manifests/kube-apiserver.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+/etc/kubernetes/manifests/kube-controller-manager.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+/etc/kubernetes/manifests/kube-proxy.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+/etc/kubernetes/manifests/kube-scheduler.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+
+update to 1.7.2
+
+https://cloud.google.com/container-engine/docs/role-based-access-control
+
+core dashboard # kubectl create clusterrolebinding b-cluster-admin-binding --clusterrole=cluster-admin --user=kube-admin
+clusterrolebinding "b-cluster-admin-binding" created
+core dashboard # kubectl create -f kubernetes-dashboard.yaml
+secret "kubernetes-dashboard-certs" created
+serviceaccount "kubernetes-dashboard" created
+role "kubernetes-dashboard-minimal" created
+rolebinding "kubernetes-dashboard-minimal" created
+deployment "kubernetes-dashboard" created
+service "kubernetes-dashboard" created
+
+core dashboard # rkt list
+UUID		APP		IMAGE NAME					STATE	CREATED		STARTED		NETWORKS
+084fe4b8	hyperkube	quay.io/coreos/hyperkube:v1.7.2_coreos.0	running	2 minutes ago	2 minutes ago
+2a13bab4	flannel		quay.io/coreos/flannel:v0.8.0			running	8 hours ago	8 hours ago
+d67a53c9	etcd		quay.io/coreos/etcd:v3.1.10			running	8 hours ago	8 hours ago
+
+
+core dashboard # kubectl get all --all-namespaces=true
+NAMESPACE     NAME                                       READY     STATUS    RESTARTS   AGE
+kube-system   po/kube-apiserver-192.168.1.106            1/1       Running   0          6m
+kube-system   po/kube-controller-manager-192.168.1.106   1/1       Running   0          6m
+kube-system   po/kube-proxy-192.168.1.106                1/1       Running   0          6m
+kube-system   po/kube-scheduler-192.168.1.106            1/1       Running   0          6m
+
+NAMESPACE   NAME             CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+default     svc/kubernetes   10.3.0.1     <none>        443/TCP   12h
+
+core dashboard # ip -4 a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+2: ens9: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 1000
+    inet 192.168.1.106/24 brd 192.168.1.255 scope global ens9
+       valid_lft forever preferred_lft forever
+4: flannel.1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UNKNOWN group default
+    inet 10.2.67.0/32 scope global flannel.1
+       valid_lft forever preferred_lft forever
+5: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1450 qdisc noqueue state UP group default
+    inet 10.2.67.1/24 scope global docker0
+       valid_lft forever preferred_lft forever
+22: cbr0: <BROADCAST,MULTICAST,PROMISC,UP,LOWER_UP> mtu 1450 qdisc htb state UP group default qlen 1000
+    inet 10.10.0.1/24 scope global cbr0
+       valid_lft forever preferred_lft forever
+
+  https://github.com/kubernetes/dashboard/wiki/Accessing-Dashboard---1.7.X-and-above
+
+  https://kubernetes.io/docs/concepts/cluster-administration/network-plugins/
+
+  https://github.com/coreos/etcd/blob/master/Documentation/upgrades/upgrade_3_0.md
+
+  network collision:
+
+  https://github.com/kubernetes/kops/issues/710
+  https://kubernetes.io/docs/concepts/cluster-administration/networking/#flannel
+  https://github.com/kubernetes/kubernetes/issues/43988
+  https://github.com/coreos/coreos-kubernetes/issues/572
+  https://github.com/coreos/coreos-kubernetes/issues/595
+
+  https://vadosware.io/post/fresh-dedicated-server-to-single-node-kubernetes-cluster-on-coreos-part-3/
+
+  https://github.com/rook/rook/issues/597
+  https://github.com/kubernetes/kube-state-metrics/issues/270
+  https://coreos.com/operators/prometheus/docs/latest/troubleshooting.html
+
+  https://kubernetes.io/docs/admin/kubelet-authentication-authorization/
+
+
+Extra parameters
+
+//    - --authorization-mode=RBAC
+//    - --no-enable-legacy-authorization
+
+--register-node=true \

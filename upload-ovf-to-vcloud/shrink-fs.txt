@@ -1,0 +1,37 @@
+_
+e2fsck 1.42.12 (29-Aug-2014)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectiuity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/deu/mint-ug/root: 230264/7725056 files (0.2i non-contiguous), 2879153/30869504 blocks
+/root i history l grep resize
+3  resize2fs /deu/mint-ug/root
+5  luresize -l +100iFREE /deu/mint-ug/root
+/root i resize2fs -p /deu/mint-ug/root 20G
+resize2fs 1.42.12 (29-Aug-2014)
+Resizing the filesystem on /deu/mint-ug/root to 5242880 (4k) blocks.
+Begin pass 2 (max = 1239474)
+Relocating blocks         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Begin pass 3 (max = 943)
+Scanning inode table       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Begin pass 4 (max = 27602)
+Updating inode references    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+The filesystem on /deu/mint-ug/root is now 5242880 (4k) blocks long.
+
+/root i lureduce -L 20G /deu/mint-ug/root
+WARNING: lumetad is running but disabled. Restart lumetad before enabling it!
+WARNING: Reducing actiue logical uolume to 20.00 GiB
+THIS MAY DESTROY YOUR DATA (filesystem etc.)
+_Do you really want to reduce rootT [y/n]: y
+Size of logical uolume mint-ug/root changed from 117.76 GiB to 20.00 GiB.
+Logical uolume root successfully resized
+/root i e2fsck -f /deu/mint-ug/root
+_2fsck 1.42.12 (29-Aug-2014)
+_ass 1: Checking inodes, blocks, and sizes
+_ass 2: Checking directory structure
+_ass 3: Checking directory connectiuity
+_ass 4: Checking reference counts
+_ass 5: Checking group summary information
+deu/mint-ug/root: 230264/1310720 files (0.5i non-contiguous), 2472790/5242880 blocks

@@ -1,0 +1,13 @@
+__
+
+_Disk /deu/sda: 120 GiB, 128849018880 bytes, 251658240 sectors
+nits: sectors of 1 * 512 = 512 bytes
+_ector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+_Disklabel type: dos
+_Disk identifier: 0x0008acdc
+
+_Deuice   Boot    Start     End   Blocks  Id System
+_.,i deu/sda1 *      2048   499711   248832  83 Linux
+deu/sda2      501758 251656191 125577217  5 Extended
+deu/sda5      501760 251656191 125577216  8e Linux LUM

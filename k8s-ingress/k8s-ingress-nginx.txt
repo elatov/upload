@@ -1,0 +1,113 @@
+Configure an Ingress Controller with Nginx:
+
+# Instructions are at [Installation Guide](https://github.com/kubernetes/ingress-nginx/tree/master/deploy#installation-guide).
+
+So get the source:
+
+<> git clone https://github.com/kubernetes/ingress-nginx.git
+
+So let's start the config:
+
+<> kubectl apply -f ingress-nginx/deploy/namespace.yaml
+namespace "ingress-nginx" created
+<> kubectl apply -f ingress-nginx/deploy/default-backend.yaml
+deployment "default-http-backend" created
+service "default-http-backend" created
+<> kubectl apply -f ingress-nginx/deploy/configmap.yaml
+configmap "nginx-configuration" created
+<> kubectl apply -f ingress-nginx/deploy/tcp-services-configmap.yaml
+configmap "tcp-services" created
+<> kubectl apply -f ingress-nginx/deploy/udp-services-configmap.yaml
+configmap "udp-services" created
+<> kubectl apply -f ingress-nginx/deploy/rbac.yaml
+serviceaccount "nginx-ingress-serviceaccount" created
+clusterrole "nginx-ingress-clusterrole" created
+role "nginx-ingress-role" created
+rolebinding "nginx-ingress-role-nisa-binding" created
+clusterrolebinding "nginx-ingress-clusterrole-nisa-binding" created
+<> kubectl apply -f ingress-nginx/deploy/with-rbac.yaml
+deployment "nginx-ingress-controller" created
+<> kubectl apply -f ingress-nginx/deploy/provider/baremetal/service-nodeport.yaml
+service "ingress-nginx" created
+
+You should be able to see all the configs deployed:
+
+<> kubectl get all -n ingress-nginx
+NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/default-http-backend       1         1         1            1           6m
+deploy/nginx-ingress-controller   1         1         1            1           4m
+
+NAME                                    DESIRED   CURRENT   READY     AGE
+rs/default-http-backend-55c6c69b88      1         1         1         6m
+rs/nginx-ingress-controller-d7b4cbf98   1         1         1         4m
+
+NAME                              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+deploy/default-http-backend       1         1         1            1           6m
+deploy/nginx-ingress-controller   1         1         1            1           4m
+
+NAME                                    DESIRED   CURRENT   READY     AGE
+rs/default-http-backend-55c6c69b88      1         1         1         6m
+rs/nginx-ingress-controller-d7b4cbf98   1         1         1         4m
+
+NAME                                          READY     STATUS    RESTARTS   AGE
+po/default-http-backend-55c6c69b88-wj8bn      1/1       Running   0          6m
+po/nginx-ingress-controller-d7b4cbf98-xqmrr   1/1       Running   0          4m
+
+NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+svc/default-http-backend   ClusterIP   10.102.171.108   <none>        80/TCP                       6m
+svc/ingress-nginx          NodePort    10.106.90.156    <none>        80:36006/TCP,443:36698/TCP   2m
+
+https://github.com/kubernetes/ingress-nginx/issues/411
+https://github.com/kubernetes/kubernetes/issues/23920
+https://daemonza.github.io/2017/02/13/kubernetes-nginx-ingress-controller/
+https://kubernetes.io/docs/concepts/services-networking/ingress/
+
+Good thing to check out are the different options you can set with annotations:
+
+
+There were a couple of issues with missing the trailing slash (/), but some workarounds are available here:
+
+https://github.com/kubernetes/ingress-nginx/issues/646
+https://github.com/kubernetes/ingress-nginx/issues/1399
+
+
+For grafana, it looks like we need to enable the application to be aware that it's getting reverse proxied:
+
+http://docs.grafana.org/installation/behind_proxy/
+
+Luckily we can just update an environment variable and apply a new config:
+
+<> grep -i root grafana.yaml -A 3
+        - name: GF_SERVER_ROOT_URL
+          # If you're only using the API Server proxy, set this value instead:
+          # value: /api/v1/namespaces/kube-system/services/monitoring-grafana/proxy
+          value: "%(protocol)s://%(domain)s:%(http_port)s/grafana"
+
+And then to apply the config:
+
+<> kubectl apply -f grafana.yaml
+deployment "monitoring-grafana" configured
+service "monitoring-grafana" unchanged
+
+Then creating the following ingress rule:
+
+<> cat ingress.yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: "/"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  namespace: kube-system
+spec:
+  rules:
+  - host: ub.kar.int
+    http:
+      paths:
+      - path: /grafana
+        backend:
+          serviceName: monitoring-grafana
+          servicePort: 3000
+
+Took care of the rest:

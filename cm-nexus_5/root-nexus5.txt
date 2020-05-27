@@ -1,0 +1,146 @@
+# I used macport install adb:
+
+https://sskaje.me/2015/05/macports-install-adb/
+
+# then enable usb debug mode:
+
+On your Android device, go to “Settings” > “About phone/tablet“.
+Tap “Build number” 7 times until it says “You are now a developer“.
+Under “Settings” > “Developer options“, set “USB debugging” to “On“.
+
+# plug in the device and you should see the device
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 09:32:49]
+└─[0] <> adb devices -l
+List of devices attached
+06b989b313ca9bcf       device usb:337641472X product:hammerhead model:Nexus_5 device:hammerhead
+
+Then I backed up everything first:
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 09:20:34]
+└─[0] <> adb backup -f nexus5.ab -apk -shared -all
+Now unlock your device and confirm the backup operation.
+
+# And then I removed the system apps
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 09:28:05]
+└─[0] <> adb backup -f nexus5-no_sys.ab -apk -shared -all -nosystem
+Now unlock your device and confirm the backup operation.
+
+backup options are described here:
+
+http://forum.xda-developers.com/galaxy-nexus/general/guide-phone-backup-unlock-root-t1420351
+
+Here were the resulted files
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 09:42:17]
+└─[1] <> ls -lh *.ab
+-rw-r-----  1 elatov  1000   675M Apr  2 09:32 nexus5-no_sys.ab
+-rw-r-----  1 elatov  1000   923M Apr  2 09:28 nexus5.ab
+
+# then we can follow the instructions laid out in:
+
+https://wiki.cyanogenmod.org/w/Install_CM_for_hammerhead
+
+# Unlock device
+adb reboot bootloader
+
+# confirm
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 09:59:44]
+└─[0] <> fastboot devices -l
+06b989b313ca9bcf       fastboot usb:337641472X
+
+# unlock
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 09:59:46]
+└─[0] <> fastboot oem unlock
+...
+OKAY [ 35.913s]
+finished. total time: 35.913s
+
+# the above reset the phone to factory settings. So re-enable usb-debug after
+the phone resets.
+
+
+Installing a custom recovery using fastboot
+
+I downloaded the recovery image:
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:00:54]
+└─[0] <> ls -l download/twrp-2.8.7.1-hammerhead.img
+-rw-r--r--@ 1 elatov  1000  15046656 Apr  2 09:55 download/twrp-2.8.7.1-hammerhead.img
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:02:52]
+└─[0] <> adb reboot bootloader
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:12:26]
+└─[0] <> fastboot devices -l
+06b989b313ca9bcf       fastboot usb:337641472X
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:12:40]
+└─[0] <> fastboot flash recovery download/twrp-2.8.7.1-hammerhead.img
+target reported max download size of 1073741824 bytes
+sending 'recovery' (14694 KB)...
+OKAY [  0.671s]
+writing 'recovery'...
+OKAY [  1.132s]
+finished. total time: 1.803s
+
+Once the flash completes successfully, reboot the device into recovery to
+verify the installation. Boot to recovery instructions: With the device
+powered down, hold the Volume Down and Volume Up buttons. Then press and hold
+the Power button until a boot menu appears. Navigate using the volume keys and
+select RECOVERY MODE using the Power key.
+
+# you will see a new recovery screen and you can confirm you are in recovery
+mode by running adb devices
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:15:55]
+└─[0] <> adb devices
+List of devices attached
+06b989b313ca9bcf	recovery
+
+## downloaded all the files:
+
+─[elatov@macair] - [/Users/elatov/download] - [2016-04-02 01:15:03]
+└─[0] <> ls -l *.zip *.img
+-rw-r--r--@ 1 elatov  1000  334188304 Apr  2 10:13 cm-13.0-20160316-SNAPSHOT-ZNH0EAO1QC-hammerhead.zip
+-rw-r--r--@ 1 elatov  1000  122494130 Apr  2 10:10 open_gapps-arm-6.0-nano-20160402.zip
+-rw-r--r--@ 1 elatov  1000   15046656 Apr  2 09:55 twrp-2.8.7.1-hammerhead.img
+
+# now let's push the cynogen and gapps onto the phone
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:15:59]
+└─[0] <> adb push download/cm-13.0-20160316-SNAPSHOT-ZNH0EAO1QC-hammerhead.zip /sdcard/
+4988 KB/s (334188304 bytes in 65.424s)
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 10:18:31]
+└─[0] <> adb push download/open_gapps-arm-6.0-nano-20160402.zip /sdcard/
+4901 KB/s (122494130 bytes in 24.406s)
+
+# then after the new install the devices showed up an unauthorized
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 01:40:06]
+└─[0] <> adb devices
+List of devices attached
+06b989b313ca9bcf	unauthorized
+
+Move the .android directory out of the way
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 01:40:12]
+└─[0] <> sudo mv .android .android.orig
+
+Then killed adb
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 01:41:17]
+└─[0] <> adb kill-server
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 01:41:32]
+└─[0] <> adb devices
+List of devices attached
+* daemon not running. starting it now on port 5037 *
+* daemon started successfully *
+06b989b313ca9bcf	unauthorized
+
+# at this point the pop up on the phone showed up and accepted and then I saw
+the following:
+
+┌─[elatov@macair] - [/Users/elatov] - [2016-04-02 01:41:38]
+└─[0] <> adb devices
+List of devices attached
+06b989b313ca9bcf	device
+
+Then you could back up manually if you don't use google backup:
+
+adb restore nexus5-no_sys.ab

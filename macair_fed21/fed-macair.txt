@@ -1,0 +1,96 @@
+# convert the iso into an image
+
+elatov@macair:~/usb_backup$hdiutil convert -format UDRW -o fed_21.dmg Fedora-Live-Workstation-x86_64-21-5.iso
+Reading Driver Descriptor Map (DDM : 0)…
+Reading Fedora-Live-WS-x86_64-21-5       (Apple_ISO : 1)…
+Reading Apple (Apple_partition_map : 2)…
+Reading Fedora-Live-WS-x86_64-21-5       (Apple_ISO : 3)…
+Reading EFI (Apple_HFS : 4)…
+Reading Fedora-Live-WS-x86_64-21-5       (Apple_ISO : 5)…
+Reading EFI (Apple_HFS : 6)…
+Reading Fedora-Live-WS-x86_64-21-5       (Apple_ISO : 7)…
+..............................................................................
+Elapsed Time:  7.891s
+Speed: 177.9Mbytes/sec
+Savings: 0.0%
+created: /Users/elatov/usb_backup/fed_21.dmg
+
+# then format the usb drive to use EFI
+I already had a ext3 partition on it with MBR type partiton
+
+elatov@macair:~$diskutil  list /dev/disk2
+/dev/disk2
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:     FDisk_partition_scheme                        *32.0 GB    disk2
+   1:                      Linux                         32.0 GB    disk2s1
+
+# so I unmounted the drive
+elatov@macair:~$diskutil umount /Volumes/Untitled/
+Volume  on disk2s1 unmounted
+
+And then wiped the mbr style partiton type
+
+elatov@macair:~$sudo dd if=/dev/zero of=/dev/disk2 bs=512 count=1
+1+0 records in
+1+0 records out
+512 bytes transferred in 0.000813 secs (629761 bytes/sec)
+
+Then the disk was blank
+
+elatov@macair:~$diskutil  list /dev/disk2
+/dev/disk2
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:                                                   *32.0 GB    disk2
+
+Now let's put a GPT Type partition on it
+
+elatov@macair:~$sudo gpt create /dev/disk2
+
+lastly to confirm
+
+elatov@macair:~$diskutil  list /dev/disk2
+/dev/disk2
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *32.0 GB    disk2
+
+# now let's just wipe the whole disk:
+
+elatov@macair:~$diskutil partitionDisk /dev/disk2 1 "Free Space" "unused" "100%"
+Started partitioning on disk2
+Unmounting disk
+Creating the partition map
+Waiting for the disks to reappear
+Finished partitioning on disk2
+/dev/disk2
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:      GUID_partition_scheme                        *32.0 GB    disk2
+   1:                        EFI EFI                     209.7 MB   disk2s1
+
+# now let's dd the image over
+
+elatov@macair:~/usb_backup$sudo dd if=fed_21.img.dmg of=/dev/disk2 bs=1m
+1403+1 records in
+1403+1 records out
+1471502336 bytes transferred in 632.999466 secs (2324650 bytes/sec)
+
+AFter that the partition table looked like this:
+
+elatov@macair:~$diskutil list disk2
+/dev/disk2
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:     Apple_partition_scheme                        *32.0 GB    disk2
+   1:        Apple_partition_map                         8.2 KB     disk2s1
+   2:                  Apple_HFS                         5.2 MB     disk2s2
+   3:                  Apple_HFS Fedora Live             20.8 MB    disk2s3
+
+# then go ahead and eject the mounted usb disk
+
+elatov@macair:~$diskutil eject /dev/disk2
+Disk /dev/disk2 ejected
+
+### After the reboot you can hide the EFI partition from showing up on the
+# desktop
+
+cd /Volumes
+chflags hidden Linux\ HFS+\ ESP/
+

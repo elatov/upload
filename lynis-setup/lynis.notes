@@ -1,0 +1,455 @@
+
+# setup repo https://packages.cisofy.com/#centos-fedora-rhel
+
+# then run it
+sudo lynix audit system
+
+# logs under
+
+/var/log/lynis.log
+
+# report under
+
+/var/log/lynis-report.dat
+
+### Create a cron job script
+### Fix Issues
+# missing 2 DNS
+update config in pfsense to be a dns resolver Services -> DNS Resolver ->
+# Host Overrides
+
+# test AUTH-9328
+vi /etc/profile
+---
+if [ $UID -gt 199 ] && [ "`id -gn`" = "`id -un`" ]; then
+    umask 002
+else
+    umask 022
+fi
+---
+# to
+---
+if [ $UID -gt 199 ] && [ "`id -gn`" = "`id -un`" ]; then
+    umask 027
+else
+    umask 027
+fi
+---
+
+# do the same thing in the /etc/bashrc and /etc/csh.cshrc files
+### Test STRG-1840
+# https://www.cyberciti.biz/faq/linux-disable-modprobe-loading-of-usb-storage-driver/
+sudo vi /etc/modprobe.d/usb.conf
+---
+blacklist usb-storage
+---
+
+### Test STRG-1846
+# https://linux-audit.com/kernel-hardening-disable-and-blacklist-linux-modules/
+sudo vi /etc/modprobe.d/firewire.con
+--
+blacklist firewire-core
+---
+
+### Run specific test
+sudo lynis audit system --tests STRG-1846
+
+### disable NAME-4404
+sudo vi /etc/lynis/default.prf
+---
+skip-test=NAME-4404
+---
+# or install arpwatch
+#http://www.tecmint.com/monitor-ethernet-activity-in-linux/
+sudo yum install arpwatch
+sudo vi /etc/sysconfig/arpwatch (change email if necessary)
+# enable and start
+sudo systemctl enable arpwatch
+sudo systemctl start arpwatch
+# and enter the hostname
+sudo vi /etc/hosts
+---
+192.168.1.100	m2.kar.int m2
+---
+###
+
+### Fix FILE-6310
+https://www.certdepot.net/rhel7-how-to-configure-tmp-on-tmpfs/
+# we just need to enable a systemd service for that
+sudo systemctl enable tmp.mount
+<> df -Ph /tmp
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           921M   36K  921M   1% /tmp
+###
+
+### Fix SSH-7408
+https://linux-audit.com/audit-and-harden-your-ssh-configuration/
+# modify what you want 
+sudo vi /etc/ssh/sshd_config
+---
+PermitRootLogin without-password
+X11Forwarding no
+AllowAgentForwarding no
+UseDNS yes
+---
+# confirm settings
+sudo sshd -T
+# also do a config test
+<> sudo sshd -t
+# restart the daemon
+sudo systemctl restart sshd
+###
+
+### Fix BANN-7126
+# https://wiki.centos.org/TipsAndTricks/BannerFiles
+sudo vi /etc/issue
+---
+Unauthorized access to this machine is prohibited
+Press <Ctrl-D> if you are not an authorized user
+---
+###
+
+### Fix BANN-7130
+# https://wiki.centos.org/TipsAndTricks/BannerFiles
+sudo vi /etc/issue.net
+---
+Unauthorized access to this machine is prohibited
+Press <Ctrl-D> if you are not an authorized user
+---
+###
+
+### Fix 
+# http://www.tecmint.com/how-to-monitor-user-activity-with-psacct-or-acct-tools/
+# install the tool
+sudo yum install psacct
+# then enable it and start it
+sudo systemctl enable psacct.service
+sudo systemctl start psacct.service
+###
+
+### fix TOOL-5002
+
+# from https://github.com/CISOfy/lynis/releases you can use --bin-dirs,
+# under Lynis 2.3.3  but rather than appending it just overwrites
+# you could do something like this with the cronjob
+ <> grep bindir /etc/cron.weekly/lynis
+${LYNIS} audit system --auditor "${AUDITOR}" --cronjob  --bindirs "/usr/bin /usr/sbin /opt/puppetlabs/bin/ /var/ossec/bin"> ${REPORT}
+# but that didn't help, could've modified the consts BIN_PATH variable
+<> sudo grep BIN_PATH /usr/share/lynis/include/consts -A 4
+BIN_PATHS="/bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin \
+          /usr/local/libexec /usr/libexec /usr/sfw/bin /usr/sfw/sbin \
+          /usr/sfw/libexec /opt/sfw/bin /opt/sfw/sbin /opt/sfw/libexec \
+          /usr/xpg4/bin /usr/css/bin /usr/ucb /usr/X11R6/bin /usr/X11R7/bin \
+          /usr/pkg/bin /usr/pkg/sbin"
+
+# but an update would overwrite that, if you don't want to mess with --bin-dirs you can created a sym link under /usr/bin/
+
+<> sudo ln -s /opt/puppetlabs/bin/puppet /usr/bin/puppet
+
+### fix ACCT-9630
+# the suggestion has a good config file to use
+https://cisofy.com/controls/ACCT-9630/
+# I just had to modify the puppet line since it's moved to a different location 
+
+# here is the file I ended up with:
+<> sudo cat /etc/audit/rules.d/audit.rules
+[sudo] password for elatov:
+# This is an example configuration suitable for most systems
+# Before running with this configuration:
+# - Remove or comment items which are not applicable
+# - Check paths of binaries and files
+
+###################
+# Remove any existing rules
+###################
+
+-D
+
+###################
+# Buffer Size
+###################
+# Might need to be increased, depending on the load of your system.
+-b 8192
+
+###################
+# Failure Mode
+###################
+# 0=Silent
+# 1=printk, print failure message
+# 2=panic, halt system
+-f 1
+
+###################
+# Audit the audit logs.
+###################
+-w /var/log/audit/ -k auditlog
+
+###################
+## Auditd configuration
+###################
+## Modifications to audit configuration that occur while the audit (check your paths)
+-w /etc/audit/ -p wa -k auditconfig
+-w /etc/libaudit.conf -p wa -k auditconfig
+-w /etc/audisp/ -p wa -k audispconfig
+
+###################
+# Monitor for use of audit management tools
+###################
+# Check your paths
+-w /sbin/auditctl -p x -k audittools
+-w /sbin/auditd -p x -k audittools
+
+###################
+# Special files
+###################
+-a exit,always -F arch=b32 -S mknod -S mknodat -k specialfiles
+-a exit,always -F arch=b64 -S mknod -S mknodat -k specialfiles
+
+###################
+# Mount operations
+###################
+-a exit,always -F arch=b32 -S mount -S umount -S umount2 -k mount
+-a exit,always -F arch=b64 -S mount -S umount2 -k mount
+
+###################
+# Changes to the time
+###################
+-a exit,always -F arch=b32 -S adjtimex -S settimeofday -S stime -S clock_settime -k time
+-a exit,always -F arch=b64 -S adjtimex -S settimeofday -S clock_settime -k time
+-w /etc/localtime -p wa -k localtime
+
+###################
+# Use of stunnel
+###################
+-w /usr/sbin/stunnel -p x -k stunnel
+
+###################
+# Schedule jobs
+###################
+-w /etc/cron.allow -p wa -k cron
+-w /etc/cron.deny -p wa -k cron
+-w /etc/cron.d/ -p wa -k cron
+-w /etc/cron.daily/ -p wa -k cron
+-w /etc/cron.hourly/ -p wa -k cron
+-w /etc/cron.monthly/ -p wa -k cron
+-w /etc/cron.weekly/ -p wa -k cron
+-w /etc/crontab -p wa -k cron
+-w /var/spool/cron/crontabs/ -k cron
+
+## user, group, password databases
+-w /etc/group -p wa -k etcgroup
+-w /etc/passwd -p wa -k etcpasswd
+-w /etc/gshadow -k etcgroup
+-w /etc/shadow -k etcpasswd
+-w /etc/security/opasswd -k opasswd
+
+###################
+# Monitor usage of passwd command
+###################
+-w /usr/bin/passwd -p x -k passwd_modification
+
+###################
+# Monitor user/group tools
+###################
+-w /usr/sbin/groupadd -p x -k group_modification
+-w /usr/sbin/groupmod -p x -k group_modification
+-w /usr/sbin/addgroup -p x -k group_modification
+-w /usr/sbin/useradd -p x -k user_modification
+-w /usr/sbin/usermod -p x -k user_modification
+-w /usr/sbin/adduser -p x -k user_modification
+
+###################
+# Login configuration and stored info
+###################
+-w /etc/login.defs -p wa -k login
+-w /etc/securetty -p wa -k login
+-w /var/log/faillog -p wa -k login
+-w /var/log/lastlog -p wa -k login
+-w /var/log/tallylog -p wa -k login
+
+###################
+# Network configuration
+###################
+-w /etc/hosts -p wa -k hosts
+-w /etc/network/ -p wa -k network
+
+###################
+## system startup scripts
+###################
+-w /etc/inittab -p wa -k init
+-w /etc/init.d/ -p wa -k init
+-w /etc/init/ -p wa -k init
+
+###################
+# Library search paths
+###################
+-w /etc/ld.so.conf -p wa -k libpath
+
+###################
+# Kernel parameters and modules
+###################
+-w /etc/sysctl.conf -p wa -k sysctl
+-w /etc/modprobe.conf -p wa -k modprobe
+###################
+
+###################
+# PAM configuration
+###################
+-w /etc/pam.d/ -p wa -k pam
+-w /etc/security/limits.conf -p wa  -k pam
+-w /etc/security/pam_env.conf -p wa -k pam
+-w /etc/security/namespace.conf -p wa -k pam
+-w /etc/security/namespace.init -p wa -k pam
+
+###################
+# Puppet (SSL)
+###################
+-w /etc/puppetlabs/puppet/ssl -p wa -k puppet_ssl
+
+###################
+# Postfix configuration
+###################
+-w /etc/aliases -p wa -k mail
+-w /etc/postfix/ -p wa -k mail
+###################
+
+###################
+# SSH configuration
+###################
+-w /etc/ssh/sshd_config -k sshd
+
+###################
+# Hostname
+###################
+-a exit,always -F arch=b32 -S sethostname -k hostname
+-a exit,always -F arch=b64 -S sethostname -k hostname
+
+###################
+# Changes to issue
+###################
+-w /etc/issue -p wa -k etcissue
+-w /etc/issue.net -p wa -k etcissue
+
+###################
+# Log all commands executed by root
+###################
+-a exit,always -F arch=b64 -F euid=0 -S execve -k rootcmd
+-a exit,always -F arch=b32 -F euid=0 -S execve -k rootcmd
+
+###################
+## Capture all failures to access on critical elements
+###################
+-a exit,always -F arch=b64 -S open -F dir=/etc -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/bin -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/home -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/sbin -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/srv -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/usr/bin -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/usr/local/bin -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/usr/sbin -F success=0 -k unauthedfileacess
+-a exit,always -F arch=b64 -S open -F dir=/var -F success=0 -k unauthedfileacess
+
+###################
+## su/sudo
+###################
+-w /bin/su -p x -k priv_esc
+-w /usr/bin/sudo -p x -k priv_esc
+-w /etc/sudoers -p rw -k priv_esc
+
+###################
+# Poweroff/reboot tools
+###################
+-w /sbin/halt -p x -k power
+-w /sbin/poweroff -p x -k power
+-w /sbin/reboot -p x -k power
+-w /sbin/shutdown -p x -k power
+
+###################
+# Make the configuration immutable
+###################
+-e 2
+
+# EOF
+
+# after that you can restart the service
+sudo service auditd restart
+###
+
+### Fix HRDN-7230
+# after reading a couple of sites:
+http://www.networkworld.com/article/2989137/linux/av-test-lab-tests-16-linux-antivirus-products-against-windows-and-linux-malware.html
+http://www.makeuseof.com/tag/free-linux-antivirus-programs/
+
+# following the instructions here
+http://www.techbrown.com/install-sophos-anti-virus-free-edition-centos-7-rhel-7.shtml
+https://www.bleepingcomputer.com/forums/t/578679/sophos-antivirus-for-linux/
+
+check out this post on the setup of sophos
+
+###  fix KRNL-6000
+# A lot of these are covered here:
+https://www.suse.com/documentation/sles-12/singlehtml/book_hardening/book_hardening.html#sec.sec_prot.general.kernel
+
+# Decided to keep the tcp timestamps
+http://stackoverflow.com/questions/7880383/what-benefit-is-conferred-by-tcp-timestamp
+
+# get a backup of the default settings just in case: 
+
+sudo sysctl -a > /tmp/sysctl-defaults.conf
+
+# then create the config file
+<> sudo cat /etc/sysctl.d/80-lynis.conf
+kernel.kptr_restrict = 2
+kernel.sysrq = 0
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.default.log_martians = 1
+#net.ipv4.tcp_timestamps = 0
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# apply the settings
+<> sudo sysctl --system
+* Applying /usr/lib/sysctl.d/00-system.conf ...
+* Applying /usr/lib/sysctl.d/50-default.conf ...
+...
+...
+* Applying /etc/sysctl.d/80-lynis.conf ...
+kernel.kptr_restrict = 2
+kernel.sysrq = 0
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.all.log_martians = 1
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.default.log_martians = 1
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+* Applying /etc/sysctl.d/99-sysctl.conf ...
+* Applying /etc/sysctl.conf ...
+
+# to disable that check just comment out this line in your profile
+ <> grep tcp_times /etc/lynis/default.prf
+config-data=sysctl;net.ipv4.tcp_timestamps;0;1;Do not use TCP time stamps;-;category:security;
+
+### fix HRDN-7222
+# disable others to use gcc
+┌─[elatov@m2] - [/home/elatov] - [2016-12-27 12:15:29]
+└─[0] <> which gcc
+/usr/bin/gcc
+┌─[elatov@m2] - [/home/elatov] - [2016-12-27 12:16:49]
+└─[0] <> ls -l /usr/bin/gcc
+-rwxr-xr-x 2 root root 768616 Nov  4 09:19 /usr/bin/gcc
+┌─[elatov@m2] - [/home/elatov] - [2016-12-27 12:16:54]
+└─[0] <> sudo chmod o-rx /usr/bin/gcc
+┌─[elatov@m2] - [/home/elatov] - [2016-12-27 12:17:10]
+└─[0] <> gcc
+zsh: permission denied: gcc
+# and same thing for as
+<> sudo chmod o-rx /usr/bin/as
+# you can get a list of discovered compilers in the log
+<> grep compiler /var/log/lynis.log
+2016-12-27 12:19:05   Found known binary: as (compiler) - /usr/bin/as
+2016-12-27 12:19:05   Found known binary: gcc (compiler) - /usr/bin/gcc
+

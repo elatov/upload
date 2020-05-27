@@ -1,0 +1,6 @@
+san_switch# conf t
+Enter configuration commands, one per line.
+
+san_switch(config)# fcalias name ESXHOST3_VMHBA2
+san_switch(config-fcalias)# no member pwwn 21:00:00:1b:32:0b:8f:01
+san_switch(config-fcalias)# member pwwn 21:00:00:1b:32:0b:90:01

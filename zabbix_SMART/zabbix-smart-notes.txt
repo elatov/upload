@@ -1,0 +1,96 @@
+User Parameters
+
+UserParameter=smart.temp[*],/usr/local/bin/getsv /dev/$1 Temperature_Celsius
+UserParameter=smart.seek_time_perf[*],/usr/local/bin/getsv /dev/$1 Seek_Time_Performance
+UserParameter=smart.reallocated_sec_cnt[*],/usr/local/bin/getsv /dev/$1 Reallocated_Sector_Ct
+UserParameter=smart.hw_ecc_recov[*],/usr/local/bin/getsv /dev/$1 Hardware_ECC_Recovered
+UserParameter=smart.udma_crc_err_cnt[*],/usr/local/bin/getsv /dev/$1 UDMA_CRC_Error_Count
+
+Script
+sudo ln -s ~/.gdrive/notes/scripts/bash/get_smart_value.bash getsv
+
+
+wget http://heanet.dl.sourceforge.net/project/smartmontools/smartmontools/5.42/smartmontools-5.42.tar.gz
+
+
+smartmontools-5.42 configuration:
+host operating system:  armv5tel-unknown-linux-gnueabi
+C++ compiler:           g++
+C compiler:             gcc
+preprocessor flags:
+C++ compiler flags:     -g -O2 -Wall -W
+C compiler flags:       -g -O2
+linker flags:
+OS specific modules:    os_linux.o cciss.o
+binary install path:    /opt/smart/sbin
+man page install path:  /opt/smart/share/man
+doc file install path:  /opt/smart/share/doc/smartmontools
+examples install path:  /opt/smart/share/doc/smartmontools/examplescripts
+drive database file:    /opt/smart/share/smartmontools/drivedb.h
+database update script: /opt/smart/sbin/update-smart-drivedb
+download tools:         curl wget lynx
+local drive database:   /opt/smart/etc/smart_drivedb.h
+smartd config file:     /opt/smart/etc/smartd.conf
+smartd initd script:    /opt/smart/etc/init.d/smartd
+smartd save files:      [disabled]
+smartd attribute logs:  [disabled]
+libcap-ng support:      no
+SELinux support:        no
+-----------------------------------------------------------------------------
+
+sudo visudo
+---
+zabbix  ALL= NOPASSWD: /usr/sbin/smartctl
+#Defaults    requiretty
+---
+
+# Test locally
+moxz:~>sudo su - zabbix -s /bin/bash -c '/usr/local/bin/getsv /dev/sda Temperature_Celsius'
+46
+
+# test from server
+elatov@kerch:~$for i in $(grep '^UserParameter=smart' /etc/zabbix/zabbix_agentd.conf | cut -d = -f 2 | cut -d [ -f 1); do echo $i; zabbix_get -s 192.168.1.102 -p 10050 -k "$i[sda]"; done
+smart.temp
+46
+smart.seek_time_perf
+37822
+smart.reallocated_sec_cnt
+0
+smart.hw_ecc_recov
+5665
+smart.udma_crc_err_cnt
+406ee1
+
+# Create a Regular Express just for ide and scsi disks
+Administration -> General -> Regular Expression -> New regular expression
+^(hd[a-z]|sd[a-z])$
+
+# Create Template
+Configure -> Template -> Create Template -> Add it to templates and add hosts of choice
+
+
+# Add Discovery Rule
+Configuration -> Template -> Select your template -> Discovery rules -> "Create Discovery rule" 
+
+Under key make sure it's different from the first one i.e.
+
+custom.disks.discovery_perl2
+
+Macro = {#DISK}
+Regexp = @Unix IDE and SCSI Disks
+
+# Create Item Prototype
+Configuration -> Template -> Select your template -> Item prototypes -> add
+Name: HD Temp on {#DISK}
+key: smart.temp[{#DISK}]
+
+Add the same thing for reallocated_sector_count
+
+### Create a Trigger Prototype
+Configuration -> Template -> Select your template -> Trigger prototypes -> add 
+select the reallocate sector count and set the trigger to warning if value is > 0
+
+### Create a graph
+Configuration -> Template -> Select your template -> Graph prototypes
+
+

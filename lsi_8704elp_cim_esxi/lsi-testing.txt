@@ -1,0 +1,246 @@
+So one of the VirtualDisks was setup as a RAID-1:
+
+# ./MegaCli -LDInfo -L0 -a0             
+                                     
+
+Adapter 0 -- Virtual Drive Information:
+Virtual Drive: 0 (Target Id: 0)
+Name                :
+RAID Level          : Primary-1, Secondary-0, RAID Level Qualifier-0
+Size                : 67.054 GB
+Sector Size         : 512
+Mirror Data         : 67.054 GB
+State               : Optimal
+Strip Size          : 64 KB
+Number Of Drives    : 2
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Enabled
+Encryption Type     : None
+Is VD Cached: No
+
+
+and here is the information regarding both disks:
+
+# ./MegaCli -PDInfo -PhysDrv [6:0] -aALL
+                                     
+Enclosure Device ID: 6
+Slot Number: 0
+Drive's position: DiskGroup: 0, Span: 0, Arm: 0
+Enclosure position: N/A
+Device Id: 4
+WWN: 
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 68.366 GB [0x88bb998 Sectors]
+Non Coerced Size: 67.866 GB [0x87bb998 Sectors]
+Coerced Size: 67.054 GB [0x861c000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: 0005
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500097b0fdd
+SAS Address(1): 0x0
+Connected Port Number: 0(path0) 
+Inquiry Data: SEAGATE ST973452SS      00053TA1737G            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 3.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :35C (95.00 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 3.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+# ./MegaCli -PDInfo -PhysDrv [6:1] -aALL
+                                     
+Enclosure Device ID: 6
+Slot Number: 1
+Drive's position: DiskGroup: 0, Span: 0, Arm: 1
+Enclosure position: N/A
+Device Id: 5
+WWN: 
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SAS
+
+Raw Size: 68.366 GB [0x88bb998 Sectors]
+Non Coerced Size: 67.866 GB [0x87bb998 Sectors]
+Coerced Size: 67.054 GB [0x861c000 Sectors]
+Sector Size:  0
+Firmware state: Online, Spun Up
+Device Firmware Level: 0005
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x5000c500097afd61
+SAS Address(1): 0x0
+Connected Port Number: 1(path0) 
+Inquiry Data: SEAGATE ST973452SS      00053TA173BK            
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None 
+Device Speed: 6.0Gb/s 
+Link Speed: 3.0Gb/s 
+Media Type: Hard Disk Device
+Drive Temperature :32C (89.60 F)
+PI Eligibility:  No 
+Drive is formatted for PI information:  No
+PI: No PI
+Port-0 :
+Port status: Active
+Port's Linkspeed: 3.0Gb/s 
+Port-1 :
+Port status: Active
+Port's Linkspeed: Unknown 
+Drive has flagged a S.M.A.R.T alert : No
+
+
+So I decided to offline the second drive in the Raid:
+
+# ./MegaCli -PDOffline -PhysDrv [6:1] -a0
+                                     
+Adapter: 0: EnclId-6 SlotId-1 state changed to OffLine.
+
+Of course as soon as I did that the Alarm went off :) So let's go ahead and silence that:
+
+# ./MegaCli -AdpSetProp AlarmSilence -a0
+                                     
+Adapter 0: Set alarm to Silenced success.
+
+
+Now of course the status of the raid is degraded:
+
+./MegaCli -LDInfo -L0 -a0
+                                     
+
+Adapter 0 -- Virtual Drive Information:
+Virtual Drive: 0 (Target Id: 0)
+Name                :
+RAID Level          : Primary-1, Secondary-0, RAID Level Qualifier-0
+Size                : 67.054 GB
+Sector Size         : 512
+Mirror Data         : 67.054 GB
+State               : Degraded
+Strip Size          : 64 KB
+Number Of Drives    : 2
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Enabled
+Encryption Type     : None
+Is VD Cached: No
+
+
+checking out vsphere client I now saw warnings and checking out Veeam One Monitor an alarm was fired for that
+and if an SMTP server was configure then email was sent.
+
+Then I went ahead and brought the drive back:
+
+./MegaCli -PDOnline -PhysDrv [6:1] -a0
+                                     
+EnclId-6 SlotId-1 state changed to OnLine.
+
+Then checking the VirtualDrive information, I was back to optimal:
+
+./MegaCli -LDInfo -L0 -a0
+                                     
+
+Adapter 0 -- Virtual Drive Information:
+Virtual Drive: 0 (Target Id: 0)
+Name                :
+RAID Level          : Primary-1, Secondary-0, RAID Level Qualifier-0
+Size                : 67.054 GB
+Sector Size         : 512
+Mirror Data         : 67.054 GB
+State               : Optimal
+Strip Size          : 64 KB
+Number Of Drives    : 2
+Span Depth          : 1
+Default Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Current Cache Policy: WriteThrough, ReadAheadNone, Direct, No Write Cache if Bad BBU
+Default Access Policy: Read/Write
+Current Access Policy: Read/Write
+Disk Cache Policy   : Enabled
+Encryption Type     : None
+Is VD Cached: No
+
+
+Also checking out the logs, I saw the following:
+
+./MegaCli -AdpEventLog -GetEvents -f /tmp/events.log -aALL && tail -40 /tmp/events.log
+
+Time: Sat Jan  4 18:22:56 2014
+
+Code: 0x00000072
+Class: 0
+Locale: 0x02
+Event Description: State change on PD 05(e0x06/s1) from OFFLINE(10) to ONLINE(18)
+Event Data:
+===========
+Device ID: 5
+Enclosure Index: 6
+Slot Number: 1
+Previous state: 16
+New state: 24
+
+
+seqNum: 0x00001283
+Time: Sat Jan  4 18:22:56 2014
+
+Code: 0x00000051
+Class: 0
+Locale: 0x01
+Event Description: State change on VD 00/0 from DEGRADED(2) to OPTIMAL(3)
+Event Data:
+===========
+Target Id: 0
+Previous state: 2
+New state: 3
+
+
+seqNum: 0x00001284
+Time: Sat Jan  4 18:22:56 2014
+
+Code: 0x000000f9
+Class: 0
+Locale: 0x01
+Event Description: VD 00/0 is now OPTIMAL
+Event Data:
+===========
+Target Id: 0
+
+and the alarm went okay on the Veeam side:
+
+and of course on the vSphere Client side as well.
+

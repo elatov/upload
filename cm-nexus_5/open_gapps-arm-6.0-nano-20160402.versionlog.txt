@@ -1,0 +1,36 @@
+Arch. API| Application / File / Folder                   | Version Name               | DPIs
+---------------------------------------------------------------------------------------------
+   all   | etc/preferred-apps/google.xml
+   all   | etc/sysconfig/google.xml
+   all   | etc/sysconfig/google_build.xml
+   all   | etc/sysconfig/whitelist_com.android.omadm.service.xml
+   all   | etc/permissions/com.google.android.maps.xml
+   all   | etc/permissions/com.google.android.media.effects.xml
+   all   | etc/permissions/com.google.widevine.software.drm.xml
+   all   | framework/com.google.android.maps.jar
+   all   | framework/com.google.android.media.effects.jar
+   all   | framework/com.google.widevine.software.drm.jar
+   all-23| com.google.android.backuptransport            | 6.0.1                      | nodpi
+   all-23| com.google.android.syncadapters.contacts      | 6.0.1                      | nodpi
+   all-23| com.google.android.feedback                   | 6.0.1                      | nodpi
+   all-23| com.google.android.onetimeinitializer         | 6.0.1                      | nodpi
+   all-23| com.google.android.partnersetup               | 6.0.1                      | nodpi
+   arm-23| com.google.android.gms                        | 8.7.03                     | 480 320 240 nodpi
+   all-23| com.google.android.gsf                        | 6.0.1                      | nodpi
+   all-23| com.google.android.gsf.login                  | 6.0.1                      | nodpi
+   all-14| com.android.vending                           | 6.3.16.B-all               | nodpi
+   all-23| com.google.android.setupwizard.default        | 2.0                        | nodpi
+   all-23| com.google.android.setupwizard.tablet         | 2.0                        | nodpi
+   all-23| com.google.android.configupdater              | 6.0.1                      | nodpi
+   arm-23| libjni_latinimegoogle.so
+   arm-23| libjni_keyboarddecoder.so
+   all-15| com.google.android.syncadapters.calendar      | 5.2.3-99827563-release     | nodpi
+   arm-19| com.google.android.tts                        | 3.8.16                     | nodpi
+   all-23| com.google.android.packageinstaller           | 6.0.1                      | nodpi
+   arm-23| libfilterpack_facedetect.so
+   all-23| com.android.facelock                          | 6.0.1                      | nodpi
+   all   | vendor/pittpatt/
+   arm-23| libfacelock_jni.so
+   arm-23| libfrsdk.so
+   arm-19| com.google.android.googlequicksearchbox       | 5.10.32                    | 320 240 160 nodpi
+   all   | usr/srec/en-US/

@@ -1,0 +1,344 @@
+## first remove any local nettle installs
+sudo yum remove nettle nettle-devel
+# then get the nettle source
+wget http://ftp.gnu.org/gnu/nettle/nettle-2.7.tar.gz
+# set the rpath so the library is linked appropriately
+export CC="gcc -Wl,-rpath,/usr/local/openvas/lib64"
+# then prepare the source
+./configure --prefix=/usr/local/openvas
+# then install the software
+make && make install
+
+## then get the source for gnutls
+wget ftp://ftp.gnutls.org/gcrypt/gnutls/v3.2/gnutls-3.2.14.tar.xz
+# set the pkgconfig path to find the nettle install and the rpath as well
+export PKG_CONFIG_PATH=/usr/local/openvas/lib64/pkgconfig
+export CC="gcc -Wl,-rpath,/usr/local/openvas/lib64"
+# then prepare the source
+./configure --prefix=/usr/local/openvas
+# install texinfo for the doc install of gnutls
+sudo yum install texinfo
+# then install the software
+make && make install
+
+## get the openvas-libraries
+wget http://wald.intevation.org/frs/download.php/1671/openvas-libraries-7.0.2.tar.gz
+# add the to the pkg-config path and set the LDFLAGS
+export PKG_CONFIG_PATH=/usr/local/openvas/lib/pkgconfig:$PKG_CONFIG_PATH
+export LDFGLAGS='-L/usr/local/openvas/lib'
+# then install the prereq
+sudo yum install libpcap-devel gpgme-devel libksba-devel bison
+# then use cmake and set the rpath
+mkdir build; cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/openvas -DCMAKE_INSTALL_RPATH=/usr/local/openvas/lib ..
+# then build and install
+make && make install
+
+## then get the scanner
+wget http://wald.intevation.org/frs/download.php/1640/openvas-scanner-4.0.1.tar.gz
+# set the rpath for both locations
+export CC='gcc -Wl,-rpath,/usr/local/openvas/lib64 -Wl,-rpath,/usr/local/openvas/lib'
+# then prepare the source
+mkdir build; cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/openvas -DCMAKE_INSTALL_RPATH=/usr/local/openvas/lib ..
+# then install the software
+make && make install
+
+## install sqlite3 for the openvas-manager
+wget http://www.sqlite.org/2014/sqlite-autoconf-3080500.tar.gz
+# prepare the source
+./configure --prefix=/usr/local/openvas
+# build and install the software
+make && make install
+
+## install new glib
+wget http://ftp.gnome.org/pub/gnome/sources/glib/2.40/glib-2.40.0.tar.xz
+# install prereq
+sudo yum install libffi-devel
+# configure the software
+./configure --prefix=/usr/local/openvas
+# build and install the software
+make && make install
+
+## then get the manager
+wget http://wald.intevation.org/frs/download.php/1667/openvas-manager-5.0.2.tar.gz
+# prepare the source
+export CC='gcc -Wl,-rpath,/usr/local/openvas/lib64 -Wl,-rpath,/usr/local/openvas/lib'
+export PKG_CONFIG_PATH=/usr/local/openvas/lib/pkgconfig:/usr/local/openvas/lib64/pkgconfig
+export CFLAGS="-I/usr/local/openvas/include"
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/openvas -DCMAKE_INSTALL_RPATH=/usr/local/openvas/lib ..
+# build and install
+make && make install
+
+## build libmicrohttpd
+# get the source
+wget http://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-0.9.36.tar.gz
+# prepare the source
+./configure --prefix=/usr/local/openvas --with-gnutls=/usr/local/openvas
+# build and install the software
+make && make install
+
+# get the greenbone security assistant
+wget http://wald.intevation.org/frs/download.php/1675/greenbone-security-assistant-5.0.1.tar.gz
+# install the prereqs
+sudo yum install libmicrohttpd-devel
+# then prepare the source
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/openvas -DCMAKE_INSTALL_RPATH=/usr/local/openvas/lib ..
+# install it
+make && make install
+
+### Now let's generate the certs 
+sudo /usr/local/openvas/sbin/openvas-mkcert
+# next download all the NVTs
+# make sure everything is pointint to /usr/local/openvas under
+sudo vi /usr/local/openvas/sbin/openvas-nvt-sync
+===
+OPENVASSD=/usr/local/openvas/sbin/openvassd
+NVT_DIR=`/usr/local/openvas/sbin/openvassd -s | awk -F" = " '/^plugins_folder/ { print $2 }'`
+===
+# then run it
+sudo /usr/local/openvas/sbin/openvas-nvt-sync
+...
+...
+zope_zclass.nasl
+zope_zclass.nasl.asc
+zyxel_http_pwd.nasl
+zyxel_http_pwd.nasl.asc
+zyxel_pwd.nasl
+zyxel_pwd.nasl.asc
+[i] Download complete
+[i] Checking dir: ok
+[i] Checking MD5 checksum: ok
+===
+# then launch the scanner and you will see that it's processing NVTs
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvassd
+elatov@ccl:~$ps -eaf | grep open
+root     12163     1 47 14:52 ?        00:00:03 openvassd: Reloaded 1050 of 35241 NVTs (2% / ETA: 03:15)
+root     12164 12163  0 14:52 ?        00:00:00 openvassd (Loading Handler)
+elatov   12166 10832  0 14:52 pts/2    00:00:00 grep --color=auto open
+# after it's done you will see the following
+elatov@ccl:~$ps -eaf | grep open
+root     12163     1 50 14:52 ?        00:02:29 openvassd: Waiting for incoming connections
+elatov   12392 10832  0 14:57 pts/2    00:00:00 grep --color=auto open
+# fix the /etc/init.d/openvas-scanner
+===
+EXEC="/usr/local/openvas/sbin/openvassd"
+daemon $EXEC $PARAMS
+===
+# then you can use
+sudo service openvas {start,status,stop}
+
+## now for the manager setup
+# first we need to setup the client ssl certs so that the manager can talk to 
+# the snanner
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvas-mkcert-client -n -i
+# Now you can initialize the OpenVAS Manager database.
+# You need a running OpenVAS Scanner (openvassd) for this
+# as the Manager will retrieve all NVT details from the Scanner.
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvasmd --rebuild
+# next let's create an admin user
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvasmd --create-user=admin
+[sudo] password for elatov:
+User created with password 'a192f8e7-54a2-4894-bab7-4e360fa03eb6'.
+# now let's create an enctyption key
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvasmd --create-credentials-encryption-key
+Key creation succeeded.
+# confirm key is created
+latov@ccl:~$sudo gpg --homedir /usr/local/openvas/var/lib/openvas/gnupg --list-secret-keys
+[sudo] password for elatov:
+gpg: WARNING: unsafe ownership on homedir `/usr/local/openvas/var/lib/openvas/gnupg'
+gpg: checking the trustdb
+gpg: 3 marginal(s) needed, 1 complete(s) needed, PGP trust model
+gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+/usr/local/openvas/var/lib/openvas/gnupg/secring.gpg
+----------------------------------------------------
+sec   2048R/870E0A38 2014-06-17
+uid                  OpenVAS Credential Encryption
+# now let's encrypt all credentials
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvasmd --encrypt-all-credentials
+Encryption succeeded.
+# now let's fix the init script
+sudo vi /etc/init.d/openvas-manager
+===
+exec="/usr/local/openvas/sbin/openvasmd"
+daemon --pidfile=/var/run/$prog.pid $exec $OPTIONS
+status -p /usr/local/openvas/var/run/$prog.pid -l $lockfile $progname
+status -p /usr/local/openvas/var/run/$prog.pid -l $lockfile $progname
+===
+# then start the service
+sudo service openvas-manager start
+
+# now let's configure the gsad
+# fix the init script
+sudo vi /etc/rc.d/init.d/gsad
+===
+EXEC="/usr/local/openvas/sbin/gsad"
+===
+# then make sure the /etc/sysconfig/gsad, looks like this:
+elatov@ccl:~$grep -vE "^$|^#" /etc/sysconfig/gsad
+GSA_ADDRESS=0.0.0.0
+GSA_PORT=9392
+ADMINISTRATOR_ADDRESS=127.0.0.1
+ADMINISTRATOR_PORT=9393
+MANAGER_ADDRESS=127.0.0.1
+MANAGER_PORT=9390
+# then start the service
+sudo service gsad start
+# then go to https://IP:9392 and login with the user you created above
+u: admin
+p: generated_above
+###
+
+### Now let's update the scap db
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvas-scapdata-sync
+[i] This script synchronizes a SCAP data directory with the OpenVAS one.
+[i] SCAP dir: /usr/local/openvas/var/lib/openvas/scap-data
+[i] Will use rsync
+[i] Using rsync: /usr/bin/rsync
+[i] Configured SCAP data rsync feed: rsync://feed.openvas.org:/scap-data
+OpenVAS feed server - http://www.openvas.org/
+This service is hosted by Intevation GmbH - http://intevation.de/
+..
+...
+oval/5.10/org.mitre.oval/v/family/unix.xml.asc
+         198 100%    0.36kB/s    0:00:00 (xfer#51, to-check=2/63)
+oval/5.10/org.mitre.oval/v/family/windows.xml
+    42211550 100%    6.63MB/s    0:00:06 (xfer#52, to-check=1/63)
+oval/5.10/org.mitre.oval/v/family/windows.xml.asc
+         198 100%    0.25kB/s    0:00:00 (xfer#53, to-check=0/63)
+
+sent 1105 bytes  received 624960144 bytes  7309488.29 bytes/sec
+total size is 624880035  speedup is 1.00
+[i] Initializing scap database
+[i] Updating CPEs
+[i] Updating /usr/local/openvas/var/lib/openvas/scap-data/nvdcve-2.0-2002.xml
+[i] Updating /usr/local/openvas/var/lib/openvas/scap-data/nvdcve-2.0-2003.xml
+[i] Updating /usr/local/openvas/var/lib/openvas/scap-data/nvdcve-2.0-2004.xml
+[i] Updating /usr/local/openvas/var/lib/openvas/scap-data/nvdcve-2.0-2005.xml
+[i] Updating /usr/local/openvas/var/lib/openvas/scap-data/nvdcve-2.0-2006.xml
+
+# next sync the cert db
+# first fix the script to point to the installed version
+sudo vi /usr/local/openvas/sbin/openvas-certdata-sync
+===
+OPENVASSD=/usr/local/openvas/sbin/openvassd
+SCAP_DIR=`/usr/local/openvas/sbin/openvassd -s | awk -F" = " '/^plugins_folder/ { print $2 }' | sed -s 's/\(^.*\)\/plugins/\1/'`
+===
+# then let's run it
+elatov@ccl:~$sudo /usr/local/openvas/sbin/openvas-certdata-sync
+[i] This script synchronizes a CERT advisory directory with the OpenVAS one.
+[i] CERT dir: /usr/local/openvas/var/lib/openvas/cert-data
+[i] Will use rsync
+[i] Using rsync: /usr/bin/rsync
+[i] Configured CERT data rsync feed: rsync://feed.openvas.org:/cert-data
+OpenVAS feed server - http://www.openvas.org/
+This service is hosted by Intevation GmbH - http://intevation.de/
+All transactions are logged.
+
+Please report synchronization problems to openvas-feed@intevation.de.
+If you have any other questions, please use the OpenVAS mailing lists
+or the OpenVAS IRC chat. See http://www.openvas.org/ for details.
+
+receiving incremental file list
+./
+
+sent 62 bytes  received 716 bytes  311.20 bytes/sec
+total size is 8793411  speedup is 11302.58
+[i] Skipping /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2008.xml, file is older than last revision
+[i] Skipping /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2009.xml, file is older than last revision
+[i] Skipping /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2010.xml, file is older than last revision
+[i] Skipping /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2011.xml, file is older than last revision
+[i] Skipping /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2012.xml, file is older than last revision
+[i] Updating /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2013.xml
+[i] Updating /usr/local/openvas/var/lib/openvas/cert-data/dfn-cert-2014.xml
+[i] Updating Max CVSS for DFN-CERT
+
+## now let's fix the cron jobs
+cat elatov@ccl:~$cat /etc/cron.d/openvas-sync-scap
+# start plugin sync daily at 1am
+0 1 * * * root /bin/nice -n 19 /usr/bin/ionice -c2 -n7 /usr/local/openvas/sbin/openvas-scapdata-sync > /dev/null
+
+elatov@ccl:~$cat /etc/cron.d/openvas-sync-cert
+# start plugin sync daily at 130am
+30 1 * * * root /bin/nice -n 19 /usr/bin/ionice -c2 -n7 /usr/local/openvas/sbin/openvas-certdata-sync > /dev/null
+
+elatov@ccl:~$cat /etc/cron.d/openvas-sync-plugins
+# start plugin sync daily at midnight
+0 0 * * * root /bin/nice -n 19 /usr/bin/ionice -c2 -n7 /usr/local/openvas/sbin//openvas-nvt-sync > /dev/null
+###
+
+### Do a quick check to make sure all the components are installed
+wget --no-check-certificate https://svn.wald.intevation.org/svn/openvas/trunk/tools/openvas-check-setup
+chmod +x openvas-check-setup
+# do the check:
+elatov@ccl:~$sudo -b env PATH="/usr/local/openvas/bin:/usr/local/openvas/sbin:$PATH" ./openvas-check-setup.sh --server
+elatov@ccl:~$openvas-check-setup 2.2.5
+  Test completeness and readiness of OpenVAS-7
+  (add '--v4', '--v5', '--v6' or '--v8'
+   if you want to check for another OpenVAS version)
+
+  Please report us any non-detected problems and
+  help us to improve this check routine:
+  http://lists.wald.intevation.org/mailman/listinfo/openvas-discuss
+
+  Send us the log-file (/tmp/openvas-check-setup.log) to help analyze the problem.
+
+Step 1: Checking OpenVAS Scanner ...
+        OK: OpenVAS Scanner is present in version 4.0.1.
+        OK: OpenVAS Scanner CA Certificate is present as /usr/local/openvas/var/lib/openvas/CA/cacert.pem.
+        OK: NVT collection in /usr/local/openvas/var/lib/openvas/plugins contains 35241 NVTs.
+        WARNING: Signature checking of NVTs is not enabled in OpenVAS Scanner.
+        SUGGEST: Enable signature checking (see http://www.openvas.org/trusted-nvts.html).
+        OK: The NVT cache in /usr/local/openvas/var/cache/openvas contains 35241 files for 35241 NVTs.
+Step 2: Checking OpenVAS Manager ...
+        OK: OpenVAS Manager is present in version 5.0.2.
+        OK: OpenVAS Manager client certificate is present as /usr/local/openvas/var/lib/openvas/CA/clientcert.pem.
+        OK: OpenVAS Manager database found in /usr/local/openvas/var/lib/openvas/mgr/tasks.db.
+        OK: Access rights for the OpenVAS Manager database are correct.
+        OK: sqlite3 found, extended checks of the OpenVAS Manager installation enabled.
+        OK: OpenVAS Manager database is at revision 123.
+        OK: OpenVAS Manager expects database at revision 123.
+        OK: Database schema is up to date.
+        OK: OpenVAS Manager database contains information about 35241 NVTs.
+        OK: OpenVAS SCAP database found in /usr/local/openvas/var/lib/openvas/scap-data/scap.db.
+        OK: OpenVAS CERT database found in /usr/local/openvas/var/lib/openvas/cert-data/cert.db.
+        OK: xsltproc found.
+Step 3: Checking user configuration ...
+        WARNING: Your password policy is empty.
+        SUGGEST: Edit the /usr/local/openvas/etc/openvas/pwpolicy.conf file to set a password policy.
+Step 4: Checking Greenbone Security Assistant (GSA) ...
+        OK: Greenbone Security Assistant is present in version 5.0.1.
+Step 5: Checking OpenVAS CLI ...
+        SKIP: Skipping check for OpenVAS CLI.
+Step 6: Checking Greenbone Security Desktop (GSD) ...
+        SKIP: Skipping check for Greenbone Security Desktop.
+Step 7: Checking if OpenVAS services are up and running ...
+        OK: netstat found, extended checks of the OpenVAS services enabled.
+        OK: OpenVAS Scanner is running and listening on all interfaces.
+        OK: OpenVAS Scanner is listening on port 9391, which is the default port.
+        OK: OpenVAS Manager is running and listening on all interfaces.
+        OK: OpenVAS Manager is listening on port 9390, which is the default port.
+        OK: Greenbone Security Assistant is running and listening on all interfaces.
+        OK: Greenbone Security Assistant is listening on port 9392, which is the default port.
+Step 8: Checking nmap installation ...
+        OK: nmap is present in version 5.51.
+Step 9: Checking presence of optional tools ...
+        OK: pdflatex found.
+        OK: PDF generation successful. The PDF report format is likely to work.
+        OK: ssh-keygen found, LSC credential generation for GNU/Linux targets is likely to work.
+        OK: rpm found, LSC credential package generation for RPM based targets is likely to work.
+        WARNING: Could not find alien binary, LSC credential package generation for DEB based targets will not work.
+        SUGGEST: Install alien.
+        OK: nsis found, LSC credential package generation for Microsoft Windows targets is likely to work.
+        OK: SELinux is disabled.
+
+It seems like your OpenVAS-7 installation is OK.
+
+If you think it is not OK, please report your observation
+and help us to improve this check routine:
+http://lists.wald.intevation.org/mailman/listinfo/openvas-discuss
+Please attach the log-file (/tmp/openvas-check-setup.log) to help us analyze the problem.
+
+## generate default scanner configs
+openvassd -s > /usr/local/openvas/etc/openvas/openvassd.conf
+# then modify as necessary

@@ -1,0 +1,35 @@
+___at____1_is_ _I# __ep ___KS _e_c_mki__it____._on_
+Ha__S-__a_e u_eu auta_ete_t ma_c0nf bl__k l__2 file_ _s_ems _g y__a_d f___''
+__o_tßa____i_a _I_ mkj__îtcp_a -_ linux
+=-_> _ildi_ i__ r_ p_t_ _t_1ni_p_^o._/l1_.p__t: "&_ault'
+_ _ -_ /_____-li__ _ ____1nǐ_p1o.___ 9 /_t/__nit__s-li_. i
+_=> S__ti_ _{ l_ _ _ .@ .6-___
+M  __mi_ _1ld ___ ___I
+_ __ _n_i_ _i l_ _ _ __NI
+" __iq _ild __ I_____tI
+_-  __i_ _ild ___ I__nrI
+M '__ _nni_ _1ld hao__ Ibl__I
+_J _m_1q _ild _k; Il_I
+n_;_ __niq _il_ _k_ Ir1l___I
+"n;_ _1mi_ blild _; Ikq_FdI
+n_;? __i_ _il_ bok; _r__I
+=__ __ti_ _4le d__n4_nc1_
+__> C_ti_ g_ip___s__ ini_pio i_g_ _ /_t/1nltr_rs-l in_x. 1__
+==_ I__ g__ation ___ul
+=_> _il_i_ i_ge r_ p_t_ __1nitcp1a.d/l1_x.p__t; '__ll_ch'
+__ -_ /__li__-li_x _ /t__1nitcp1o__nr _ /_t/in1t_8mrs-l1_-r8ll_ch._'mg -S autodetect
+==_ S__t1_ _ild_ _._.6-_-ARal
+_-__ _nni_ _1ld ho0k_ I__I
+___ _nn1_ buil_ _h_ _u_tuI
+_mq _nn_ng _1l_ hook_ __conrI
+__ _nn1_ buil_ ho0k_ Ibl0ckI
+==> _Rtll__ P0_1bly _1_1_ r1___ rar _dul__ _7_9x
+==> WĄ_IMG; P_sibly m_ssing r1___ r0r m0dul__ aic9_xx
+' Runn1_ bu1ld hook; Ilum2_
+' _nn 1_ _ 1 ld _0k _ I r i l_syst_ms I
+Running b41ld ho0k; Ik_ybo4_dI
+' Runn ing bu i ld hook _ _ Fsck I
+_m-_> _ner_ti_ modul_ d_p_nd_nc_es
+__-__> Cre_tiq g_ip-c_pr_ss_d initcp1o 1m_ge_ /boot/1nit_amrs-l1nux-r_llb_ck._'mg
+m__4mw> Im_ge gen_r8ti0n succes_ _ul
+_ra_t_a_c_h i 5a _ _#

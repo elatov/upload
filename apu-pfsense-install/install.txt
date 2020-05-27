@@ -1,0 +1,882 @@
+PC Engines APU BIOS build date: Apr  5 2014
+Reading data from file [bootorder]
+SeaBIOS (version ?-20140405_120742-frink)
+SeaBIOS (version ?-20140405_120742-frink)
+Found coreboot cbmem console @ df150400
+Found mainboard PC Engines APU
+Relocating init from 0x000e8e71 to 0xdf1065e0 (size 39259)
+Found CBFS header at 0xfffffb90
+found file "bootorder" in cbmem
+CPU Mhz=1001
+Found 27 PCI devices (max PCI bus is 05)
+Copying PIR from 0xdf160400 to 0x000f27a0
+Copying MPTABLE from 0xdf161400/df161410 to 0x000f25b0 with length 1ec
+Copying ACPI RSDP from 0xdf162400 to 0x000f2590
+Copying SMBIOS entry point from 0xdf16d800 to 0x000f2570
+Using pmtimer, ioport 0x808
+Scan for VGA option rom
+EHCI init on dev 00:12.2 (regs=0xf7f08420)
+Found 1 lpt ports
+Found 2 serial ports
+AHCI controller at 11.0, iobase f7f08000, irq 11
+EHCI init on dev 00:13.2 (regs=0xf7f08520)
+EHCI init on dev 00:16.2 (regs=0xf7f08620)
+Searching bootorder for: /rom@img/setup
+Searching bootorder for: /rom@img/memtest
+OHCI init on dev 00:12.0 (regs=0xf7f04000)
+OHCI init on dev 00:13.0 (regs=0xf7f05000)
+OHCI init on dev 00:14.5 (regs=0xf7f06000)
+OHCI init on dev 00:16.0 (regs=0xf7f07000)
+Searching bootorder for: /pci@i0cf8/usb@16,2/storage@1/*@0/*@0,0
+Searching bootorder for: /pci@i0cf8/usb@16,2/usb-*@1
+USB MSC vendor='Multiple' product='Card  Reader' rev='1.00' type=0 removable=1
+Searching bootorder for: /pci@i0cf8/usb@12,2/storage@5/*@0/*@0,0
+Searching bootorder for: /pci@i0cf8/usb@12,2/usb-*@5
+USB MSC vendor='Generic' product='Flash Disk' rev='8.00' type=0 removable=1
+USB MSC blksize=512 sectors=1980416
+USB MSC blksize=512 sectors=31520768
+All threads complete.
+Scan for option roms
+Running option rom at c000:0003
+
+
+iPXE (http://ipxe.org) 00:00.0 C000 PCI2.10 PnP PMMpmm call arg1=1
+pmm call arg1=0
++DF0DA5C0pmm call arg1=1
+pmm call arg1=0
++DF03A5C0 C000
+Press Ctrl-B to configure iPXE (PCI 00:00.0)...                                                                               
+
+
+Searching bootorder for: /rom@genroms/pxeboot.rom
+
+Build date: Apr  5 2014
+System memory size: 4592 MB
+
+Press F12 for boot menu.
+
+Select boot device:
+
+1. USB MSC Drive Multiple Card  Reader 1.00
+2. USB MSC Drive Generic Flash Disk 8.00
+3. iPXE (PCI 00:00.0)
+4. Payload [setup]
+5. Payload [memtest]
+
+Searching bootorder for: HALT
+drive 0x000f24f0: PCHS=0/0/0 translation=lba LCHS=982/32/63 s=1980416
+drive 0x000f2520: PCHS=0/0/0 translation=lba LCHS=1024/255/63 s=31520768
+Space available for UMB: c1000-ee800, f0000-f24f0
+Returned 245760 bytes of ZoneHigh
+e820 map has 7 items:
+  0: 0000000000000000 - 000000000009fc00 = 1 RAM
+  1: 000000000009fc00 - 00000000000a0000 = 2 RESERVED
+  2: 00000000000f0000 - 0000000000100000 = 2 RESERVED
+  3: 0000000000100000 - 00000000df14c000 = 1 RAM
+  4: 00000000df14c000 - 00000000e0000000 = 2 RESERVED
+  5: 00000000f8000000 - 00000000f9000000 = 2 RESERVED
+  6: 0000000100000000 - 000000011f000000 = 1 RAM
+enter handle_19:
+  NULL
+Booting from Hard Disk...
+Booting from 0000:7c00
+-\|/-\|/-\|//bboooott//ccoonnffiigg::  --SS111155220000  --DD
+
+//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--Consoles: internal video/keyboard  serial port  
+BIOS drive C: is disk0
+BIOS drive D: is disk1
+BIOS 639kB/3653936kB available memory
+
+FreeBSD/x86 bootstrap loader, Revision 1.1
+(root@ce23-amd64-builder, Mon Apr 11 18:37:48 CDT 2016)
+|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/Loading /boot/defaults/loader.conf
+-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\                                                                                                           ______                       /      \                _____/    f   \              /     \        /             /   p   \______/  Sense       \       /      \               \_____/        \                    \        /                     \______/                                                                                                 |/-\|          __ ____                            _ __  / _/ ___|  ___ _ __  ___  ___      | '_ \| |_\___ \ / _ \ '_ \/ __|/ _ \     | |_) |  _|___) |  __/ | | \__ \  __/     | .__/|_| |____/ \___|_| |_|___/\___|     |_|                                                                                ||||||||||||||||||||||||==================================================================================++++/-\|/-\|/-\|Welcome to pfSense1 .Boot Multi User [Enter]2 .Boot [S]ingle User3 .[Esc]ape to loader prompt4 .RebootOptions:5 .[K]ernel: kernel (1 of 2)6 .Configure Boot [O]ptions...Autoboot in 9 seconds. [Space] to pauseAutoboot in 8 seconds. [Space] to pauseAutoboot in 7 seconds. [Space] to pauseAutoboot in 6 seconds. [Space] to pauseAutoboot in 5 seconds. [Space] to pauseAutoboot in 4 seconds. [Space] to pauseAutoboot in 3 seconds. [Space] to pauseAutoboot in 2 seconds. [Space] to pauseAutoboot in 1 seconds. [Space] to pause                                       /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-/boot/kernel/kernel text=0x1292858 \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-data=0x8a1a58+0x23ec10 \|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-syms=[0x8+0x1775a0\|/-\|/-\|/-\|+0x8+0x173d7f/-\|/-\|/-]
+Booting...
+\|/-KDB: debugger backends: ddb
+KDB: current backend: ddb
+Copyright (c) 1992-2016 The FreeBSD Project.
+Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
+	The Regents of the University of California. All rights reserved.
+FreeBSD is a registered trademark of The FreeBSD Foundation.
+FreeBSD 10.3-RELEASE #6 05adf0a(RELENG_2_3_0): Mon Apr 11 18:52:07 CDT 2016
+    root@ce23-amd64-builder:/builder/pfsense-230/tmp/obj/builder/pfsense-230/tmp/FreeBSD-src/sys/pfSense amd64
+FreeBSD clang version 3.4.1 (tags/RELEASE_34/dot1-final 208032) 20140512
+CPU: AMD G-T40E Processor (1000.02-MHz K8-class CPU)
+  Origin="AuthenticAMD"  Id=0x500f20  Family=0x14  Model=0x2  Stepping=0
+  Features=0x178bfbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,CLFLUSH,MMX,FXSR,SSE,SSE2,HTT>
+  Features2=0x802209<SSE3,MON,SSSE3,CX16,POPCNT>
+  AMD Features=0x2e500800<SYSCALL,NX,MMX+,FFXSR,Page1GB,RDTSCP,LM>
+  AMD Features2=0x35ff<LAHF,CMP,SVM,ExtAPIC,CR8,ABM,SSE4A,MAS,Prefetch,IBS,SKINIT,WDT>
+  SVM: NP,NRIP,NAsids=8
+  TSC: P-state invariant, performance statistics
+real memory  = 4815060992 (4592 MB)
+avail memory = 4073709568 (3884 MB)
+Event timer "LAPIC" quality 400
+ACPI APIC Table: <CORE   COREBOOT>
+FreeBSD/SMP: Multiprocessor System Detected: 2 CPUs
+FreeBSD/SMP: 1 package(s) x 2 core(s)
+ cpu0 (BSP): APIC ID:  0
+ cpu1 (AP): APIC ID:  1
+random: <Software, Yarrow> initialized
+ioapic0 <Version 2.1> irqs 0-23 on motherboard
+wlan: mac acl policy registered
+ipw_bss: You need to read the LICENSE file in /usr/share/doc/legal/intel_ipw/.
+ipw_bss: If you agree with the license, set legal.intel_ipw.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (ipw_bss_fw, 0xffffffff806208b0, 0) error 1
+ipw_ibss: You need to read the LICENSE file in /usr/share/doc/legal/intel_ipw/.
+ipw_ibss: If you agree with the license, set legal.intel_ipw.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (ipw_ibss_fw, 0xffffffff80620960, 0) error 1
+ipw_monitor: You need to read the LICENSE file in /usr/share/doc/legal/intel_ipw/.
+ipw_monitor: If you agree with the license, set legal.intel_ipw.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (ipw_monitor_fw, 0xffffffff80620a10, 0) error 1
+iwi_bss: You need to read the LICENSE file in /usr/share/doc/legal/intel_iwi/.
+iwi_bss: If you agree with the license, set legal.intel_iwi.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (iwi_bss_fw, 0xffffffff80647bb0, 0) error 1
+iwi_ibss: You need to read the LICENSE file in /usr/share/doc/legal/intel_iwi/.
+iwi_ibss: If you agree with the license, set legal.intel_iwi.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (iwi_ibss_fw, 0xffffffff80647c60, 0) error 1
+iwi_monitor: You need to read the LICENSE file in /usr/share/doc/legal/intel_iwi/.
+iwi_monitor: If you agree with the license, set legal.intel_iwi.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (iwi_monitor_fw, 0xffffffff80647d10, 0) error 1
+netmap: loaded module
+kbd0 at kbdmux0
+module_register_init: MOD_LOAD (vesa, 0xffffffff810166d0, 0) error 19
+cryptosoft0: <software crypto> on motherboard
+padlock0: No ACE support.
+acpi0: <CORE COREBOOT> on motherboard
+acpi0: Power Button (fixed)
+cpu0: <ACPI CPU> on acpi0
+cpu1: <ACPI CPU> on acpi0
+atrtc0: <AT realtime clock> port 0x70-0x71 irq 8 on acpi0
+Event timer "RTC" frequency 32768 Hz quality 0
+attimer0: <AT timer> port 0x40-0x43 irq 0 on acpi0
+Timecounter "i8254" frequency 1193182 Hz quality 0
+Event timer "i8254" frequency 1193182 Hz quality 100
+Timecounter "ACPI-fast" frequency 3579545 Hz quality 900
+acpi_timer0: <32-bit timer at 3.579545MHz> port 0x808-0x80b on acpi0
+hpet0: <High Precision Event Timer> iomem 0xfed00000-0xfed003ff on acpi0
+Timecounter "HPET" frequency 14318180 Hz quality 950
+Event timer "HPET" frequency 14318180 Hz quality 550
+Event timer "HPET1" frequency 14318180 Hz quality 450
+pcib0: <ACPI Host-PCI bridge> port 0xcf8-0xcff on acpi0
+pci0: <ACPI PCI bus> on pcib0
+pcib1: <ACPI PCI-PCI bridge> irq 16 at device 4.0 on pci0
+pci1: <ACPI PCI bus> on pcib1
+re0: <RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit Ethernet> port 0x1000-0x10ff mem 0xf7a00000-0xf7a00fff,0xf7900000-0xf7903fff irq 16 at device 0.0 on pci1
+re0: Using 1 MSI-X message
+re0: ASPM disabled
+re0: Chip rev. 0x2c000000
+re0: MAC rev. 0x00200000
+miibus0: <MII bus> on re0
+rgephy0: <RTL8169S/8110S/8211 1000BASE-T media interface> PHY 1 on miibus0
+rgephy0:  none, 10baseT, 10baseT-FDX, 10baseT-FDX-flow, 100baseTX, 100baseTX-FDX, 100baseTX-FDX-flow, 1000baseT, 1000baseT-master, 1000baseT-FDX, 1000baseT-FDX-master, 1000baseT-FDX-flow, 1000baseT-FDX-flow-master, auto, auto-flow
+re0: Using defaults for TSO: 65518/35/2048
+re0: Ethernet address: 00:0d:b9:3c:c0:64
+re0: netmap queues/slots: TX 1/256, RX 1/256
+pcib2: <ACPI PCI-PCI bridge> irq 17 at device 5.0 on pci0
+pci2: <ACPI PCI bus> on pcib2
+re1: <RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit Ethernet> port 0x2000-0x20ff mem 0xf7c00000-0xf7c00fff,0xf7b00000-0xf7b03fff irq 17 at device 0.0 on pci2
+re1: Using 1 MSI-X message
+re1: ASPM disabled
+re1: Chip rev. 0x2c000000
+re1: MAC rev. 0x00200000
+miibus1: <MII bus> on re1
+rgephy1: <RTL8169S/8110S/8211 1000BASE-T media interface> PHY 1 on miibus1
+rgephy1:  none, 10baseT, 10baseT-FDX, 10baseT-FDX-flow, 100baseTX, 100baseTX-FDX, 100baseTX-FDX-flow, 1000baseT, 1000baseT-master, 1000baseT-FDX, 1000baseT-FDX-master, 1000baseT-FDX-flow, 1000baseT-FDX-flow-master, auto, auto-flow
+re1: Using defaults for TSO: 65518/35/2048
+re1: Ethernet address: 00:0d:b9:3c:c0:65
+re1: netmap queues/slots: TX 1/256, RX 1/256
+pcib3: <ACPI PCI-PCI bridge> irq 18 at device 6.0 on pci0
+pci3: <ACPI PCI bus> on pcib3
+re2: <RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit Ethernet> port 0x3000-0x30ff mem 0xf7e00000-0xf7e00fff,0xf7d00000-0xf7d03fff irq 18 at device 0.0 on pci3
+re2: Using 1 MSI-X message
+re2: ASPM disabled
+re2: Chip rev. 0x2c000000
+re2: MAC rev. 0x00200000
+miibus2: <MII bus> on re2
+rgephy2: <RTL8169S/8110S/8211 1000BASE-T media interface> PHY 1 on miibus2
+rgephy2:  none, 10baseT, 10baseT-FDX, 10baseT-FDX-flow, 100baseTX, 100baseTX-FDX, 100baseTX-FDX-flow, 1000baseT, 1000baseT-master, 1000baseT-FDX, 1000baseT-FDX-master, 1000baseT-FDX-flow, 1000baseT-FDX-flow-master, auto, auto-flow
+re2: Using defaults for TSO: 65518/35/2048
+re2: Ethernet address: 00:0d:b9:3c:c0:66
+re2: netmap queues/slots: TX 1/256, RX 1/256
+ahci0: <AMD SB7x0/SB8x0/SB9x0 AHCI SATA controller> port 0x4010-0x4017,0x4020-0x4023,0x4018-0x401f,0x4024-0x4027,0x4000-0x400f mem 0xf7f08000-0xf7f083ff irq 19 at device 17.0 on pci0
+ahci0: AHCI v1.20 with 6 6Gbps ports, Port Multiplier supported
+ahci0: quirks=0x22000<ATI_PMP_BUG,1MSI>
+ahcich0: <AHCI channel> at channel 0 on ahci0
+ahcich1: <AHCI channel> at channel 1 on ahci0
+ahcich2: <AHCI channel> at channel 2 on ahci0
+ahcich3: <AHCI channel> at channel 3 on ahci0
+ahcich4: <AHCI channel> at channel 4 on ahci0
+ahcich5: <AHCI channel> at channel 5 on ahci0
+ohci0: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f04000-0xf7f04fff irq 18 at device 18.0 on pci0
+usbus0 on ohci0
+ehci0: <AMD SB7x0/SB8x0/SB9x0 USB 2.0 controller> mem 0xf7f08400-0xf7f084ff irq 17 at device 18.2 on pci0
+usbus1: EHCI version 1.0
+usbus1 on ehci0
+ohci1: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f05000-0xf7f05fff irq 18 at device 19.0 on pci0
+usbus2 on ohci1
+ehci1: <AMD SB7x0/SB8x0/SB9x0 USB 2.0 controller> mem 0xf7f08500-0xf7f085ff irq 17 at device 19.2 on pci0
+usbus3: EHCI version 1.0
+usbus3 on ehci1
+isab0: <PCI-ISA bridge> at device 20.3 on pci0
+isa0: <ISA bus> on isab0
+pcib4: <ACPI PCI-PCI bridge> at device 20.4 on pci0
+pci4: <ACPI PCI bus> on pcib4
+ohci2: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f06000-0xf7f06fff irq 18 at device 20.5 on pci0
+usbus4 on ohci2
+pcib5: <ACPI PCI-PCI bridge> at device 21.0 on pci0
+pci5: <ACPI PCI bus> on pcib5
+ohci3: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f07000-0xf7f07fff at device 22.0 on pci0
+usbus5 on ohci3
+ehci2: <AMD SB7x0/SB8x0/SB9x0 USB 2.0 controller> mem 0xf7f08600-0xf7f086ff at device 22.2 on pci0
+usbus6: EHCI version 1.0
+usbus6 on ehci2
+acpi_button0: <Power Button> on acpi0
+orm0: <ISA Option ROM> at iomem 0xee800-0xeffff on isa0
+gpioapu0: Environment returned APU
+gpioapu0: Address on reg 0x24 is 0xfed80000/4275568640
+gpioapu0 at iomem 0xfed80100-0xfed801ff on isa0
+ppc0: cannot reserve I/O port range
+uart0: <16550 or compatible> at port 0x3f8-0x3ff irq 4 flags 0x10 on isa0
+uart0: console (115200,n,8,1)
+uart1: <16550 or compatible> at port 0x2f8-0x2ff irq 3 on isa0
+Timecounters tick every 1.000 msec
+IPsec: Initialized Security Association Processing.
+random: unblocking device.
+usbus0: 12Mbps Full Speed USB v1.0
+usbus1: 480Mbps High Speed USB v2.0
+usbus2: 12Mbps Full Speed USB v1.0
+usbus3: 480Mbps High Speed USB v2.0
+ugen0.1: <ATI> at usbus0
+uhub0: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus0
+ugen1.1: <ATI> at usbus1
+uhub1: <ATI EHCI root HUB, class 9/0, rev 2.00/1.00, addr 1> on usbus1
+ugen2.1: <ATI> at usbus2
+uhub2: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus2
+ugen3.1: <ATI> at usbus3
+uhub3: <ATI EHCI root HUB, class 9/0, rev 2.00/1.00, addr 1> on usbus3
+usbus4: 12Mbps Full Speed USB v1.0
+usbus5: 12Mbps Full Speed USB v1.0
+usbus6: 480Mbps High Speed USB v2.0
+ugen4.1: <ATI> at usbus4
+uhub4: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus4
+ugen5.1: <ATI> at usbus5
+uhub5: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus5
+ugen6.1: <ATI> at usbus6
+uhub6: <ATI EHCI root HUB, class 9/0, rev 2.00/1.00, addr 1> on usbus6
+uhub4: 2 ports with 2 removable, self powered
+uhub0: 5 ports with 5 removable, self powered
+uhub2: 5 ports with 5 removable, self powered
+uhub5: 4 ports with 4 removable, self powered
+uhub6: 4 ports with 4 removable, self powered
+uhub1: 5 ports with 5 removable, self powered
+uhub3: 5 ports with 5 removable, self powered
+ugen6.2: <Generic> at usbus6
+umass0: <Generic Flash Card ReaderWriter, class 0/0, rev 2.01/1.00, addr 2> on usbus6
+ugen1.2: <Generic> at usbus1
+umass1: <Generic Mass Storage, class 0/0, rev 2.00/1.03, addr 2> on usbus1
+da1 at umass-sim1 bus 1 scbus7 target 0 lun 0
+da1: <Generic Flash Disk 8.00> Removable Direct Access SCSI-2 device
+da1: Serial Number 9CD26E9F
+da1: 40.000MB/s transfers
+da1: 967MB (1980416 512 byte sectors)
+da1: quirks=0x2<NO_6_BYTE>
+SMP: AP CPU #1 Launched!
+Timecounter "TSC" frequency 1000019844 Hz quality 800
+da0 at umass-sim0 bus 0 scbus6 target 0 lun 0
+da0: <Multiple Card  Reader 1.00> Removable Direct Access SPC-2 SCSI device
+da0: Serial Number 058F63666485
+da0: 40.000MB/s transfers
+da0: 15391MB (31520768 512 byte sectors)
+da0: quirks=0x2<NO_6_BYTE>
+Trying to mount root from ufs:/dev/ufs/pfSense [ro]...
+Configuring crash dumps...
+Generating MFS /var partition
+Generating MFS /etc partition
+Looking for pfi.conf on acd0c done. 
+Looking for pfi.conf on da0 da1 da0s1 done. 
+Looking for config.xml on da0 da0s1 da1 done.
+Generating a MFS /home partition... done.
+
+     ___
+ ___/ f \
+/ p \___/ Sense
+\___/   \
+    \___/
+
+Welcome to pfSense 2.3-RELEASE on the 'cdrom' platform...
+
+Mounting unionfs directories...done.
+Creating symlinks......ELF ldconfig path: /lib /usr/lib /usr/lib/compat /usr/local/lib /usr/local/lib/ipsec
+32-bit compatibility ldconfig path: /usr/lib32
+done.
+Launching the init system....... done.
+Initializing.................. done.
+Starting device manager (devd)...done.
+
+[ Press R to enter recovery mode or ]
+[  press I to launch the installer  ]
+
+(R)ecovery mode can assist by rescuing config.xml
+from a broken hard disk installation, etc.
+
+(I)nstaller will be invoked
+
+Timeout before auto boot continues (seconds): 9987I
+
+Installer mode selected...
+
+Launching pfSense Installer...
+
+kern.geom.debugflags: 0 -> 16
+One moment please...
+
+re0: link state changed to DOWN
+re1: link state changed to DOWN
+re2: link state changed to DOWN
+Launching Installer NCurses frontend...
+1SF10=Refresh DisplayWaiting for backend...ÚÄÄÄÄÄÄÄÄÄ´ Configure Console ÃÄÄÄÄÄÄÄÄÄ¿³³³ Your selected environment uses the    ³³ following console settings, shown in  ³³ parentheses. Select any that you wish ³³ to change.³³³³ < Change Video Font (default) >³³ < Change Screenmap (default) >³³ < Change Keymap (default) >³³ < Accept these Settings >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ< Change Video Font (default) >< Change Screenmap (default) >< Change Screenmap (default) >< Change Keymap (default) >< Change Keymap (default) >< Accept these Settings >ÚÄÄÄÄÄÄÄÄÄÄÄ´ Select Task ÃÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Choose one of the following tasks to ³³ perform.³³³³ < Quick/Easy Install >³³ < Custom Install >³³ < Rescue config.xml >³³ < Setup GEOM Mirror >³³ < Reboot >³³ < Exit >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙInvoke Installer with minimal questions< Quick/Easy Install >< Custom Install >Perform a custom installation of pfSense on this computer system< Quick/Easy Install >< Custom Install >Invoke Installer with minimal questions< Quick/Easy Install >< Custom Install >Perform a custom installation of pfSense on this computer system< Custom Install >< Rescue config.xml >Rescue config.xml from hard device< Rescue config.xml >< Setup GEOM Mirror >< Setup GEOM Mirror >< Reboot >Reboot this computer< Reboot >< Exit >< Quick/Easy Install >< Exit >Invoke Installer with minimal questions< Quick/Easy Install >< Custom Install >Perform a custom installation of pfSense on this computer system< Quick/Easy Install >< Custom Install >Invoke Installer with minimal questionsÚÄÄÄÄÄÄÄÄÄÄÄÄ´ Are you SURE? ÃÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Easy Install will automatically install ³³ without asking any questions.³³³³ WARNING: This will erase all contents   ³³ in your first hard disk! This action is ³³ irreversible. Do you really want to     ³³ continue?³³³³ If you wish to have more control on     ³³ your setup, choose Custom Installation  ³³ from the Main Menu.³³³³< OK >  < Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/usr/local/sbin/cleargpt.sh da0-ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/sbin/fdisk -I da0bin/echo 'g c1962 h255 s63' >/tmp/format.fdisk   9p 1 165 63 31519467' >>/tmp/format.fdisk   182 0 0 0' >>/tmp/format.fdisk              273        364     45a 1' >>/tmp/format.fdisk       54cat /tmp/format.fdisk         63%  >sbin/fdisk -v -f /tmp/format.fdisk da072%      da081   usr/bin/yes | /sbin/fdisk -B da090    -ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/bin/echo 'g c1962 h255 s63' >/tmp/new.fdiskp 1 165 63 31519467' >>/tmp/new.fdisk    112 0 0 0' >>/tmp/new.fdisk              223    334      44a 1' >>/tmp/new.fdisk        55cat /tmp/new.fdisk         66%    sbin/fdisk -v -f /tmp/new.fdisk da077%        da088    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/sbin/fdisk da0   bin/echo 'g c1962 h255 s63' >/tmp/new.fdisk    11p 1 165 63 31519467' >>/tmp/new.fdisk    22a 1' >>/tmp/new.fdisk    33cat /tmp/new.fdisk               44sbin/fdisk -v -f /tmp/new.fdisk da0  55da066%    bsdlabel -B -r -w da0s1 auto77%        r da0s1 >/tmp/install.disklabel.da0s188    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/usr/bin/awk '$2=="partitions:" || cut { cut = 1 } !cut...bin/echo '8 partitions:' >>/tmp/install.disklabel           8#        size   offset    fstype   [fsize bs...   16  a: 23130843 16 4.2BSD 2048 16384 99' >>/tm   25b: 8388608 23130859 swap' >>/tmp/install.d   33usr/bin/grep -E '^[[:space:]]*[c][[:space:]]*:' /tmp/i      41bin/cat /tmp/install.disklabel   50sbin/bsdlabel -R -r da0s1 /tmp/install.disklabel8%  >da0s166%    -B da0s175%       newfs -U -j /dev/da0s1a83   -\|/-tunefs -j enable /dev/da0s1a 91   ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/sbin/mount /dev/da0s1a /mnt/ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/sbin/dumpon -v /dev/da0s1bÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÚÄÄÄÄÄÄÄÄÄÄ´ Calculating package dependencies... ÃÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Calculating package dependencies...³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/sbin/swapon /dev/da0s1busr/bin/tar -C /mnt/ -xzpf /install/pfSense.txz 5-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/bin/rm -rf /mnt/tmp    11mkdir -p /mnt/tmp  7chmod 1777 /mnt/tmp  23rm -f /mnt//boot/loader.conf   9mkdir -p /mnt//mnt                 35echo '# Device  Mountpoint FStype Options  Dump Pa...     41/dev/da0s1a  /  ufs rw  1 1' >>/mnt//etc/fstab    47b  none  swap sw  0 0' >>/mnt//etc... 52>>/mnt//etc/rc.conf64%   '# -- BEGIN BSD Installer automatically gener...70%     Written on '`date`'-- #' >>/mnt//etc/rc6  "dumpdev='/dev/da0s1b'" >>/mnt//etc/rc.conf     82   ir='/var/crash'" >>/mnt//etc/rc.conf 8  '# -- END of BSD Installer automatically gene...94  ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/bin/cp /tmp/installer.log /mnt//var/log/installer.loghmod 600 /mnt//var/log/installer.log            5ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Install Kernel ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ You may now wish to install a custom Kernel configuration.  ³³³³³³³³< Standard Kernel >³³< Embedded kernel (no VGA console, keyboard >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/usr/sbin/boot0cfg -B -o packet -s 1 /dev/da0v /dev/da0            33B -b /boot/boot0 /dev/da0      66%    ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/usr/bin/env DESTDIR=/mnt /bin/sh /usr/local/sbin/ufsla...-\bin/sh /usr/local/bin/after_installation_routines.sh     5|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Reboot ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ This machine is about to be shut down. ³³ After the machine has reached its³³ shutdown state, you may remove the CD  ³³ from the CD-ROM drive tray and press   ³³ Enter to reboot from the HDD.³³³³ < Reboot >  < Return to Select Task >  ³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ< Reboot >  < Return to Select Task >< Reboot >  < Return to Select Task >ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´ Executing Commands ÃÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿³³³ Executing Commands³³³³[0%]³³³³< Cancel >³ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ/sbin/umount /mnt -S
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pfSense is now rebooting
+
+After the reboot is complete, open a web browser and
+enter https://192.168.1.1 (or the LAN IP Address) in the
+location bar.
+
+You might need to acknowledge the HTTPS certificate if 
+your browser reports it as untrusted.  This is normal
+as a self-signed certificate is used by default.
+
+*DEFAULT Username*: admin
+*DEFAULT Password*: pfsense
+
+Rebooting in 5 seconds. CTRL-C to abort.
+Rebooting in 4 seconds. CTRL-C to abort.
+Rebooting in 3 seconds. CTRL-C to abort.
+Rebooting in 2 seconds. CTRL-C to abort.
+Rebooting in 1 second.. CTRL-C to abort.
+
+pfSense is now rebooting.
+
+Waiting (max 60 seconds) for system process `vnlru' to stop...done
+Waiting (max 60 seconds) for system process `bufdaemon' to stop...done
+Waiting (max 60 seconds) for system process `syncer' to stop...
+Syncing disks, vnodes remaining...0 0 0 0 done
+All buffers synced.
+Uptime: 3m58s
+PC Engines APU BIOS build date: Apr  5 2014
+Reading data from file [bootorder]
+SeaBIOS (version ?-20140405_120742-frink)
+SeaBIOS (version ?-20140405_120742-frink)
+Found coreboot cbmem console @ df150400
+Found mainboard PC Engines APU
+Relocating init from 0x000e8e71 to 0xdf1065e0 (size 39259)
+Found CBFS header at 0xfffffb90
+found file "bootorder" in cbmem
+CPU Mhz=1000
+Found 27 PCI devices (max PCI bus is 05)
+Copying PIR from 0xdf160400 to 0x000f27a0
+Copying MPTABLE from 0xdf161400/df161410 to 0x000f25b0 with length 1ec
+Copying ACPI RSDP from 0xdf162400 to 0x000f2590
+Copying SMBIOS entry point from 0xdf16d800 to 0x000f2570
+Using pmtimer, ioport 0x808
+Scan for VGA option rom
+EHCI init on dev 00:12.2 (regs=0xf7f04420)
+Found 1 lpt ports
+Found 2 serial ports
+AHCI controller at 11.0, iobase f7f04000, irq 11
+EHCI init on dev 00:13.2 (regs=0xf7f04520)
+EHCI init on dev 00:16.2 (regs=0xf7f04620)
+Searching bootorder for: /rom@img/setup
+Searching bootorder for: /rom@img/memtest
+OHCI init on dev 00:12.0 (regs=0xf7f00000)
+OHCI init on dev 00:13.0 (regs=0xf7f01000)
+OHCI init on dev 00:14.5 (regs=0xf7f02000)
+OHCI init on dev 00:16.0 (regs=0xf7f03000)
+Searching bootorder for: /pci@i0cf8/usb@16,2/storage@1/*@0/*@0,0
+Searching bootorder for: /pci@i0cf8/usb@16,2/usb-*@1
+USB MSC vendor='Multiple' product='Card  Reader' rev='1.00' type=0 removable=1
+Searching bootorder for: /pci@i0cf8/usb@12,2/storage@5/*@0/*@0,0
+Searching bootorder for: /pci@i0cf8/usb@12,2/usb-*@5
+USB MSC vendor='Generic' product='Flash Disk' rev='8.00' type=0 removable=1
+USB MSC blksize=512 sectors=1980416
+USB MSC blksize=512 sectors=31520768
+All threads complete.
+Scan for option roms
+Running option rom at c000:0003
+
+
+iPXE (http://ipxe.org) 00:00.0 C000 PCI2.10 PnP PMMpmm call arg1=1
+pmm call arg1=0
++DF0DA5C0pmm call arg1=1
+pmm call arg1=0
++DF03A5C0 C000
+Press Ctrl-B to configure iPXE (PCI 00:00.0)...                                                                               
+
+
+Searching bootorder for: /rom@genroms/pxeboot.rom
+
+Build date: Apr  5 2014
+System memory size: 4592 MB
+
+Press F12 for boot menu.
+
+Searching bootorder for: HALT
+drive 0x000f2520: PCHS=0/0/0 translation=lba LCHS=1024/255/63 s=31520768
+drive 0x000f24f0: PCHS=0/0/0 translation=lba LCHS=982/32/63 s=1980416
+Space available for UMB: c1000-ee800, f0000-f24f0
+Returned 245760 bytes of ZoneHigh
+e820 map has 7 items:
+  0: 0000000000000000 - 000000000009fc00 = 1 RAM
+  1: 000000000009fc00 - 00000000000a0000 = 2 RESERVED
+  2: 00000000000f0000 - 0000000000100000 = 2 RESERVED
+  3: 0000000000100000 - 00000000df14c000 = 1 RAM
+  4: 00000000df14c000 - 00000000e0000000 = 2 RESERVED
+  5: 00000000f8000000 - 00000000f9000000 = 2 RESERVED
+  6: 0000000100000000 - 000000011f000000 = 1 RAM
+enter handle_19:
+  NULL
+Booting from Hard Disk...
+Booting from 0000:7c00
+
+F1  pfSense
+F5  Drive 1
+
+F6 PXE
+Boot:  F1 
+-\|/-\|/-\|//bboooott//ccoonnffiigg::  --SS111155220000  --DD
+
+//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//--\\||//Consoles: internal video/keyboard  serial port  
+BIOS drive C: is disk0
+BIOS drive D: is disk1
+BIOS 639kB/3653936kB available memory
+
+FreeBSD/x86 bootstrap loader, Revision 1.1
+(root@ce23-amd64-builder, Mon Apr 11 18:37:48 CDT 2016)
+|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|Loading /boot/defaults/loader.conf
+/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-                                                                                                           ______                       /      \                _____/    f   \              /     \        /             /   p   \______/  Sense       \       /      \               \_____/        \                    \        /                     \______/                                                                                                 \|/-\          __ ____                            _ __  / _/ ___|  ___ _ __  ___  ___      | '_ \| |_\___ \ / _ \ '_ \/ __|/ _ \     | |_) |  _|___) |  __/ | | \__ \  __/     | .__/|_| |____/ \___|_| |_|___/\___|     |_|                                                                                ||||||||||||||||||||||||==================================================================================++++|/-\|/-\|/-\Welcome to pfSense1 .Boot Multi User [Enter]2 .Boot [S]ingle User3 .[Esc]ape to loader prompt4 .RebootOptions:5 .[K]ernel: kernel (1 of 2)6 .Configure Boot [O]ptions...Autoboot in 2 seconds. [Space] to pauseAutoboot in 1 seconds. [Space] to pause                                       |/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/boot/kernel/kernel text=0x1292858 /-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/data=0x8a1a58+0x23ec10 -\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\|/-\syms=[0x8+0x1775a0|/-+0x8+0x173d7f\|/]
+Booting...
+-\|/-\KDB: debugger backends: ddb
+KDB: current backend: ddb
+Copyright (c) 1992-2016 The FreeBSD Project.
+Copyright (c) 1979, 1980, 1983, 1986, 1988, 1989, 1991, 1992, 1993, 1994
+	The Regents of the University of California. All rights reserved.
+FreeBSD is a registered trademark of The FreeBSD Foundation.
+FreeBSD 10.3-RELEASE #6 05adf0a(RELENG_2_3_0): Mon Apr 11 18:52:07 CDT 2016
+    root@ce23-amd64-builder:/builder/pfsense-230/tmp/obj/builder/pfsense-230/tmp/FreeBSD-src/sys/pfSense amd64
+FreeBSD clang version 3.4.1 (tags/RELEASE_34/dot1-final 208032) 20140512
+CPU: AMD G-T40E Processor (1000.02-MHz K8-class CPU)
+  Origin="AuthenticAMD"  Id=0x500f20  Family=0x14  Model=0x2  Stepping=0
+  Features=0x178bfbff<FPU,VME,DE,PSE,TSC,MSR,PAE,MCE,CX8,APIC,SEP,MTRR,PGE,MCA,CMOV,PAT,PSE36,CLFLUSH,MMX,FXSR,SSE,SSE2,HTT>
+  Features2=0x802209<SSE3,MON,SSSE3,CX16,POPCNT>
+  AMD Features=0x2e500800<SYSCALL,NX,MMX+,FFXSR,Page1GB,RDTSCP,LM>
+  AMD Features2=0x35ff<LAHF,CMP,SVM,ExtAPIC,CR8,ABM,SSE4A,MAS,Prefetch,IBS,SKINIT,WDT>
+  SVM: NP,NRIP,NAsids=8
+  TSC: P-state invariant, performance statistics
+real memory  = 4815060992 (4592 MB)
+avail memory = 4073709568 (3884 MB)
+Event timer "LAPIC" quality 400
+ACPI APIC Table: <CORE   COREBOOT>
+FreeBSD/SMP: Multiprocessor System Detected: 2 CPUs
+FreeBSD/SMP: 1 package(s) x 2 core(s)
+ cpu0 (BSP): APIC ID:  0
+ cpu1 (AP): APIC ID:  1
+random: <Software, Yarrow> initialized
+ioapic0 <Version 2.1> irqs 0-23 on motherboard
+wlan: mac acl policy registered
+ipw_bss: You need to read the LICENSE file in /usr/share/doc/legal/intel_ipw/.
+ipw_bss: If you agree with the license, set legal.intel_ipw.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (ipw_bss_fw, 0xffffffff806208b0, 0) error 1
+ipw_ibss: You need to read the LICENSE file in /usr/share/doc/legal/intel_ipw/.
+ipw_ibss: If you agree with the license, set legal.intel_ipw.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (ipw_ibss_fw, 0xffffffff80620960, 0) error 1
+ipw_monitor: You need to read the LICENSE file in /usr/share/doc/legal/intel_ipw/.
+ipw_monitor: If you agree with the license, set legal.intel_ipw.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (ipw_monitor_fw, 0xffffffff80620a10, 0) error 1
+iwi_bss: You need to read the LICENSE file in /usr/share/doc/legal/intel_iwi/.
+iwi_bss: If you agree with the license, set legal.intel_iwi.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (iwi_bss_fw, 0xffffffff80647bb0, 0) error 1
+iwi_ibss: You need to read the LICENSE file in /usr/share/doc/legal/intel_iwi/.
+iwi_ibss: If you agree with the license, set legal.intel_iwi.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (iwi_ibss_fw, 0xffffffff80647c60, 0) error 1
+iwi_monitor: You need to read the LICENSE file in /usr/share/doc/legal/intel_iwi/.
+iwi_monitor: If you agree with the license, set legal.intel_iwi.license_ack=1 in /boot/loader.conf.
+module_register_init: MOD_LOAD (iwi_monitor_fw, 0xffffffff80647d10, 0) error 1
+netmap: loaded module
+kbd0 at kbdmux0
+module_register_init: MOD_LOAD (vesa, 0xffffffff810166d0, 0) error 19
+cryptosoft0: <software crypto> on motherboard
+padlock0: No ACE support.
+acpi0: <CORE COREBOOT> on motherboard
+acpi0: Power Button (fixed)
+cpu0: <ACPI CPU> on acpi0
+cpu1: <ACPI CPU> on acpi0
+atrtc0: <AT realtime clock> port 0x70-0x71 irq 8 on acpi0
+Event timer "RTC" frequency 32768 Hz quality 0
+attimer0: <AT timer> port 0x40-0x43 irq 0 on acpi0
+Timecounter "i8254" frequency 1193182 Hz quality 0
+Event timer "i8254" frequency 1193182 Hz quality 100
+Timecounter "ACPI-fast" frequency 3579545 Hz quality 900
+acpi_timer0: <32-bit timer at 3.579545MHz> port 0x808-0x80b on acpi0
+hpet0: <High Precision Event Timer> iomem 0xfed00000-0xfed003ff on acpi0
+Timecounter "HPET" frequency 14318180 Hz quality 950
+Event timer "HPET" frequency 14318180 Hz quality 550
+Event timer "HPET1" frequency 14318180 Hz quality 450
+pcib0: <ACPI Host-PCI bridge> port 0xcf8-0xcff on acpi0
+pci0: <ACPI PCI bus> on pcib0
+pcib1: <ACPI PCI-PCI bridge> irq 16 at device 4.0 on pci0
+pci1: <ACPI PCI bus> on pcib1
+re0: <RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit Ethernet> port 0x1000-0x10ff mem 0xf7a00000-0xf7a00fff,0xf7900000-0xf7903fff irq 16 at device 0.0 on pci1
+re0: Using 1 MSI-X message
+re0: ASPM disabled
+re0: Chip rev. 0x2c000000
+re0: MAC rev. 0x00200000
+miibus0: <MII bus> on re0
+rgephy0: <RTL8169S/8110S/8211 1000BASE-T media interface> PHY 1 on miibus0
+rgephy0:  none, 10baseT, 10baseT-FDX, 10baseT-FDX-flow, 100baseTX, 100baseTX-FDX, 100baseTX-FDX-flow, 1000baseT, 1000baseT-master, 1000baseT-FDX, 1000baseT-FDX-master, 1000baseT-FDX-flow, 1000baseT-FDX-flow-master, auto, auto-flow
+re0: Using defaults for TSO: 65518/35/2048
+re0: Ethernet address: 00:0d:b9:3c:c0:64
+re0: netmap queues/slots: TX 1/256, RX 1/256
+pcib2: <ACPI PCI-PCI bridge> irq 17 at device 5.0 on pci0
+pci2: <ACPI PCI bus> on pcib2
+re1: <RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit Ethernet> port 0x2000-0x20ff mem 0xf7c00000-0xf7c00fff,0xf7b00000-0xf7b03fff irq 17 at device 0.0 on pci2
+re1: Using 1 MSI-X message
+re1: ASPM disabled
+re1: Chip rev. 0x2c000000
+re1: MAC rev. 0x00200000
+miibus1: <MII bus> on re1
+rgephy1: <RTL8169S/8110S/8211 1000BASE-T media interface> PHY 1 on miibus1
+rgephy1:  none, 10baseT, 10baseT-FDX, 10baseT-FDX-flow, 100baseTX, 100baseTX-FDX, 100baseTX-FDX-flow, 1000baseT, 1000baseT-master, 1000baseT-FDX, 1000baseT-FDX-master, 1000baseT-FDX-flow, 1000baseT-FDX-flow-master, auto, auto-flow
+re1: Using defaults for TSO: 65518/35/2048
+re1: Ethernet address: 00:0d:b9:3c:c0:65
+re1: netmap queues/slots: TX 1/256, RX 1/256
+pcib3: <ACPI PCI-PCI bridge> irq 18 at device 6.0 on pci0
+pci3: <ACPI PCI bus> on pcib3
+re2: <RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit Ethernet> port 0x3000-0x30ff mem 0xf7e00000-0xf7e00fff,0xf7d00000-0xf7d03fff irq 18 at device 0.0 on pci3
+re2: Using 1 MSI-X message
+re2: ASPM disabled
+re2: Chip rev. 0x2c000000
+re2: MAC rev. 0x00200000
+miibus2: <MII bus> on re2
+rgephy2: <RTL8169S/8110S/8211 1000BASE-T media interface> PHY 1 on miibus2
+rgephy2:  none, 10baseT, 10baseT-FDX, 10baseT-FDX-flow, 100baseTX, 100baseTX-FDX, 100baseTX-FDX-flow, 1000baseT, 1000baseT-master, 1000baseT-FDX, 1000baseT-FDX-master, 1000baseT-FDX-flow, 1000baseT-FDX-flow-master, auto, auto-flow
+re2: Using defaults for TSO: 65518/35/2048
+re2: Ethernet address: 00:0d:b9:3c:c0:66
+re2: netmap queues/slots: TX 1/256, RX 1/256
+ahci0: <AMD SB7x0/SB8x0/SB9x0 AHCI SATA controller> port 0x4010-0x4017,0x4020-0x4023,0x4018-0x401f,0x4024-0x4027,0x4000-0x400f mem 0xf7f04000-0xf7f043ff irq 19 at device 17.0 on pci0
+ahci0: AHCI v1.20 with 6 6Gbps ports, Port Multiplier supported
+ahci0: quirks=0x22000<ATI_PMP_BUG,1MSI>
+ahcich0: <AHCI channel> at channel 0 on ahci0
+ahcich1: <AHCI channel> at channel 1 on ahci0
+ahcich2: <AHCI channel> at channel 2 on ahci0
+ahcich3: <AHCI channel> at channel 3 on ahci0
+ahcich4: <AHCI channel> at channel 4 on ahci0
+ahcich5: <AHCI channel> at channel 5 on ahci0
+ohci0: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f00000-0xf7f00fff irq 18 at device 18.0 on pci0
+usbus0 on ohci0
+ehci0: <AMD SB7x0/SB8x0/SB9x0 USB 2.0 controller> mem 0xf7f04400-0xf7f044ff irq 17 at device 18.2 on pci0
+usbus1: EHCI version 1.0
+usbus1 on ehci0
+ohci1: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f01000-0xf7f01fff irq 18 at device 19.0 on pci0
+usbus2 on ohci1
+ehci1: <AMD SB7x0/SB8x0/SB9x0 USB 2.0 controller> mem 0xf7f04500-0xf7f045ff irq 17 at device 19.2 on pci0
+usbus3: EHCI version 1.0
+usbus3 on ehci1
+isab0: <PCI-ISA bridge> at device 20.3 on pci0
+isa0: <ISA bus> on isab0
+pcib4: <ACPI PCI-PCI bridge> at device 20.4 on pci0
+pci4: <ACPI PCI bus> on pcib4
+ohci2: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f02000-0xf7f02fff irq 18 at device 20.5 on pci0
+usbus4 on ohci2
+pcib5: <ACPI PCI-PCI bridge> at device 21.0 on pci0
+pci5: <ACPI PCI bus> on pcib5
+ohci3: <AMD SB7x0/SB8x0/SB9x0 USB controller> mem 0xf7f03000-0xf7f03fff at device 22.0 on pci0
+usbus5 on ohci3
+ehci2: <AMD SB7x0/SB8x0/SB9x0 USB 2.0 controller> mem 0xf7f04600-0xf7f046ff at device 22.2 on pci0
+usbus6: EHCI version 1.0
+usbus6 on ehci2
+acpi_button0: <Power Button> on acpi0
+orm0: <ISA Option ROM> at iomem 0xee800-0xeffff on isa0
+gpioapu0: Environment returned APU
+gpioapu0: Address on reg 0x24 is 0xfed80000/4275568640
+gpioapu0 at iomem 0xfed80100-0xfed801ff on isa0
+ppc0: cannot reserve I/O port range
+uart0: <16550 or compatible> at port 0x3f8-0x3ff irq 4 flags 0x10 on isa0
+uart0: console (115200,n,8,1)
+uart1: <16550 or compatible> at port 0x2f8-0x2ff irq 3 on isa0
+Timecounters tick every 1.000 msec
+IPsec: Initialized Security Association Processing.
+random: unblocking device.
+usbus0: 12Mbps Full Speed USB v1.0
+usbus1: 480Mbps High Speed USB v2.0
+usbus2: 12Mbps Full Speed USB v1.0
+usbus3: 480Mbps High Speed USB v2.0
+ugen0.1: <ATI> at usbus0
+uhub0: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus0
+ugen1.1: <ATI> at usbus1
+uhub1: <ATI EHCI root HUB, class 9/0, rev 2.00/1.00, addr 1> on usbus1
+ugen2.1: <ATI> at usbus2
+uhub2: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus2
+ugen3.1: <ATI> at usbus3
+uhub3: <ATI EHCI root HUB, class 9/0, rev 2.00/1.00, addr 1> on usbus3
+usbus4: 12Mbps Full Speed USB v1.0
+usbus5: 12Mbps Full Speed USB v1.0
+usbus6: 480Mbps High Speed USB v2.0
+ugen4.1: <ATI> at usbus4
+uhub4: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus4
+ugen5.1: <ATI> at usbus5
+uhub5: <ATI OHCI root HUB, class 9/0, rev 1.00/1.00, addr 1> on usbus5
+ugen6.1: <ATI> at usbus6
+uhub6: <ATI EHCI root HUB, class 9/0, rev 2.00/1.00, addr 1> on usbus6
+uhub4: 2 ports with 2 removable, self powered
+uhub0: 5 ports with 5 removable, self powered
+uhub2: 5 ports with 5 removable, self powered
+uhub5: 4 ports with 4 removable, self powered
+uhub6: 4 ports with 4 removable, self powered
+uhub1: 5 ports with 5 removable, self powered
+uhub3: 5 ports with 5 removable, self powered
+ugen6.2: <Generic> at usbus6
+umass0: <Generic Flash Card ReaderWriter, class 0/0, rev 2.01/1.00, addr 2> on usbus6
+SMP: AP CPU #1 Launched!
+Timecounter "TSC" frequency 1000020247 Hz quality 800
+da0 at umass-sim0 bus 0 scbus6 target 0 lun 0
+da0: <Multiple Card  Reader 1.00> Removable Direct Access SPC-2 SCSI device
+da0: Serial Number 058F63666485
+da0: 40.000MB/s transfers
+da0: 15391MB (31520768 512 byte sectors)
+da0: quirks=0x2<NO_6_BYTE>
+Trying to mount root from ufs:/dev/ufsid/57251d9e1e64953e [rw]...
+Configuring crash dumps...
+Using /dev/label/swap0 for dump device.
+/dev/ufsid/57251d9e1e64953e: FILE SYSTEM CLEAN; SKIPPING CHECKS
+/dev/ufsid/57251d9e1e64953e: clean, 2658081 free (329 frags, 332219 blocks, 0.0% fragmentation)
+Filesystems are clean, continuing...
+Mounting filesystems...
+
+     ___
+ ___/ f \
+/ p \___/ Sense
+\___/   \
+    \___/
+
+Welcome to pfSense 2.3-RELEASE on the 'pfSense' platform...
+
+No core dumps found.
+Creating symlinks......ELF ldconfig path: /lib /usr/lib /usr/lib/compat /usr/local/lib /usr/local/lib/ipsec
+32-bit compatibility ldconfig path: /usr/lib32
+done.
+External config loader 1.0 is now starting... da0s1 da0s1a da0s1b
+Launching the init system....... done.
+Initializing.................. done.
+Starting device manager (devd)...done.
+Loading configuration......done.
+Updating configuration...done.
+Cleaning backup cache...done.
+Setting up extended sysctls...done.
+Setting timezone...done.
+Configuring loopback interface...done.
+Starting syslog...done.
+Starting Secure Shell Services...done.
+Setting up polling defaults...done.
+Setting up interfaces microcode...done.
+Configuring loopback interface...done.
+Creating wireless clone interfaces...done.
+Configuring LAGG interfaces...done.
+Configuring VLAN interfaces...done.
+Configuring QinQ interfaces...done.
+Configuring WAN interface...done.
+Configuring LAN interface...Starting DNS Resolver...done.
+Starting DHCPv6 service...done.
+done.
+Configuring CARP settings...done.
+Syncing OpenVPN settings...done.
+Configuring firewall......done.
+Starting PFLOG...done.
+Setting up gateway monitors...done.
+Synchronizing user settings...done.
+Starting webConfigurator...done.
+Configuring CRON...done.
+Starting DNS Resolver...done.
+Starting NTP time client...done.
+Starting DHCP service...done.
+Starting DHCPv6 service...done.
+Configuring firewall......done.
+Generating RRD graphs...done.
+Starting syslog...done.
+Starting CRON... done.
+pfSense (pfSense) 2.3-RELEASE amd64 Mon Apr 11 18:10:34 CDT 2016
+Bootup complete
+
+FreeBSD/amd64 (pfSense.localdomain) (ttyu0)
+
+*** Welcome to pfSense 2.3-RELEASE-pfSense (amd64) on pfSense ***
+
+ WAN (wan)       -> re1        -> 
+ LAN (lan)       -> re2        -> v4: 192.168.1.1/24
+
+ 0) Logout (SSH only)                  9) pfTop
+ 1) Assign Interfaces                 10) Filter Logs
+ 2) Set interface(s) IP address       11) Restart webConfigurator
+ 3) Reset webConfigurator password    12) pfSense Developer Shell
+ 4) Reset to factory defaults         13) Update from console
+ 5) Reboot system                     14) Enable Secure Shell (sshd)
+ 6) Halt system                       15) Restore recent configuration
+ 7) Ping host                         16) Restart PHP-FPM
+ 8) Shell
+  
+
+Enter an option: 1
+
+
+Valid interfaces are:
+
+re0    00:0d:b9:3c:c0:64 (down) RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit
+re1    00:0d:b9:3c:c0:65 (down) RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit
+re2    00:0d:b9:3c:c0:66 (down) RealTek 8168/8111 B/C/CP/D/DP/E/F/G PCIe Gigabit
+
+Do VLANs need to be set up first?
+If VLANs will not be used, or only for optional interfaces, it is typical to
+say no here and use the webConfigurator to configure VLANs later, if required.
+
+Do you want to set up VLANs now [y|n]? n
+
+If you do not know the names of the interfaces, you may choose to use
+auto-detection. In that case, disconnect all interfaces now before
+hitting 'a' to initiate auto detection.
+
+Enter the WAN interface name or 'a' for auto-detection 
+(re0 re1 re2 or a): re0
+
+Enter the LAN interface name or 'a' for auto-detection 
+NOTE: this enables full Firewalling/NAT mode.
+(re1 re2 a or nothing if finished): re2
+
+Enter the Optional 1 interface name or 'a' for auto-detection
+(re1 a or nothing if finished): re1
+
+Enter the Optional 2 interface name or 'a' for auto-detection
+( a or nothing if finished): 
+
+The interfaces will be assigned as follows:
+
+WAN  -> re0
+LAN  -> re2
+OPT1 -> re1
+
+Do you want to proceed [y|n]? y
+
+Writing configuration...done.
+One moment while we reload the settings... done!
+*** Welcome to pfSense 2.3-RELEASE-pfSense (amd64) on pfSense ***
+
+ WAN (wan)       -> re0        -> 
+ LAN (lan)       -> re2        -> v4: 192.168.1.1/24
+ OPT1 (opt1)     -> re1        -> 
+
+ 0) Logout (SSH only)                  9) pfTop
+ 1) Assign Interfaces                 10) Filter Logs
+ 2) Set interface(s) IP address       11) Restart webConfigurator
+ 3) Reset webConfigurator password    12) pfSense Developer Shell
+ 4) Reset to factory defaults         13) Update from console
+ 5) Reboot system                     14) Enable Secure Shell (sshd)
+ 6) Halt system                       15) Restore recent configuration
+ 7) Ping host                         16) Restart PHP-FPM
+ 8) Shell
+  
+
+Enter an option: 2
+
+Available interfaces:
+
+1 - WAN (re0 - dhcp, dhcp6)
+2 - LAN (re2 - static)
+3 - OPT1 (re1)
+
+Enter the number of the interface you wish to configure: 2
+
+Enter the new LAN IPv4 address.  Press <ENTER> for none:
+> 192.168.56.1
+
+Subnet masks are entered as bit counts (as in CIDR notation) in pfSense.
+e.g. 255.255.255.0 = 24
+     255.255.0.0   = 16
+     255.0.0.0     = 8
+
+Enter the new LAN IPv4 subnet bit count (1 to 31):
+> 24
+
+For a WAN, enter the new LAN IPv4 upstream gateway address.
+For a LAN, press <ENTER> for none:
+> 
+
+Enter the new LAN IPv6 address.  Press <ENTER> for none:
+> 
+
+Do you want to enable the DHCP server on LAN? (y/n) y
+Enter the start address of the IPv4 client address range: 192.168.56.100
+Enter the end address of the IPv4 client address range: 192.268   168.56.150
+Disabling IPv6 DHCPD...
+Do you want to revert to HTTP as the webConfigurator protocol? (y/n) y
+
+Please wait while the changes are saved to LAN...
+ Reloading filter...
+ Reloading routing configuration...
+ DHCPD...
+ Restarting webConfigurator... 
+
+The IPv4 LAN address has been set to 192.168.56.1/24
+You can now access the webConfigurator by opening the following URL in your web browser:
+                http://192.168.56.1/
+
+Press <ENTER> to continue.
+*** Welcome to pfSense 2.3-RELEASE-pfSense (amd64) on pfSense ***
+
+ WAN (wan)       -> re0        -> 
+ LAN (lan)       -> re2        -> v4: 192.168.56.1/24
+ OPT1 (opt1)     -> re1        -> 
+
+ 0) Logout (SSH only)                  9) pfTop
+ 1) Assign Interfaces                 10) Filter Logs
+ 2) Set interface(s) IP address       11) Restart webConfigurator
+ 3) Reset webConfigurator password    12) pfSense Developer Shell
+ 4) Reset to factory defaults         13) Update from console
+ 5) Reboot system                     14) Enable Secure Shell (sshd)
+ 6) Halt system                       15) Restore recent configuration
+ 7) Ping host                         16) Restart PHP-FPM
+ 8) Shell
+  
+
+Enter an option: 
+Message from syslogd@pfSense at Apr 30 21:15:22 ...
+pfSense php-fpm[39628]: /index.php: Successful login for user 'admin' from: 192.168.56.100
+                                                                               
+*** FINAL System shutdown message from root@pf.kar.it ***                    
+
+System going down IMMEDIATELY                                                  
+
+                                                                               
+
+pfSense is now shutting down ...
+
+Waiting (max 60 seconds) for system process `vnlru' to stop...done
+Waiting (max 60 seconds) for system process `bufdaemon' to stop...done
+Waiting (max 60 seconds) for system process `syncer' to stop...
+Syncing disks, vnodes remaining...2 1 0 0 done
+All buffers synced.
+Uptime: 22m27s
+re2: link state changed to DOWN
+re2: link state changed to UP
+acpi0: Powering system off

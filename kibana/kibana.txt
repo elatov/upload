@@ -1,0 +1,249 @@
+# on Centos 7 install java 8
+sudo yum install java-1.8.0-openjdk-headless
+
+# install elastic search
+https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-repositories.html
+
+sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
+
+# setup the repo
+sudo vi /etc/yum.repos.d/es.repo
+---
+[elasticsearch-2.x]
+name=Elasticsearch repository for 2.x packages
+baseurl=http://packages.elastic.co/elasticsearch/2.x/centos
+gpgcheck=1
+gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+---
+
+# install the package
+sudo yum install elasticsearch
+
+## Enable the service
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable elasticsearch.service
+sudo /bin/systemctl start elasticsearch.service
+
+### Make sure elasticsearch is running
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 02:29:04]
+└─[0] <> curl -X GET http://localhost:9200
+{
+  "name" : "Living Monolith",
+  "cluster_name" : "elasticsearch",
+  "version" : {
+    "number" : "2.1.1",
+    "build_hash" : "40e2c53a6b6c2972b3d13846e450e66f4375bd71",
+    "build_timestamp" : "2015-12-15T13:05:55Z",
+    "build_snapshot" : false,
+    "lucene_version" : "5.3.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+
+==== Install logstash
+# create the repo
+sudo vi /etc/yum.repos.d/ls.repo
+---
+[logstash-2.1]
+name=Logstash repository for 2.1.x packages
+baseurl=http://packages.elastic.co/logstash/2.1/centos
+gpgcheck=1
+gpgkey=http://packages.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+---
+
+# now let's install log stash
+https://www.elastic.co/guide/en/logstash/current/package-repositories.html
+sudo yum install logstash
+
+### Let's create an example of where logstash parses syslog info
+https://www.elastic.co/guide/en/logstash/current/config-examples.html
+
+sudo vi /etc/logstash/conf.d/logstash-syslog.conf
+---
+input {
+  tcp {
+    port => 5000
+    type => syslog
+  }
+  udp {
+    port => 5000
+    type => syslog
+  }
+}
+
+filter {
+  if [type] == "syslog" {
+    grok {
+      match => { "message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:syslog_hostname} %{DATA:syslog_program}(?:\[%{POSINT:syslog_pid}\])?: %{GREEDYDATA:syslog_message}" }
+      add_field => [ "received_at", "%{@timestamp}" ]
+      add_field => [ "received_from", "%{host}" ]
+    }
+    syslog_pri { }
+    date {
+      match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+    }
+  }
+}
+
+output {
+  elasticsearch { hosts => ["localhost:9200"] }
+  stdout { codec => rubydebug }
+}
+---
+
+# confirm it's working
+# launch the logstash daemon manually
+
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 02:46:05]
+└─[0] <> /opt/logstash/bin/logstash -f /etc/logstash/conf.d/logstash-syslog.conf
+Settings: Default filter workers: 1
+Logstash startup completed
+
+# then telnet into port 5000 and paste some sample logs
+
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 02:47:23]
+└─[0] <> telnet localhost 5000
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Dec 23 12:11:43 louis postfix/smtpd[31499]: connect from unknown[95.75.93.154]
+
+# then on the original shell where log stash was started you will see 
+
+{
+                 "message" => "Dec 23 12:11:43 louis postfix/smtpd[31499]: connect from unknown[95.75.93.154]\r",
+                "@version" => "1",
+              "@timestamp" => "2015-12-23T19:11:43.000Z",
+                    "host" => "127.0.0.1",
+                    "port" => 38565,
+                    "type" => "syslog",
+        "syslog_timestamp" => "Dec 23 12:11:43",
+         "syslog_hostname" => "louis",
+          "syslog_program" => "postfix/smtpd",
+              "syslog_pid" => "31499",
+          "syslog_message" => "connect from unknown[95.75.93.154]\r",
+             "received_at" => "2015-12-27T21:47:43.946Z",
+           "received_from" => "127.0.0.1",
+    "syslog_severity_code" => 5,
+    "syslog_facility_code" => 1,
+         "syslog_facility" => "user-level",
+         "syslog_severity" => "notice"
+}
+
+### start the service
+sudo systemctl restart logstash
+
+# you will see the following logs created
+
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:34:51]
+└─[0] <> ls -l /var/log/logstash
+total 220
+-rw-r--r-- 1 root     root          0 Dec 27 14:50 logstash.err
+-rw-r--r-- 1 logstash logstash      0 Dec 27 14:50 logstash.log
+-rw-r--r-- 1 root     root     223985 Dec 27 15:34 logstash.stdout
+
+## You can check out the logstash.stdout file to see live processing of logs
+
+==== Install kibana
+https://www.elastic.co/downloads/kibana
+
+# get the binary package
+wget https://download.elastic.co/kibana/kibana/kibana-4.3.1-linux-x64.tar.gz
+
+# install it
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 02:55:40]
+└─[1] <> tar xzf kibana-4.3.1-linux-x64.tar.gz
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 02:55:52]
+└─[0] <> ls
+apps  kibana-4.3.1-linux-x64  kibana-4.3.1-linux-x64.tar.gz  notes
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 02:55:57]
+└─[0] <> sudo mv kibana-4.3.1-linux-x64 /opt/kibana
+
+### add a kibana user
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:05:33]
+└─[0] <> sudo groupadd -g 1005 kibana
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:13:49]
+└─[0] <> sudo useradd -u 1005 -g 1005 kibana
+
+# change ownership
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:13:54]
+└─[0] <> sudo chown -R kibana: /opt/kibana
+
+
+### enable the creation of pid file and network binding
+sudo vi /opt/kibana/config/kibana.yml
+---
+ server.host: "0.0.0.0"
+---
+
+# create a service file
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:16:47]
+└─[0] <> cat /etc/systemd/system/kibana.service
+[Unit]
+Description=Kibana 4 Web Interface
+After=elasticsearch.service
+After=logstash.service
+[Service]
+ExecStart=/opt/kibana/bin/kibana
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=kibana4
+User=kibana
+Group=kibana
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target
+
+### Then you can just start the service
+sudo systemctl enable kibana
+sudo systemctl start kibana
+
+### You can check out the journalctl command to make sure it's running
+
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:40:40]
+└─[130] <> sudo journalctl -u kibana -fl
+Dec 27 15:39:59 puppet.dnsd.me systemd[1]: Starting Kibana 4 Web Interface...
+Dec 27 15:40:02 puppet.dnsd.me kibana4[7121]: {"type":"log","@timestamp":"2015-12-27T22:40:02+00:00","tags":["status","plugin:kibana","info"],"pid":7121,"name":"plugin:kibana","state":"green","message":"Status changed from uninitialized to green - Ready","prevState":"uninitialized","prevMsg":"uninitialized"}
+...
+...
+Dec 27 15:40:02 puppet.dnsd.me kibana4[7121]: {"type":"log","@timestamp":"2015-12-27T22:40:02+00:00","tags":["status","plugin:elasticsearch","info"],"pid":7121,"name":"plugin:elasticsearch","state":"green","message":"Status changed from yellow to green - Kibana index ready","prevState":"yellow","prevMsg":"Waiting for Elasticsearch"}
+
+### Forward logs to logstash from the same machine
+# I ended up just forwarding rsyslog to logstash locally. I know I could've
+# installed filebeat and used that as a forwarder but I wanted to skip that 
+# so I created the following file
+┌─[elatov@puppet] - [/home/elatov] - [2015-12-27 03:45:38]
+└─[0] <> cat /etc/rsyslog.d/logstash.conf
+*.* @localhost:5000
+
+# then restarting the service
+sudo systemctl restart rsyslog
+
+# then I went to kibana and it showing messages from my local machine
+
+### Random sites
+https://home.regit.org/2014/01/a-bit-of-logstash-cooking/
+https://techpunch.co.uk/development/how-to-ship-logs-with-rsyslog-and-logstash
+http://kartar.net/2014/09/when-logstash-and-syslog-go-wrong/
+
+
+# let's create a visualization
+
+Some nice visualization starting guides:
+
+http://www.pipebug.com/elasticsearch-logstash-kibana-4-mapping-5.html
+
+https://www.digitalocean.com/community/tutorials/how-to-use-kibana-dashboards-and-visualizations
+
+# now let's add to a dashboard and then change it to be the default one:
+https://github.com/elastic/kibana/issues/3777
+
+# let's create a search
+
+I quick realized that a dashboard can only have one time period. There is actually an enhancement request to allow to configure time per visualization rather than globally:
+
+https://github.com/elastic/kibana/issues/3578

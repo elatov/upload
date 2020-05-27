@@ -1,0 +1,7 @@
+~ # esxcfg-route -l
+VMkernel Routes:
+Network         Network            Gateway
+1O.178.46.O     255.255.255.240    Local Subnet
+1O.178.47.O     255.255.255.128    Local Subnet
+1O.178.47.O     255.255.255.O      Local Subnet
+default         O.O.O.O            10.178.47.1

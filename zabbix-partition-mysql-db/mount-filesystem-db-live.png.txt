@@ -1,0 +1,7 @@
+root@debian:~# mkdir /a
+root@debian:~# mount /dev/mapper/kerch-root /a
+[ 1655.981943] EXT4-_s (dm-O): mounted _ilesystem with ordered data mode. Opts:
+(null)
+root@debian:~# d_ -h -t ext4
+Filesystem              Size  Used Avail Use_ Mounted on
+/dev/mapper/kerch-root   15G  9.4G  4._G  6__ /a

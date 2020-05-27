@@ -1,0 +1,10 @@
+__  _,     _____;  _,'___,o  _g,  _________g     '_'     __g
+
+_ partition table of /deu/sda
+Init: sectors
+
+/deu/sda1: start=    2048, size=  497664, Id=83, bootable
+/deu/sda2: start=  501758, size=251154434, Id= 5
+/deu/sda3: start=      0, size=      0, Id= 0
+/deu/sda4: start=      0, size=      0, Id= 0
+/deu/sda5: start=  501760, size= 41943040, Id=8e

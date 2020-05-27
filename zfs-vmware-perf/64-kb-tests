@@ -1,0 +1,116 @@
+64kb lun 512kb max_sec 128 nr
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 33.7663 s, 95.4 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 33.4609 s, 96.3 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 34.476 s, 93.4 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 35.3642 s, 91.1 MB/s
+root@kerch:/sys/block/sdb/queue# cat scheduler 
+noop deadline [cfq] 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 35.8306 s, 89.9 MB/s
+
+
+64bit lun after some time
+root@kerch:/sys/block/sdb/queue# echo 32 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 64.7602 s, 49.7 MB/s
+root@kerch:/sys/block/sdb/queue# echo 512 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 36.48 s, 88.3 MB/s
+root@kerch:/sys/block/sdb/queue# echo 32 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 64.6405 s, 49.8 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 56.8217 s, 56.7 MB/s
+root@kerch:/sys/block/sdb/queue# echo 8 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 55.8832 s, 57.6 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 55.4723 s, 58.1 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 54.2013 s, 59.4 MB/s
+root@kerch:/sys/block/sdb/queue# echo 512 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 39.8304 s, 80.9 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 43.1603 s, 74.6 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 47.2278 s, 68.2 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 48.6697 s, 66.2 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 50.489 s, 63.8 MB/s
+root@kerch:/sys/block/sdb/queue# echo 64 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 72.7173 s, 44.3 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 76.2928 s, 42.2 MB/s
+root@kerch:/sys/block/sdb/queue# echo 512 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# cat scheduler 
+noop deadline [cfq] 
+root@kerch:/sys/block/sdb/queue# echo noop > scheduler 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 49.7303 s, 64.8 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 54.0565 s, 59.6 MB/s
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 55.2654 s, 58.3 MB/s
+root@kerch:/sys/block/sdb/queue# cat max_sectors_kb 
+512
+root@kerch:/sys/block/sdb/queue# echo 32 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 68.8846 s, 46.8 MB/s
+root@kerch:/sys/block/sdb/queue# echo 8 > max_sectors_kb 
+root@kerch:/sys/block/sdb/queue# dd if=/dev/zero of=/dev/sdb bs=1M count=3K
+3072+0 records in
+3072+0 records out
+3221225472 bytes (3.2 GB) copied, 58.8672 s, 54.7 MB/s

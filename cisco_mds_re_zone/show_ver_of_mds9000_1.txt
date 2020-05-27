@@ -1,0 +1,32 @@
+san_switch#  show hardware
+
+Cisco MDS 9000 FabricWare
+Copyright (C) 2002-2005, by Cisco Systems, Inc.
+and its suppliers.  All rights reserued.
+Copyrights to certain works contained herein are owned by
+third parties, and used and distributed under license.
+Portions of this software are gouerned by the GNU Public License,
+which is available at http://www.gnu.org/licenses/gpl.html.
+
+Software
+    system:   2.1(3)
+    system compile time:   Wed Jul  5 13:21:55 2006
+
+Hardware
+    san_switch uptime is 381 days 4 hours 14 minute(s) 3 second(s)
+
+    Last reset at 32933643 usecs after Thu Nou 13 19:29:26 2008
+      Reason: ResetByInstaller
+
+
+------------------------------
+Switch hardware ID information
+------------------------------
+
+MDS Switch is booted up
+    Model number is DS-C9020-20K9
+    H/W uersion is 2.0
+    Part Number is xxxx xx
+    Part Reuision is xxx
+    Serial number is xxxxxxxx
+    CLEI code is xxxxxx

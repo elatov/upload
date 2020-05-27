@@ -1,0 +1,80 @@
+# first delete un-used LUs
+<> zfs destroy -r data/test
+cannot destroy 'data/test': dataset is busy
+# that's cause there is an LU assigned to it, delete it from napp-it
+Comstar -> Logical Units -> Delete LU
+data -> submit
+data/test -> delete
+
+# then it was to remove
+zfs destroy -r data/test
+
+# do the same for m2
+zfs destroy -r data/m2
+
+# then send over isos
+zfs snapshot data/isos@1
+zfs send data/isos@1 | zfs receive backups/isos
+
+# then send over time-machine backups
+zfs snapshot data/tm@1
+zfs send data/tm@1 | zfs receive backups/tm
+
+# then reboot and move around drives
+# then delete the data zpool
+zpool destroy data
+
+# then create the new backups pool
+zpool create backup raidz c2t1d0 c2t2d0 c2t3d0
+
+# then move the isos pool over
+zfs send backups/isos@1 | zfs receive backup/isos
+
+# move tm pool
+zfs send backups/tm@1 | zfs receive backup/tm
+
+#grab the old media backup
+zfs send backups/media_backup@01-24 | zfs receive backup/media_backup
+
+# copy over the vms volume
+zfs snapshot backups/vms@1
+zfs send backups/vms@1 | zfs receive backup/vms
+
+# clean up snapshots
+zfs destroy backup/tm@1
+zfs destroy backup/vms@1
+zfs destroy backup/isos@1
+
+### reboot and plug in ssds
+# then import the ssd pool 
+zpool import ssd
+# and delete the backups pool
+zpool destroy backups
+
+# rename backup to backups
+zpool export backup
+zpool import backup backups
+
+# fix tm to point to new location
+vi /etc/afp.conf
+---
+- path=/data/tm/$u
++ path=/backups/tm/$u
+---
+# restart service
+svcadm restart netatalk
+
+### Import old LUs
+Compstar -> Logical VOlumes -> import LU
+# force the new assignment of guid
+# re add views
+# rescan on the VMware side
+
+# re add NFS share
+zfs set sharenfs=rw,root=@192.168.1.0/24,root=@10.1.0.0/24 backups/isos
+
+# on the vmware side remount the isos nfs share
+esxcli storage nfs remove -v ISOS
+esxcli storage nfs add -H 10.1.0.3 -r -s /backups/isos -v ISO
+#
+# on the

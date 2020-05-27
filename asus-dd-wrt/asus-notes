@@ -1,0 +1,364 @@
+Got my self a router
+
+Looking over the following thread:
+
+http://www.dd-wrt.com/phpBB2/viewtopic.php?t=177612&postdays=0&postorder=asc&start=810
+
+Looks like at the time of writing (Nov 1st 2014) the 24461 firmware seems
+pretty stable. So I grabbed that from here:
+
+ftp://ftp.dd-wrt.com/others/eko/BrainSlayer-V24-preSP2/2014/06-23-2014-r24461/asus-rt-ac68u/
+
+It seems that the instructions to install dd-wrt are similar to the N66 Asus
+router and the instrucions are laid out here:
+
+http://www.dd-wrt.com/wiki/index.php/Asus_RT-N66U
+
+The jist of the instructions is as follows:
+
+Upload Firmware via Web GUI
+Clear settings (Clear NVRAM) select Factory Default settings.
+Upload the .trx file using the stock web GUI.
+Wait for the router to re-boot on its own. This may easily take 10-15 minutes to happen, so just be patient. You want both ping response and web-gui response to know that the router is fully re-booted.
+Clear settings (Clear NVRAM) select Factory Default settings. Wait for the router to re-boot on its own!!! May take 10 minutes or more
+
+There is also a pretty good youtube video on how to do it on the RT-AC66U:
+
+https://www.youtube.com/watch?v=rG3fVNT18Pc
+
+The process they went through was like this:
+
+1. Enable Telnet on the Router
+2. telnet into the router
+3. Flash the NVRAM -- mtd-erase -d nvram
+4. Then reboot the router -- reboot
+5. Re open the admin page http://192.168.1.1
+a. Upload the initial dd-wrt firmware (Brainslayer) Administration -> Firmware Upgrade upload the
+trx file
+7. Enable telnet in dd-wrt
+8. Telnet back into the router, flash the nvram -- clear nvram / erase nvram
+9. Reboot -- reboot
+10. Upload the K3 Firmware bin file under Administration -> Firmware upgrade
+
+There are also good instructions here:
+
+http://miketabor.com/installing-dd-wrt-asus-rt-ac66u-router/
+
+Lastly there is also a reddit page on it as well:
+
+http://www.reddit.com/r/DDWRT/comments/2hlzjx/how_do_i_flash_a_asus_rtac68u/
+
+For the Kong Build I grabbed the following (25015M, other people has luck with
+it):
+
+http://www.desipro.de/ddwrt-ren/K3-AC-Arm/25015M/dd-wrt.v24-K3_AC_ARM_STD.bin
+
+The Supported Models document had the AC68U Router listed:
+
+http://www.desipro.de/ddwrt-ren/K3-AC-Arm/25015M/Supported%20Models.txt
+
+Here is what I did to clear the NVram from the Stock Install:
+
+elatov@crbook:~$telnet 192.168.1.1
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+RT-AC68U login: admin
+Password:
+
+
+ASUSWRT RT-AC68U_3.0.0.4 Tue Jul 15 09:23:33 UTC 2014
+admin@RT-AC68U:/tmp/home/root# df -Ph
+Filesystem                Size      Used Available Capacity Mounted on
+/dev/root                26.4M     26.4M         0 100% /
+devtmpfs                124.7M         0    124.7M   0% /dev
+tmpfs                   124.9M      3.9M    121.0M   3% /tmp
+/dev/mtdblock4           62.8M      1.7M     61.1M   3% /jffs
+admin@RT-AC68U:/tmp/home/root# uname  -a
+Linux RT-AC68U 2.6.36.4brcmarm #1 SMP PREEMPT Tue Jul 15 17:34:10 CST 2014 armv7l GNU/Linux
+admin@RT-AC68U:/tmp/home/root# mtd-erase2 nvram
+admin@RT-AC68U:/tmp/home/root# reboot
+admin@RT-AC68U:/tmp/home/root# Connection closed by foreign host
+
+
+As I saw the firmware upgrade is finished, I telnet'ed into the router and saw
+that dd-wrt is already installed:
+
+elatov@fed:~$telnet 192.168.1.1
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+
+DD-WRT v24-sp2 std (c) 2014 NewMedia-NET GmbH
+Release: 06/23/14 (SVN revision: 24461)
+
+DD-WRT login: root 
+Password: 
+==========================================================
+ 
+ ____  ___    __        ______ _____         ____  _  _ 
+ | _ \| _ \   \ \      / /  _ \_   _| __   _|___ \| || | 
+ || | || ||____\ \ /\ / /| |_) || |   \ \ / / __) | || |_ 
+ ||_| ||_||_____\ V  V / |  _ < | |    \ V / / __/|__   _| 
+ |___/|___/      \_/\_/  |_| \_\|_|     \_/ |_____|  |_| 
+ 
+                       DD-WRT v24-sp2
+                   http://www.dd-wrt.com
+ 
+==========================================================
+
+
+BusyBox v1.22.1 (2014-06-23 04:49:23 CEST) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+root@DD-WRT:~# reboot
+root@DD-WRT:~# Connection closed by foreign host.
+
+After it rebooted, I pointed my browser to 192.168.1.1 and saw the following:
+
+I set the password and then telnet'ed again into the router and cleared the
+nvram:
+
+elatov@fed:~$telnet 192.168.1.1
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+
+DD-WRT v24-sp2 std (c) 2014 NewMedia-NET GmbH
+Release: 06/23/14 (SVN revision: 24461)
+
+DD-WRT login: root
+Password: 
+==========================================================
+ 
+ ____  ___    __        ______ _____         ____  _  _ 
+ | _ \| _ \   \ \      / /  _ \_   _| __   _|___ \| || | 
+ || | || ||____\ \ /\ / /| |_) || |   \ \ / / __) | || |_ 
+ ||_| ||_||_____\ V  V / |  _ < | |    \ V / / __/|__   _| 
+ |___/|___/      \_/\_/  |_| \_\|_|     \_/ |_____|  |_| 
+ 
+                       DD-WRT v24-sp2
+                   http://www.dd-wrt.com
+ 
+==========================================================
+
+
+BusyBox v1.22.1 (2014-06-23 04:49:23 CEST) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+root@DD-WRT:~# df -Ph
+Filesystem                Size      Used Available Capacity Mounted on
+rootfs                   25.0M     25.0M         0 100% /
+/dev/root                25.0M     25.0M         0 100% /
+root@DD-WRT:~# uname -a
+Linux DD-WRT 3.10.44 #2763 SMP Sun Jun 22 04:03:42 CEST 2014 armv7l GNU/Linux
+root@DD-WRT:~# erase nvram
+erase[1572864]
+root@DD-WRT:~# reboot
+root@DD-WRT:~# Connection closed by foreign host.
+
+Then I applied the KONGAC firmware:
+
+
+After I saw the firmware update getting successfully installed, I logged into
+router one more time and reset the nvram just for good measure:
+
+elatov@fed:~$telnet 192.168.1.1
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+
+DD-WRT v24-sp2 kongac (c) 2014 NewMedia-NET GmbH
+Release: 09/13/14 (SVN revision: 25015M)
+
+DD-WRT login: root
+Password: 
+==========================================================
+ 
+ ____  ___    __        ______ _____         ____  _  _ 
+ | _ \| _ \   \ \      / /  _ \_   _| __   _|___ \| || | 
+ || | || ||____\ \ /\ / /| |_) || |   \ \ / / __) | || |_ 
+ ||_| ||_||_____\ V  V / |  _ < | |    \ V / / __/|__   _| 
+ |___/|___/      \_/\_/  |_| \_\|_|     \_/ |_____|  |_| 
+ 
+                       DD-WRT v24-sp2
+                   http://www.dd-wrt.com
+ 
+==========================================================
+
+
+BusyBox v1.22.1 (2014-09-13 23:35:28 CEST) built-in shell (ash)
+Enter 'help' for a list of built-in commands.
+
+root@DD-WRT:~# erase nvram
+erase[1572864]
+root@DD-WRT:~# reboot
+root@DD-WRT:~# Connection closed by foreign host.
+
+To install another version of IP, I mostly followed the instructions laid out
+here:
+
+http://dd-wrt.com/wiki/index.php/Optware_on_K3-AC-ARM
+
+There were some issues the openwrt repository and that's cause there was a
+recent move to MUSL-ARM based packages and away from Uclib. More information on
+that here:
+
+http://www.dd-wrt.com/phpBB2/viewtopic.php?p=903789
+
+When I used this repository:
+
+ http://downloads.openwrt.org/snapshots/trunk/imx6/ 
+
+It wouldn't run cause they are build against the Uclib library.
+
+After I installed the right one I saw the binary point to the
+/lib/ld-musl-arm.so.1 file:
+
+root@DD-WRT:~# /opt/usr/bin/readelf -l /opt/usr/sbin/ip 
+
+Elf file type is EXEC (Executable file)
+Entry point 0xa8b4
+There are 6 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  PHDR           0x000034 0x00008034 0x00008034 0x000c0 0x000c0 R E 0x4
+  INTERP         0x0000f4 0x000080f4 0x000080f4 0x00016 0x00016 R   0x1
+      [Requesting program interpreter: /lib/ld-musl-arm.so.1]
+  LOAD           0x000000 0x00008000 0x00008000 0x283dc 0x283dc R E 0x8000
+  LOAD           0x0283dc 0x000383dc 0x000383dc 0x01d3b 0x045e8 RW  0x8000
+  DYNAMIC        0x0283e4 0x000383e4 0x000383e4 0x000f0 0x000f0 RW  0x4
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
+
+While the non-working ones pointed to the uClibc:
+
+$readelf -l opkg 
+
+Elf file type is EXEC (Executable file)
+Entry point 0x12c00
+There are 6 program headers, starting at offset 52
+
+Program Headers:
+  Type           Offset   VirtAddr   PhysAddr   FileSiz MemSiz  Flg Align
+  PHDR           0x000034 0x00010034 0x00010034 0x000c0 0x000c0 R E 0x4
+  INTERP         0x0000f4 0x000100f4 0x000100f4 0x00014 0x00014 R   0x1
+      [Requesting program interpreter: /lib/ld-uClibc.so.0]
+  LOAD           0x000000 0x00010000 0x00010000 0x1d9c8 0x1d9c8 R E 0x10000
+  LOAD           0x01e000 0x0003e000 0x0003e000 0x00a60 0x00c48 RW  0x10000
+  DYNAMIC        0x01e008 0x0003e008 0x0003e008 0x00100 0x00100 RW  0x4
+  GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RW  0x10
+
+After I found out that I needed to use the following opkg repo:
+
+http://www.desipro.de/bcm53xx-musl/packages
+
+I ran the following to setup the repo:
+
+mkdir /jffs/opt 
+mount --bind /jffs/opt /opt
+root@DD-WRT:~# bootstrap 
+Bootstrap is checking prerequisites...
+
+You did not enable USB automount.
+Echo optpart /dev/mtdblock/4 on /opt type jffs2 (rw,relatime)
+Found a valid partition: /opt.
+
+Proceed with download and install of opkg? (y/n) [default=n]:
+y
+Connecting to www.desipro.de (82.165.77.220:80)
+opkg.ipk             100% |**********************************************************| 56268   0:00:00 ETA
+Bootstrap complete. You can now use opkg to install additional packages.
+root@DD-WRT:~# which opkg
+/opt/bin/opkg
+root@DD-WRT:~# opkg update
+Downloading http://www.desipro.de/bcm53xx-musl/packages/Packages.gz.
+Updated list of available packages in /opt/var/opkg-lists/kongac.
+
+
+root@DD-WRT:~# opkg -f /opt/etc/opkg.conf install ip
+Installing ip (3.15.0-1) to root...
+Downloading http://www.desipro.de/bcm53xx-musl/packages/ip_3.15.0-1_bcm53xx.ipk.
+Installing libc (1.1.3-1) to root...
+Downloading http://www.desipro.de/bcm53xx-musl/packages/libc_1.1.3-1_bcm53xx.ipk.
+Installing libgcc (4.9-linaro-1) to root...
+Downloading http://www.desipro.de/bcm53xx-musl/packages/libgcc_4.9-linaro-1_bcm53xx.ipk.
+Installing libnl-tiny (0.1-3) to root...
+Downloading http://www.desipro.de/bcm53xx-musl/packages/libnl-tiny_0.1-3_bcm53xx.ipk.
+Configuring libgcc.
+Configuring libc.
+Configuring libnl-tiny.
+Configuring ip.
+
+then after that, here is the output of ip:
+
+root@DD-WRT:~# /opt/usr/sbin/ip -4 a
+1: lo: <LOOPBACK,MULTICAST,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default 
+    inet 127.0.0.1/8 brd 127.255.255.255 scope host lo
+       valid_lft forever preferred_lft forever
+5: vlan2@eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    inet 50.134.207.220/23 brd 50.134.207.255 scope global vlan2
+       valid_lft forever preferred_lft forever
+8: vlan3@eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    inet 10.0.0.1/24 brd 10.0.0.255 scope global vlan3
+       valid_lft forever preferred_lft forever
+9: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    inet 169.254.255.1/16 brd 169.254.255.255 scope global br0:0
+       valid_lft forever preferred_lft forever
+    inet 192.168.1.1/24 brd 192.168.1.255 scope global br0
+       valid_lft forever preferred_lft forever
+
+
+VLAN configs
+
+Here were the defaults, before I made any changes:
+
+root@DD-WRT:~# nvram show | grep vlan.port
+size: 30373 bytes (35163 left)
+vlan2ports=0 5u
+vlan1ports=1 2 3 4 5*
+root@DD-WRT:~# nvram show | grep port.vlan
+size: 30373 bytes (35163 left)
+port5vlans=1 2 16
+port3vlans=1
+port1vlans=1
+port4vlans=1
+port2vlans=1
+port0vlans=2
+root@DD-WRT:~# nvram show | grep vlan.hw
+size: 30373 bytes (35163 left)
+vlan2hwname=et0
+vlan1hwname=et0
+
+
+At the end, I ended up with the following config:
+
+root@DD-WRT:~# cat /proc/vlan* | grep VID
+vlan1  VID: 1	 REORDER_HDR: 1  dev->priv_flags: 4001
+vlan2  VID: 2	 REORDER_HDR: 1  dev->priv_flags: 1
+vlan3  VID: 3	 REORDER_HDR: 1  dev->priv_flags: 1
+root@DD-WRT:~# nvram show | grep vlan.ports
+size: 34420 bytes (31116 left)
+vlan2ports=0 5u
+vlan1ports=1 2 3 4 5*
+root@DD-WRT:~# nvram show | grep port.vlan
+size: 34420 bytes (31116 left)
+port5vlans=1 2 3 16
+port3vlans=1
+port1vlans=1
+port4vlans=1 3 16
+port2vlans=1
+port0vlans=2
+root@DD-WRT:~# nvram show | grep vlan3
+mdhcpd=vlan3>On>100>50>3600
+size: 34420 bytes (31116 left)
+vlan3_netmask=255.255.255.0
+vlan3_txq=0
+vlan3_ipaddr=10.0.0.1
+vlan3_mtu=1500
+vlan3_multicast=0
+vlan3_nat=1
+vlan3_bridged=0
+
+
+and that allowed me to use tagged vlans on the 4th port, just like before.

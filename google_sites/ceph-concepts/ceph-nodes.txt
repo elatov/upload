@@ -1,0 +1,9 @@
+for ha use 3 monitors, never use 2 you would be better to do just 1
+setup an osd (Object Storage Device) per disk
+512MB per OSD
+Two recommended FSes for OSDs btrfs and XFS
+If Monitors are gone, then you can't access your data
+
+RBD (Rados Block Device) two approaches, with the kernel shows up as a block device /dev/rdb (have to map
+the device as virtual kernel device) or you can use qemu or KVM directly, which presents the device to 
+the VM directly

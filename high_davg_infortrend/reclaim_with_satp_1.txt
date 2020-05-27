@@ -1,0 +1,14 @@
+~ # esxcli nmp satp addrule -V 'IFT' -M 'S16E-G1240' -o tpgs_on -e 'Infortrend' -s VMW_SATP_DEFAULT_AA
+~ # esxcli corestorage claiming unclaim -t location -A vmbha37 -C O -T 1 -L 6
+~ # esxcli nmp device list -d naa.600d02310008483bOOOOOOOO7ef9583c
+Errors:
+Unknown device naa.600d02310008483bOOOOOOOO7ef9583c
+~ # esxcfg-rescan vmhba37
+~ # esxcli nmp device list -d naa.600d02310008483bOOOOOOOO7ef9583c
+naa.600d02310008483bOOOOOOOO7ef9583c
+	Device Display Name: IFT iSCSI Disk (naa.600d02310008483bOOOOOOOO7ef9583c)
+	Storage Array Type: VMW_SATP_DEFAULT_AA
+	Storage Array Type Device Config: SATP_VMW_SATP_DEFAULT_AA does not support device configuration.
+	Path Selection Policy: VMW_PSP_FIXED
+	Path Selection Policy Device Config: {preferred= vmhba37:CO:T1:L6;current= vmhba37:CO:T1:L6}
+	Working Paths: vmhba37:CO:T1:L6

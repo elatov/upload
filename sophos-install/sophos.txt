@@ -1,0 +1,368 @@
+# download as per the instructions laid out here
+http://www.techbrown.com/install-sophos-anti-virus-free-edition-centos-7-rhel-7.shtml
+
+# then extract the archive
+<> tar xzf sav-linux-free-9.tgz
+
+# now do the install
+<> sudo ./install.sh
+[sudo] password for elatov:
+
+
+
+Sophos Anti-Virus
+=================
+Copyright (c) 1989-2016 Sophos Limited. All rights reserved.
+
+Welcome to the Sophos Anti-Virus installer. Sophos Anti-Virus contains an on-
+access scanner, an on-demand command-line scanner, the Sophos Anti-Virus daemon,
+and the Sophos Anti-Virus GUI.
+
+On-access scanner         Scans files as they are accessed, and grants access
+                          to only those that are threat-free.
+On-demand scanner         Scans the computer, or parts of the computer,
+                          immediately.
+Sophos Anti-Virus daemon  Background process that provides control, logging,
+                          and email alerting for Sophos Anti-Virus.
+Sophos Anti-Virus GUI     User interface accessed through a web browser.
+
+
+Press <return> to display Licence. Then press <spc> to scroll forward.
+*********************************
+NOTICE
+This Sophos software contains software licensed by Sophos as well as software
+licensed by other parties. Some software license terms may grant You rights with
+respect to such software (including distribution rights) which are in addition
+to those rights granted to You by Sophos with respect to this Sophos product in
+the Sophos End User License Agreement. Please review the Copyright section of
+product documentation for further details regarding Your rights to any such
+software which has been provided to You and to view the respective copyright
+notices.
+*********************************
+
+
+Sophos End User License Agreement
+If you use any of our software, read our legally binding agreement between
+Sophos and all end users of Sophos software products. If you wish to view this
+information in other languages (German, Spanish, French, Italian, Japanese,
+Simplified Chinese or Traditional Chinese) then visit this page to download a
+PDF: <https://www.sophos.com/en-us/legal/sophos-end-user-license-
+agreement.aspx>.
+
+SOPHOS END USER LICENSE AGREEMENT
+
+Please read the following legally binding License Agreement between Sophos and
+
+Do you accept the licence? Yes(Y)/No(N) [N]
+> Y
+
+Where do you want to install Sophos Anti-Virus? [/opt/sophos-av]
+>
+
+Do you want to enable on-access scanning? Yes(Y)/No(N) [Y]
+>
+
+Sophos recommends that you configure Sophos Anti-Virus to auto-update.
+
+It can update either from Sophos directly (requiring username/password details)
+or from your own server (directory or website (possibly requiring
+username/password)).
+
+Which type of auto-updating do you want? From Sophos(s)/From own server(o)/None(n) [s]
+> s
+
+Updating directly from Sophos.
+Do you wish to install the Free (f) or Supported (s) version of SAV for Linux? [s]
+> f
+
+The Free version of Sophos Anti-Virus for Linux comes with no support.
+Forums are available for our free tools at http://openforum.sophos.com/
+Do you need a proxy to access Sophos updates? Yes(Y)/No(N) [N]
+> n
+
+Fetching free update credentials.
+Installing Sophos Anti-Virus....
+Selecting appropriate kernel support...
+When Sophos Anti-Virus starts, it updates itself to try to find a Sophos kernel interface module update. This might cause a significant delay.
+Sophos Anti-Virus starts after installation.
+
+Installation completed.
+Your computer is now protected by Sophos Anti-Virus.
+
+## initially the talpa module failed to compile
+[root@m2 kernels]# tail -11 /opt/sophos-av/log/talpaselect.log
+checking for linux/version.h... configure: error: cannot proceed without the required header file
+
+Traceback (most recent call last):
+  File "talpa_select.py", line 2176, in _action
+  File "talpa_select.py", line 1074, in load
+  File "talpa_select.py", line 841, in select
+  File "talpa_select.py", line 1696, in select
+  File "talpa_select.py", line 1780, in build
+  File "talpa_select.py", line 1910, in __try_build
+  File "talpa_select.py", line 1769, in checkConfigureErrors
+SelectException: exc-configure-failed-no-kernel-headers
+
+#I was missing the kernel source, so I installed that
+
+# yum install kernel-devel
+
+# and then re-ran the compile and it worked out
+[root@m2 ~]# /opt/sophos-av/engine/talpa_select select
+[Talpa-select]
+Copyright (c) 1989-2016 Sophos Limited. All rights reserved.
+Sat Dec 24 17:42:16 2016 GMT
+Linux distribution: [centos]
+Product: [CentOS Linux release 7.3.1611 (Core) ]
+Kernel: [3.10.0-514.2.2.el7.x86_64]
+Multiprocessor support enabled.
+Searching for source pack...
+Searching for suitable binary pack...
+No suitable binary pack available.
+Preparing for build...
+Extracting sources...
+Configuring build of version 1.21.5...
+Building...
+Installing binaries...
+Creating local binary pack...
+
+# and now let's load the module
+[root@m2 sophos-av]# /opt/sophos-av/engine/talpa_select load
+[Talpa-select]
+Copyright (c) 1989-2016 Sophos Limited. All rights reserved.
+Sat Dec 24 17:46:05 2016 GMT
+Linux distribution: [centos]
+Product: [CentOS Linux release 7.3.1611 (Core) ]
+Kernel: [3.10.0-514.2.2.el7.x86_64]
+Multiprocessor support enabled.
+Searching for source pack...
+Searching for suitable binary pack...
+Binary pack was created locally.
+Found suitable binary pack. Using: /opt/sophos-av/talpa/compiled/talpa-binpack-centos-x86_64-3.10.0-514.2.2.el7.x86_64-1smptuedec6230641utc2016.tar.gz
+Loading Talpa kernel modules version 1.21.5...
+
+# and confirm it's loaded
+[root@m2 sophos-av]# lsmod | grep tal
+talpa_vfshook          39969  0
+talpa_pedconnector     12509  0
+talpa_pedevice         13563  1 talpa_pedconnector
+talpa_vcdevice         13129  0
+talpa_core             91941  3 talpa_vfshook,talpa_vcdevice
+talpa_linux            34583  4 talpa_vfshook,talpa_vcdevice,talpa_core
+talpa_syscallhook      20252  1 talpa_vfshook
+
+# it looks likes the UI is no longer available:
+https://community.sophos.com/kb/en-us/122722
+
+# then go ahead and do an update
+[root@m2 etc]# /opt/sophos-av/bin/savupdate
+Updating from versions - SAV: 9.12.3, Engine: 3.65.2, Data: 5.30
+Updating Sophos Anti-Virus....
+Updating Talpa Binary Packs
+Updating SAVScan on-demand scanner
+Updating Virus Engine and Data
+Updating Talpa Kernel Support
+Updating Manifest
+Selecting appropriate kernel support...
+Update completed.
+Updated to versions - SAV: 9.12.3, Engine: 3.65.2, Data: 5.34
+Successfully updated Sophos Anti-Virus from sdds:SOPHOS
+
+# restart after the update
+systemctl restart sav-protect.service
+
+# I also double checked the services were enabled
+[root@m2 log]# /opt/sophos-av/bin/savdstatus
+Sophos Anti-Virus is active and on-access scanning is running
+[root@m2 log]# /opt/sophos-av/bin/savconfig query EnableOnStart
+true
+[root@m2 log]# /opt/sophos-av/bin/savconfig query LiveProtection
+enabled
+
+# you can also check out all the configs
+
+[root@m2 ~]# /opt/sophos-av/bin/savconfig --advanced query
+AllowCorruptInCleanArchive: true
+CacheFilesystems: ext3
+                  ext4
+                  ext2
+                  tmpfs
+                  devtmpfs
+                  iso9660
+                  udf
+                  xfs
+                  reiserfs
+                  jfs
+                  vfat
+                  msdos
+                  ntfs
+                  hfs
+                  minix
+                  ramfs
+                  romfs
+                  ufs
+                  umsdos
+                  xenix
+                  cramfs
+DenyOnCorruptFile: false
+DenyOnDetectionError: false
+DenyOnOperatingSystemError: true
+Email: root@localhost
+EmailDemandSummaryAlways: false
+EmailDemandSummaryIfThreat: true
+EmailLanguage: English
+EmailNotifier: true
+EmailServer: localhost:25
+EnableOnStart: true
+EnableAutoUpdating: true
+ExclusionEncodings: UTF-8
+                    EUC-JP
+                    ISO-8859-1
+FileCacheSizeBytes: 4096
+FileScanTimeoutMs: 10000
+FilesystemScanTimeoutMs: 60000
+GraceKillTimeoutMs: 2000
+GraceStopTimeoutMs: 20000
+HookModule: talpa_vfshook
+LogMaxSizeMB: 100
+LogNotifier: true
+NotificationQueueLimit: 50
+NotifyOnUpdate: true
+NotifyOnUpdateCheck: false
+OnAccessCache: true
+OnAccessIncludePath: /
+PrimaryUpdateSourcePath: sophos:
+PrimaryUpdateCachePath: /opt/sophos-av/update/cache/Primary
+PrimaryUpdateUsername: FAVLrVM4Z44EB
+PrimaryUpdatePassword: ********
+PrimaryUpdateAllDistros: false
+LogPrimaryUpdateError: true
+UploadSamples: false
+Processes: 2
+RespawnLimit: 5
+RespawnMax: 10
+RespawnPeriodDurationMs: 20000
+RestrictProcessExclusions: false
+SendEmailMsgID: USING_BACKUP_CONFIGURATION
+                ALL_UPDATE_SOURCES_FAILED
+                RESPAWN-LIMIT
+                VIRUS-DATA-OLD
+                TALPA-FAILURE
+                TALPA-COMPILED
+SendEmailLogLevel: FATAL
+SendErrorEmail: true
+SendThreatEmail: true
+StartupTimeoutMs: 60000
+StopScanTimeoutMs: 10000
+StopTimeoutMs: 30000
+SyslogFacility: DAEMON
+SyslogNotifier: true
+TalpaDebug: false
+TalpaInclusionProcessor: false
+TalpaVettingGroup: 0
+TalpaVettingTimeoutMs: 100
+ThreadsPerProcess: 5
+AdaptiveThreading: true
+MaximumThreads: 5
+UINotifier: true
+UIpopupNotification: true
+UIttyNotification: true
+UpdatePeriodMinutes: 60
+UseExtendedRegex: true
+XSmartSchedulerFix: true
+LiveProtection: enabled
+ScanArchives: mixed
+
+# I also enabled the option to be notified on update
+[root@m2 ~]# /opt/sophos-av/bin/savconfig set NotifyOnUpdate true
+[root@m2 ~]# /opt/sophos-av/bin/savconfig query NotifyOnUpdate
+true
+
+### there are also a couple of services that are disabled
+<> systemctl list-unit-files| grep sav
+sav-protect.service                           enabled
+sav-rms.service                               disabled
+sav-update.service                            disabled
+
+## Setup a schedule scan weekly
+# covered in this pdf
+https://www.sophos.com/en-us/medialibrary/PDFs/documentation/savl_9_cgeng.pdf
+and here
+https://community.sophos.com/kb/en-us/114372
+# create a folder for shedules jobs
+[root@m2 ~]# mkdir /opt/sophos-av/etc/jobs
+# then copy the example
+cp /opt/sophos-av/doc/namedscan.example.en /opt/sophos-av/etc/jobs/weekly
+# modify to your needs
+vi /opt/sophos-av/etc/jobs/weekly
+# and lastly add it
+/opt/sophos-av/bin/savconfig add NamedScans weekly /opt/sophos-av/etc/jobs/weekly
+# if you need to update it, first update the file and then update the config
+/opt/sophos-av/bin/savconfig update NamedScans weekly /opt/sophos-av/etc/jobs/weekly
+
+### Running a quick scan manually
+> sudo /opt/sophos-av/bin/savscan /
+[sudo] password for elatov:
+SAVScan virus detection utility
+Version 5.27.0 [Linux/AMD64]
+Virus data version 5.34, November 2016
+Includes detection for 12414465 viruses, Trojans and worms
+Copyright (c) 1989-2016 Sophos Limited. All rights reserved.
+
+System time 12:08:18 PM, System date 24 December 2016
+
+IDE directory is: /opt/sophos-av/lib/sav
+
+Using IDE file fare-boh.ide
+Using IDE file dride-wf.ide
+Using IDE file rans-dwk.ide
+Using IDE file fare-bol.ide
+Using IDE file chisb-lh.ide
+Using IDE file zeus-k.ide
+...
+...
+Using IDE file docd-gja.ide
+Using IDE file fare-bwv.ide
+Using IDE file locky-yo.ide
+Using IDE file mdro-hrr.ide
+Using IDE file locky-yp.ide
+Using IDE file cerbe-xy.ide
+
+Quick Scanning
+
+Could not open /etc/alternatives/policytool
+Could not open /usr/bin/policytool
+Could not open /usr/lib/modules/3.10.0-327.28.3.el7.x86_64/source
+Could not open /usr/lib/modules/3.10.0-327.36.1.el7.x86_64/source
+Could not open /usr/lib/modules/3.10.0-327.36.2.el7.x86_64/source
+Could not open /usr/lib/modules/3.10.0-327.36.3.el7.x86_64/source
+
+42781 files scanned in 1 minute and 25 seconds.
+6 errors were encountered.
+No viruses were discovered.
+End of Scan.
+
+### by default the update period of 60 minutes so I decided to changed that to once a day:
+
+[root@m2 ~]# /opt/sophos-av/bin/savconfig set UpdatePeriodMinutes 1440
+
+else you will see this in the logs all the time:
+
+Dec 24 18:51:50 m2.kar.int kernel: talpa-cache: Enabled
+Dec 24 18:51:50 m2.kar.int kernel: talpa-cache: Disabled
+Dec 24 18:51:39 m2.kar.int systemd[1]: Started "Sophos Anti-Virus update".
+Dec 24 18:51:39 m2.kar.int savd[11120]: update.updated: Successfully updated Sophos Anti-Virus from sdds:SOPHOS
+Dec 24 18:51:39 m2.kar.int savd[11120]: update.updated: Updated to versions - SAV: 9.12.3, Engine: 3.65.2, Data: 5.34
+Dec 24 18:51:39 m2.kar.int savd[11120]: update.updated: Updating Sophos Anti-Virus....
+                                        Updating SAVScan on-demand scanner
+                                        Updating Virus Engine and Data
+                                        Updating Manifest
+                                        Update completed.
+Dec 24 18:51:39 m2.kar.int savd[11120]: update.updated: Updating from versions - SAV: 9.12.3, Engine: 3.65.2, Data: 5.34
+Dec 24 18:51:17 m2.kar.int systemd[1]: Starting "Sophos Anti-Virus update"...
+
+# to get a summary of the scheduled savscan always, you can set the following option:
+
+https://community.sophos.com/kb/en-us/118385
+
+# /opt/sophos-av/bin/savconfig set EmailDemandSummaryAlways true

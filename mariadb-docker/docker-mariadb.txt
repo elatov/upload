@@ -1,0 +1,699 @@
+### On the Freebsd machine let's update mariabdb
+# current version
+
+<> pkg info | grep maria
+mariadb100-client-10.0.29_1    Multithreaded SQL database (client)
+mariadb100-server-10.0.29_1    Multithreaded SQL database (server)
+
+# available version
+
+<> pkg search mariadb101
+mariadb101-client-10.1.21      Multithreaded SQL database (client)
+mariadb101-server-10.1.21      Multithreaded SQL database (server)
+
+# so first let's stop all the services using the database and get a dump of all the databases
+
+# confirm nothing is connected:
+
+MariaDB [(none)]> show processlist;
++-------+------+-----------+------+---------+------+-------+------------------+----------+
+| Id    | User | Host      | db   | Command | Time | State | Info             | Progress |
++-------+------+-----------+------+---------+------+-------+------------------+----------+
+| 23600 | root | localhost | NULL | Query   |    0 | init  | show processlist |    0.000 |
++-------+------+-----------+------+---------+------+-------+------------------+----------+
+1 row in set (0.00 sec)
+
+### do a back up
+mysqldump --events --routines --triggers --all-databases -u root -p > moxz-mdb-03-18-17.sql
+mysqldump -u root -p mysql user > user_table_dump.sql
+
+# now let's do the update, first let's stop the service
+<> sudo service mysql-server stop
+Stopping mysql.
+Waiting for PIDS: 933.
+
+# just tar up the data dir
+cd /var/db
+sudo tar cpjf mysql-data-dir-03-18-17.tar.bz2 mysql
+
+# let's also get the configs
+
+cd /usr/local/etc/mysql
+sudo tar cpjf mariadb-confd-03-18-17.tar.bz2 conf.d
+
+# now for the update
+
+<> sudo pkg install mariadb101-server
+Updating FreeBSD repository catalogue...
+FreeBSD repository is up to date.
+All repositories are up to date.
+The following 2 package(s) will be affected (of 0 checked):
+
+New packages to be INSTALLED:
+	mariadb101-server: 10.1.21
+	mariadb101-client: 10.1.21
+
+Number of packages to be installed: 2
+
+The process will require 208 MiB more space.
+25 MiB to be downloaded.
+
+Proceed with this action? [y/N]: y
+[1/2] mariadb101-server-10.1.21.txz            :   0%  160 KiB 163.8kB/s    02:2[1/2] mariadb101-server-10.1.21.txz            :  39%    9 MiB   9.3MB/s    00:0[1/2] mariadb101-server-10.1.21.txz            : 100%   23 MiB  12.1MB/s    00:02
+[2/2] mariadb101-client-10.1.21.txz            :   1%   16 KiB  16.4kB/s    01:3[2/2] mariadb101-client-10.1.21.txz            : 100%    1 MiB   1.6MB/s    00:01
+Checking integrity... done (3 conflicting)
+  - mariadb101-server-10.1.21 conflicts with mariadb100-server-10.0.29_1 on /usr/local/bin/aria_chk
+  - mariadb101-client-10.1.21 conflicts with mariadb100-client-10.0.29_1 on /usr/local/bin/msql2mysql
+  - mariadb101-client-10.1.21 conflicts with mariadb100-server-10.0.29_1 on /usr/local/lib/mysql/plugin/daemon_example.ini
+Checking integrity... done (0 conflicting)
+Conflicts with the existing packages have been found.
+One more solver iteration is needed to resolve them.
+The following 5 package(s) will be affected (of 0 checked):
+
+Installed packages to be REMOVED:
+	mariadb100-client-10.0.29_1
+	mariadb100-server-10.0.29_1
+
+New packages to be INSTALLED:
+	mariadb101-client: 10.1.21
+	mariadb101-server: 10.1.21
+
+Installed packages to be REINSTALLED:
+	pkg-1.10.0_2
+
+Number of packages to be removed: 2
+Number of packages to be installed: 2
+Number of packages to be reinstalled: 1
+
+The process will require 9 MiB more space.
+
+Proceed with this action? [y/N]: y
+[1/5] Deinstalling mariadb100-server-10.0.29_1...
+[1/5] Deleting files for mariadb100-server-10.0.29_1:  15%
+pkg: /usr/local/etc/rc.d/mysql-server different from original checksum, not removing
+[1/5] Deleting files for mariadb100-server-10.0.29_1: 100%
+==> You should manually remove the "mysql" user.
+==> You should manually remove the "mysql" group
+[2/5] Deinstalling mariadb100-client-10.0.29_1...
+[2/5] Deleting files for mariadb100-client-10.0.29_1: 100%
+[3/5] Installing mariadb101-client-10.1.21...
+[3/5] Extracting mariadb101-client-10.1.21: 100%
+[4/5] Reinstalling pkg-1.10.0_2...
+[4/5] Extracting pkg-1.10.0_2: 100%
+[5/5] Installing mariadb101-server-10.1.21...
+===> Creating groups.
+Using existing group 'mysql'.
+===> Creating users
+Using existing user 'mysql'.
+[5/5] Extracting mariadb101-server-10.1.21: 100%
+Message from mariadb101-client-10.1.21:
+************************************************************************
+
+MariaDB respects hier(7) and doesn't check /etc and /etc/mysql for
+my.cnf. Please move existing my.cnf files from those paths to
+/usr/local/etc and /usr/local/etc/mysql.
+
+************************************************************************
+Message from mariadb101-server-10.1.21:
+************************************************************************
+
+Remember to run mysql_upgrade (with the optional --datadir=<dbdir> flag)
+the first time you start the MySQL server after an upgrade from an
+earlier version.
+
+MariaDB respects hier(7) and doesn't check /etc and /etc/mysql for
+my.cnf. Please move existing my.cnf files from those paths to
+/usr/local/etc and /usr/local/etc/mysql.
+
+This port does NOT include the mytop perl script, this is included in
+the MariaDB tarball but the most recent version can be found in the
+databases/mytop port
+
+************************************************************************
+
+
+# after the update I started the service
+
+sudo service mysql-server start
+
+and I saw the followig in the logs:
+
+170318 11:35:06 mysqld_safe Starting mysqld daemon with databases from /var/db/m
+ysql
+2017-03-18 11:35:06 2210488320 [Note] /usr/local/bin/mysqld (mysqld 10.1.21-Mari
+aDB) starting as process 29452 ...
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Using mutexes to ref count buffer
+pool pages
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: The InnoDB memory heap is disabled
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Mutexes and rw_locks use GCC atomi
+c builtins
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: GCC builtin __atomic_thread_fence(
+) is used for memory barrier
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Compressed tables use zlib 1.2.8
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Using SSE crc32 instructions
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Initializing buffer pool, size = 1
+.0G
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Completed initialization of buffer pool
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Highest supported file format is Barracuda.
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: 128 rollback segment(s) are active.
+2017-03-18 11:35:06 2210488320 [Note] InnoDB: Waiting for purge to start
+2017-03-18 11:35:06 2210488320 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.34-79.1 started; log sequence number 73665316000
+2017-03-18 11:35:06 3552271616 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2017-03-18 11:35:06 2210488320 [Note] Plugin 'FEEDBACK' is disabled.
+2017-03-18 11:35:06 2210488320 [Note] Server socket created on IP: '0.0.0.0'.
+2017-03-18 11:35:06 d3bb7600 InnoDB: Error: Column last_update in table "mysql"."innodb_table_stats" is INT UNSIGNED NOT NULL but should be BINARY(4) NOT NULL (type mismatch).
+2017-03-18 11:35:06 d3bb7600 InnoDB: Error: Fetch of persistent statistics requested for table "mysql"."gtid_slave_pos" but the required system tables mysql.innodb_table_stats and mysql.innodb_index_stats are not present or have unexpected structure. Using transient stats instead.
+2017-03-18 11:35:06 2210488320 [Note] /usr/local/bin/mysqld: ready for connections.
+Version: '10.1.21-MariaDB'  socket: '/tmp/mysql.sock'  port: 3306  FreeBSD Ports
+
+So now let's do the update:
+
+<> sudo mysql_upgrade
+Phase 1/6: Checking and upgrading mysql database
+Processing databases
+mysql
+mysql.column_stats                                 OK
+mysql.columns_priv                                 OK
+mysql.db                                           OK
+mysql.event                                        OK
+mysql.func                                         OK
+mysql.gtid_slave_pos                               OK
+mysql.help_category                                OK
+mysql.help_keyword                                 OK
+mysql.help_relation                                OK
+mysql.help_topic                                   OK
+mysql.host                                         OK
+mysql.index_stats                                  OK
+mysql.innodb_index_stats                           OK
+mysql.innodb_table_stats                           OK
+mysql.ndb_binlog_index                             OK
+mysql.plugin                                       OK
+mysql.proc                                         OK
+mysql.procs_priv                                   OK
+mysql.proxies_priv                                 OK
+mysql.roles_mapping                                OK
+mysql.servers                                      OK
+mysql.table_stats                                  OK
+mysql.tables_priv                                  OK
+mysql.time_zone                                    OK
+mysql.time_zone_leap_second                        OK
+mysql.time_zone_name                               OK
+mysql.time_zone_transition                         OK
+mysql.time_zone_transition_type                    OK
+mysql.user                                         OK
+Phase 2/6: Fixing views
+snorby.aggregated_events                           OK
+snorby.events_with_join                            OK
+Phase 3/6: Running 'mysql_fix_privilege_tables'
+Phase 4/6: Fixing table and database names
+Phase 5/6: Checking and upgrading tables
+Processing databases
+aanvaldb
+aanvaldb.idsActionMaster                           OK
+aanvaldb.idsActionStore                            OK
+aanvaldb.idsCollection                             OK
+aanvaldb.idsCollectionStore                        OK
+aanvaldb.idsDataStore                              OK
+aanvaldb.idsDataStore_1000_Events                  OK
+aanvaldb.idsDataStore_1000_Master                  OK
+aanvaldb.idsDataStore_1000_Review_Index            OK
+aanvaldb.idsDataStore_1000_Tag_Index               OK
+aanvaldb.idsDataStore_1000_Text                    OK
+aanvaldb.idsDataStore_1000_Text_Index              OK
+aanvaldb.idsDataStore_TEMPLATE_Events              OK
+aanvaldb.idsDataStore_TEMPLATE_Master              OK
+aanvaldb.idsDataStore_TEMPLATE_Review_Index        OK
+aanvaldb.idsDataStore_TEMPLATE_Tag_Index           OK
+aanvaldb.idsDataStore_TEMPLATE_Text                OK
+aanvaldb.idsDataStore_TEMPLATE_Text_Index          OK
+aanvaldb.idsDeviceAddresses                        OK
+aanvaldb.idsDeviceMeta                             OK
+aanvaldb.idsDeviceServices                         OK
+aanvaldb.idsDeviceTypes                            OK
+aanvaldb.idsDevices                                OK
+aanvaldb.idsEmail                                  OK
+aanvaldb.idsGeoCache                               OK
+aanvaldb.idsGeoData                                OK
+aanvaldb.idsGeoLocation                            OK
+aanvaldb.idsHostnames                              OK
+aanvaldb.idsImportFilters                          OK
+aanvaldb.idsLicense                                OK
+aanvaldb.idsMessageQueue                           OK
+aanvaldb.idsModules                                OK
+aanvaldb.idsNetworks                               OK
+aanvaldb.idsNotes                                  OK
+aanvaldb.idsOps                                    OK
+aanvaldb.idsQueries                                OK
+aanvaldb.idsReconnaissanceResults                  OK
+aanvaldb.idsReportSchedule                         OK
+aanvaldb.idsSensor                                 OK
+aanvaldb.idsSensorManage                           OK
+aanvaldb.idsSensorManageMessages                   OK
+aanvaldb.idsSensorPolicy                           OK
+aanvaldb.idsSignaturePolicyIndex                   OK
+aanvaldb.idsSignatureSources                       OK
+aanvaldb.idsSignatures                             OK
+aanvaldb.idsSyslogModule                           OK
+aanvaldb.idsTags                                   OK
+aanvaldb.idsTimezones                              OK
+aanvaldb.idsUserMessages                           OK
+aanvaldb.idsUsers                                  OK
+information_schema
+paperwork
+paperwork.attachment_version                       OK
+paperwork.attachments                              OK
+paperwork.language_user                            OK
+paperwork.languages                                OK
+paperwork.migrations                               OK
+paperwork.note_user                                OK
+paperwork.notebook_user                            OK
+paperwork.notebooks                                OK
+paperwork.notes                                    OK
+paperwork.password_reminders                       OK
+paperwork.sessions                                 OK
+paperwork.settings                                 OK
+paperwork.shortcuts                                OK
+paperwork.tag_note                                 OK
+paperwork.tags                                     OK
+paperwork.users                                    OK
+paperwork.versions                                 OK
+performance_schema
+ptest
+snorby
+snorby.agent_asset_names                           OK
+snorby.asset_names                                 OK
+snorby.caches                                      OK
+snorby.classifications                             OK
+snorby.daily_caches                                OK
+snorby.data                                        OK
+snorby.delayed_jobs                                OK
+snorby.detail                                      OK
+snorby.encoding                                    OK
+snorby.event                                       OK
+snorby.favorites                                   OK
+snorby.icmphdr                                     OK
+snorby.iphdr                                       OK
+snorby.lookups                                     OK
+snorby.notes                                       OK
+snorby.notifications                               OK
+snorby.opt                                         OK
+snorby.reference                                   OK
+snorby.reference_system                            OK
+snorby.schema                                      OK
+snorby.search                                      OK
+snorby.sensor                                      OK
+snorby.settings                                    OK
+snorby.severities                                  OK
+snorby.sig_class                                   OK
+snorby.sig_reference                               OK
+snorby.signature                                   OK
+snorby.tcphdr                                      OK
+snorby.udphdr                                      OK
+snorby.users                                       OK
+wordpress
+wordpress.wp_commentmeta                           OK
+wordpress.wp_comments                              OK
+wordpress.wp_links                                 OK
+wordpress.wp_options                               OK
+wordpress.wp_postmeta                              OK
+wordpress.wp_posts                                 OK
+wordpress.wp_term_relationships                    OK
+wordpress.wp_term_taxonomy                         OK
+wordpress.wp_termmeta                              OK
+wordpress.wp_terms                                 OK
+wordpress.wp_usermeta                              OK
+wordpress.wp_users                                 OK
+wordpress.wp_wpo_campaign                          OK
+wordpress.wp_wpo_campaign_category                 OK
+wordpress.wp_wpo_campaign_feed                     OK
+wordpress.wp_wpo_campaign_post                     OK
+wordpress.wp_wpo_campaign_word                     OK
+wordpress.wp_wpo_log                               OK
+wp_cs4113
+wp_cs4113.wp_commentmeta                           OK
+wp_cs4113.wp_comments                              OK
+wp_cs4113.wp_links                                 OK
+wp_cs4113.wp_options                               OK
+wp_cs4113.wp_postmeta                              OK
+wp_cs4113.wp_posts                                 OK
+wp_cs4113.wp_term_relationships                    OK
+wp_cs4113.wp_term_taxonomy                         OK
+wp_cs4113.wp_termmeta                              OK
+wp_cs4113.wp_terms                                 OK
+wp_cs4113.wp_usermeta                              OK
+wp_cs4113.wp_users                                 OK
+zabbix
+zabbix.acknowledges                                OK
+zabbix.actions                                     OK
+zabbix.alerts                                      OK
+zabbix.application_discovery                       OK
+zabbix.application_prototype                       OK
+zabbix.application_template                        OK
+zabbix.applications                                OK
+zabbix.auditlog                                    OK
+zabbix.auditlog_details                            OK
+zabbix.autoreg_host                                OK
+zabbix.conditions                                  OK
+zabbix.config                                      OK
+zabbix.corr_condition                              OK
+zabbix.corr_condition_group                        OK
+zabbix.corr_condition_tag                          OK
+zabbix.corr_condition_tagpair                      OK
+zabbix.corr_condition_tagvalue                     OK
+zabbix.corr_operation                              OK
+zabbix.correlation                                 OK
+zabbix.dbversion                                   OK
+zabbix.dchecks                                     OK
+zabbix.dhosts                                      OK
+zabbix.drules                                      OK
+zabbix.dservices                                   OK
+zabbix.escalations                                 OK
+zabbix.event_recovery                              OK
+zabbix.event_tag                                   OK
+zabbix.events                                      OK
+zabbix.expressions                                 OK
+zabbix.functions                                   OK
+zabbix.globalmacro                                 OK
+zabbix.globalvars                                  OK
+zabbix.graph_discovery                             OK
+zabbix.graph_theme                                 OK
+zabbix.graphs                                      OK
+zabbix.graphs_items                                OK
+zabbix.group_discovery                             OK
+zabbix.group_prototype                             OK
+zabbix.groups                                      OK
+zabbix.history                                     OK
+zabbix.history_log                                 OK
+zabbix.history_str                                 OK
+zabbix.history_text                                OK
+zabbix.history_uint                                OK
+zabbix.host_discovery                              OK
+zabbix.host_inventory                              OK
+zabbix.hostmacro                                   OK
+zabbix.hosts                                       OK
+zabbix.hosts_groups                                OK
+zabbix.hosts_templates                             OK
+zabbix.housekeeper                                 OK
+zabbix.httpstep                                    OK
+zabbix.httpstepitem                                OK
+zabbix.httptest                                    OK
+zabbix.httptestitem                                OK
+zabbix.icon_map                                    OK
+zabbix.icon_mapping                                OK
+zabbix.ids                                         OK
+zabbix.images                                      OK
+zabbix.interface                                   OK
+zabbix.interface_discovery                         OK
+zabbix.item_application_prototype                  OK
+zabbix.item_condition                              OK
+zabbix.item_discovery                              OK
+zabbix.items                                       OK
+zabbix.items_applications                          OK
+zabbix.maintenances                                OK
+zabbix.maintenances_groups                         OK
+zabbix.maintenances_hosts                          OK
+zabbix.maintenances_windows                        OK
+zabbix.mappings                                    OK
+zabbix.media                                       OK
+zabbix.media_type                                  OK
+zabbix.opcommand                                   OK
+zabbix.opcommand_grp                               OK
+zabbix.opcommand_hst                               OK
+zabbix.opconditions                                OK
+zabbix.operations                                  OK
+zabbix.opgroup                                     OK
+zabbix.opinventory                                 OK
+zabbix.opmessage                                   OK
+zabbix.opmessage_grp                               OK
+zabbix.opmessage_usr                               OK
+zabbix.optemplate                                  OK
+zabbix.problem                                     OK
+zabbix.problem_tag                                 OK
+zabbix.profiles                                    OK
+zabbix.proxy_autoreg_host                          OK
+zabbix.proxy_dhistory                              OK
+zabbix.proxy_history                               OK
+zabbix.regexps                                     OK
+zabbix.rights                                      OK
+zabbix.screen_user                                 OK
+zabbix.screen_usrgrp                               OK
+zabbix.screens                                     OK
+zabbix.screens_items                               OK
+zabbix.scripts                                     OK
+zabbix.service_alarms                              OK
+zabbix.services                                    OK
+zabbix.services_links                              OK
+zabbix.services_times                              OK
+zabbix.sessions                                    OK
+zabbix.slides                                      OK
+zabbix.slideshow_user                              OK
+zabbix.slideshow_usrgrp                            OK
+zabbix.slideshows                                  OK
+zabbix.sysmap_element_url                          OK
+zabbix.sysmap_url                                  OK
+zabbix.sysmap_user                                 OK
+zabbix.sysmap_usrgrp                               OK
+zabbix.sysmaps                                     OK
+zabbix.sysmaps_elements                            OK
+zabbix.sysmaps_link_triggers                       OK
+zabbix.sysmaps_links                               OK
+zabbix.task                                        OK
+zabbix.task_close_problem                          OK
+zabbix.timeperiods                                 OK
+zabbix.trends                                      OK
+zabbix.trends_uint                                 OK
+zabbix.trigger_depends                             OK
+zabbix.trigger_discovery                           OK
+zabbix.trigger_tag                                 OK
+zabbix.triggers                                    OK
+zabbix.users                                       OK
+zabbix.users_groups                                OK
+zabbix.usrgrp                                      OK
+zabbix.valuemaps                                   OK
+Phase 6/6: Running 'FLUSH PRIVILEGES'
+OK
+
+# the update looked good by the above errors were still bothering me, so I ran into this site:
+
+http://dba.stackexchange.com/questions/139917/getting-innodb-internal-errors-on-every-query-run
+
+It sounds like we can just export and import the mysql db to fix it. So I did that:
+
+<> mysqldump -u root -p --events --quick --single-transaction mysql > mysql-dump.sql
+Enter password:
+<> mysql -u root -p mysql < mysql-dump.sql
+Enter password:
+
+Now let's restart:
+
+<> sudo service mysql-server restart
+Stopping mysql.
+Waiting for PIDS: 29452.
+Starting mysql.
+
+And then after a restart the logs looked good:
+
+2017-03-18 11:42:50 3649155072 [Note] InnoDB: Shutdown completed; log sequence number 73666444387
+2017-03-18 11:42:50 3649155072 [Note] /usr/local/bin/mysqld: Shutdown complete
+
+170318 11:42:50 mysqld_safe mysqld from pid file /var/run/mysqld/mysqld.pid ended
+170318 11:42:50 mysqld_safe Starting mysqld daemon with databases from /var/db/mysql
+2017-03-18 11:42:50 2210488320 [Note] /usr/local/bin/mysqld (mysqld 10.1.21-MariaDB) starting as process 30390 ...
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: The InnoDB memory heap is disabled
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: GCC builtin __atomic_thread_fence() is used for memory barrier
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Compressed tables use zlib 1.2.8
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Using SSE crc32 instructions
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Initializing buffer pool, size = 1.0G
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Completed initialization of buffer pool
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Highest supported file format is Barracuda.
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: 128 rollback segment(s) are active.
+2017-03-18 11:42:50 2210488320 [Note] InnoDB: Waiting for purge to start
+2017-03-18 11:42:51 2210488320 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.34-79.1 started; log sequence number 73666444387
+2017-03-18 11:42:51 3552271616 [Note] InnoDB: Dumping buffer pool(s) not yet started
+2017-03-18 11:42:51 2210488320 [Note] Plugin 'FEEDBACK' is disabled.
+2017-03-18 11:42:51 2210488320 [Note] Server socket created on IP: '0.0.0.0'.
+2017-03-18 11:42:51 2210488320 [Note] /usr/local/bin/mysqld: ready for connections.
+Version: '10.1.21-MariaDB'  socket: '/tmp/mysql.sock'  port: 3306  FreeBSD Ports
+
+# then I started up old processes to make sure they can use the new db. I double checked that they logged in:
+
+MariaDB [(none)]> show processlist;
++----+--------+---------------------+--------+---------+------+-------+------------------+----------+
+| Id | User   | Host                | db     | Command | Time | State | Info             | Progress |
++----+--------+---------------------+--------+---------+------+-------+------------------+----------+
+|  2 | root   | localhost           | NULL   | Query   |    0 | init  | show processlist |    0.000 |
+|  6 | zabbix | kerch.kar.int:50895 | zabbix | Sleep   |   51 |       | NULL             |    0.000 |
+
+### Migration to Docker
+# Copy the configs to the docker system
+
+rsync -avzP mariadb-confd-03-18-17.tar.bz2 core:.
+
+Extract them
+
+tar xjf mariadb-confd-03-18-17.tar.bz2
+
+
+# so I decided to export one database at a time ani import it. This actually gave me a chance to clean up unused databases. So on the docker machine, I created a docker compose file:
+
+core ~ # cat maria/docker-compose.yml 
+version: '2'
+services:
+
+    mariadb: 
+       image: mariadb:latest
+       container_name: mariadb
+       hostname: mariadb
+       restart: always
+       volumes:
+        - "./data:/var/lib/mysql"
+        - "./conf:/etc/mysql/conf.d"
+       ports:
+        - "3306:3306"
+       environment:
+         - MYSQL_ROOT_PASSWORD=testing
+
+
+and then I started up the docker container:
+
+core maria # docker-compose up -d
+Creating network "maria_default" with the default driver
+Pulling mariadb (mariadb:latest)...
+latest: Pulling from library/mariadb
+693502eb7dfb: Already exists
+08d0e9d74b1b: Pull complete
+e700ebfbe6bc: Pull complete
+f718f1976629: Pull complete
+b73d942a76fd: Pull complete
+6b34f02138e1: Pull complete
+b07f47800e46: Pull complete
+3a41e5a44cb3: Pull complete
+7bc4d10b3669: Pull complete
+fb4a11b7f1a0: Pull complete
+d4e3ae7d58b5: Pull complete
+64a2391497b7: Pull complete
+Digest: sha256:21afb9ab191aac8ced2e1490ad5ec6c0f1c5704810d73451dd124670bcacfb14
+Status: Downloaded newer image for mariadb:latest
+Creating mariadb
+
+Then I imported the user table just so I can keep the grants and users in place:
+
+# from the original machine
+mysqldump -u root -p mysql user > user_table_dump_3-18.sql
+mysql -u root -h core -p mysql < user_table_dump_3-18.sql
+
+# then I removed the environment variable from the docker-compose file and restarted the container, to make sure everything is okay:
+
+# then logs after a restart
+
+core maria # docker-compose logs
+Attaching to mariadb
+mariadb    | 2017-03-18 22:58:33 139800781416384 [Note] mysqld (mysqld 10.1.22-MariaDB-1~jessie) starting as process 1 ...
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Using mutexes to ref count buffer pool pages
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: The InnoDB memory heap is disabled
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: GCC builtin __atomic_thread_fence() is used for memory barrier
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Compressed tables use zlib 1.2.8
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Using Linux native AIO
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Using SSE crc32 instructions
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Initializing buffer pool, size = 1.0G
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Completed initialization of buffer pool
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Highest supported file format is Barracuda.
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: 128 rollback segment(s) are active.
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB: Waiting for purge to start
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] InnoDB:  Percona XtraDB (http://www.percona.com) 5.6.35-80.0 started; log sequence number 1616839
+mariadb    | 2017-03-18 22:58:34 139799277049600 [Note] InnoDB: Dumping buffer pool(s) not yet started
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] Plugin 'FEEDBACK' is disabled.
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] Server socket created on IP: '::'.
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Warning] 'proxies_priv' entry '@% root@mariadb' ignored in --skip-name-resolve mode.
+mariadb    | 2017-03-18 22:58:34 139800781416384 [Note] mysqld: ready for connections.
+mariadb    | Version: '10.1.22-MariaDB-1~jessie'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  mariadb.org binary distribution
+
+### Export and Import
+First export
+<> mysqldump --events --routines --triggers -u root -p zabbix > zabbix-03-18.sql
+Enter password: 
+
+# then create the db on the destination machine
+┌─[elatov@moxz] - [/home/elatov] - [2017-03-18 05:02:58]
+└─[0] <> mysql -u root -p -h core
+Enter password: 
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3
+Server version: 10.1.22-MariaDB-1~jessie mariadb.org binary distribution
+
+Copyright (c) 2000, 2016, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> create database zabbix;
+Query OK, 1 row affected (0.01 sec)
+
+MariaDB [(none)]> Bye
+
+# and then import
+┌─[elatov@moxz] - [/home/elatov] - [2017-03-18 05:04:42]
+└─[0] <> mysql -u root -h core -p zabbix < zabbix-03-18.sql 
+Enter password: 
+
+# then I updated the application to use the new IP of the docker host for the mysql connection.
+
+
+# doing a quick bench mark, I got the following:
+
+<> sysbench --db-driver=mysql --test=oltp --oltp-table-size=1000000 --oltp-test-mode=complex --oltp-read-only=off --num-threads=6 --max-time=60 --max-requests=0 --mysql-db=ptest --mysql-user=root --mysql-password=become --mysql-host=core run
+sysbench 0.4.12:  multi-threaded system evaluation benchmark
+
+Running the test with following options:
+Number of threads: 6
+
+Doing OLTP test.
+Running mixed OLTP test
+Using Special distribution (12 iterations,  1 pct of values are returned in 75 pct cases)
+Using "BEGIN" for starting transactions
+Using auto_inc on the id column
+Threads started!
+Time limit exceeded, exiting...
+(last message repeated 5 times)
+Done.
+
+OLTP test statistics:
+    queries performed:
+        read:                            367626
+        write:                           131295
+        other:                           52518
+        total:                           551439
+    transactions:                        26259  (437.58 per sec.)
+    deadlocks:                           0      (0.00 per sec.)
+    read/write requests:                 498921 (8314.06 per sec.)
+    other operations:                    52518  (875.16 per sec.)
+
+Test execution summary:
+    total time:                          60.0093s
+    total number of events:              26259
+    total time taken by event execution: 359.9572
+    per-request statistics:
+         min:                                  7.36ms
+         avg:                                 13.71ms
+         max:                                141.39ms
+         approx.  95 percentile:              19.92ms
+
+Threads fairness:
+    events (avg/stddev):           4376.5000/40.67
+    execution time (avg/stddev):   59.9929/0.00
+
+
+This is using the default bridge network that docker-compose creates for the conatiner:
+
+elatov@core ~ $ docker network ls | grep mar
+6df70ed8f399        maria_default        bridge              local  
+
+More information on docker networking is here: [Docker container networking](https://docs.docker.com/engine/userguide/networking/)
+
+Some folks had better luck using the docker host network:
+
+http://blog.balazspocze.me/2016/02/15/mysqldocker-performance-report-update/
+
+But I was okay with the results, since they match my old local ones.

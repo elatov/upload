@@ -1,0 +1,23 @@
+# mount lvm
+
+lvm vgscan -v
+lvm vgchange -a y
+lvm lvs –all
+
+mount /dev/mapper/system-root /a
+
+mount --bind /dev /a/dev
+mount --bind /proc /a/proc # maybe superfluous
+mount --bind /sys /a/sys # maybe superfluous
+
+
+
+
+# fix efi boot
+grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=grub --recheck --debug
+ grub-mkconfig -o /boot/efi/EFI/grub/grub.cfg
+ cp /boot/efi/EFI/grub/grub.cfg /boot/grub/grub.cfg
+ cp /boot/efi/EFI/grub/grubx64.efi /boot/efi/EFI/boot/bootx64.efi}}
+
+efibootmgr -b 0000 -B
+

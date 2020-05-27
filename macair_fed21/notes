@@ -1,0 +1,179 @@
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+2: ens9: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc mq state DOWN mode DEFAULT group default qlen 1000
+    link/ether 0c:4d:e9:a0:c0:aa brd ff:ff:ff:ff:ff:ff
+driver: tg3
+version: 3.137
+firmware-version: 57762-a1.10
+bus-info: 0000:0a:00.0
+supports-statistics: yes
+supports-test: yes
+supports-eeprom-access: yes
+supports-register-dump: yes
+supports-priv-flags: no
+00:00.0 Host bridge: Intel Corporation Broadwell-U Host Bridge -OPI (rev 09)
+	DeviceName: SATA
+	Subsystem: Apple Inc. Device 011b
+00:02.0 VGA compatible controller: Intel Corporation Broadwell-U Integrated Graphics (rev 09)
+	Subsystem: Apple Inc. Device 011b
+	Kernel driver in use: i915
+	Kernel modules: i915
+00:03.0 Audio device: Intel Corporation Broadwell-U Audio Controller (rev 09)
+	Subsystem: Apple Inc. Device 011b
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
+00:14.0 USB controller: Intel Corporation Wildcat Point-LP USB xHCI Controller (rev 03)
+	Subsystem: Intel Corporation Device 7270
+	Kernel driver in use: xhci_hcd
+00:16.0 Communication controller: Intel Corporation Wildcat Point-LP MEI Controller #1 (rev 03)
+	Subsystem: Intel Corporation Device 7270
+	Kernel driver in use: mei_me
+	Kernel modules: mei_me
+00:1b.0 Audio device: Intel Corporation Wildcat Point-LP High Definition Audio Controller (rev 03)
+	Subsystem: Intel Corporation Device 7270
+	Kernel driver in use: snd_hda_intel
+	Kernel modules: snd_hda_intel
+00:1c.0 PCI bridge: Intel Corporation Wildcat Point-LP PCI Express Root Port #1 (rev e3)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1c.1 PCI bridge: Intel Corporation Wildcat Point-LP PCI Express Root Port #2 (rev e3)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1c.2 PCI bridge: Intel Corporation Wildcat Point-LP PCI Express Root Port #3 (rev e3)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1c.4 PCI bridge: Intel Corporation Wildcat Point-LP PCI Express Root Port #5 (rev e3)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1c.5 PCI bridge: Intel Corporation Wildcat Point-LP PCI Express Root Port #6 (rev e3)
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+00:1f.0 ISA bridge: Intel Corporation Wildcat Point-LP LPC Controller (rev 03)
+	Subsystem: Intel Corporation Device 7270
+	Kernel driver in use: lpc_ich
+	Kernel modules: lpc_ich
+00:1f.3 SMBus: Intel Corporation Wildcat Point-LP SMBus Controller (rev 03)
+	Subsystem: Intel Corporation Device 7270
+	Kernel modules: i2c_i801
+00:1f.6 Signal processing controller: Intel Corporation Wildcat Point-LP Thermal Management Controller (rev 03)
+	Subsystem: Intel Corporation Device 7270
+02:00.0 Multimedia controller: Broadcom Corporation Device 1570
+	Subsystem: Broadcom Corporation Device 1570
+03:00.0 Network controller: Broadcom Corporation BCM4360 802.11ac Wireless Network Adapter (rev 03)
+	Subsystem: Apple Inc. Device 0117
+04:00.0 SATA controller: Samsung Electronics Co Ltd Device a801 (rev 01)
+	Subsystem: Samsung Electronics Co Ltd Device a801
+	Kernel driver in use: ahci
+05:00.0 PCI bridge: Intel Corporation Device 156b
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+06:00.0 PCI bridge: Intel Corporation Device 156b
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+06:03.0 PCI bridge: Intel Corporation Device 156b
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+06:04.0 PCI bridge: Intel Corporation Device 156b
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+06:05.0 PCI bridge: Intel Corporation Device 156b
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+06:06.0 PCI bridge: Intel Corporation Device 156b
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+07:00.0 System peripheral: Intel Corporation Device 156a
+08:00.0 PCI bridge: Intel Corporation DSL3510 Thunderbolt Controller [Cactus Ridge]
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+09:00.0 PCI bridge: Intel Corporation DSL3510 Thunderbolt Controller [Cactus Ridge]
+	Kernel driver in use: pcieport
+	Kernel modules: shpchp
+0a:00.0 Ethernet controller: Broadcom Corporation NetXtreme BCM57762 Gigabit Ethernet PCIe
+	Subsystem: Apple Inc. Device 00f6
+	Kernel driver in use: tg3
+	Kernel modules: tg3
+03:00.0 Network controller: Broadcom Corporation BCM4360 802.11ac Wireless Network Adapter (rev 03)
+	Subsystem: Apple Inc. Device 0117
+04:00.0 SATA controller: Samsung Electronics Co Ltd Device a801 (rev 01)
+Startup finished in 845ms (kernel) + 2.434s (initrd) + 3.052s (userspace) = 6.332s
+
+
+### first update the kernel
+sudo yum update
+# then install the kmod-wl
+sudo yum install kmod-wl
+# then install the regular kernel-devel, for some reason the debug one was installed in my case
+sudo yum kernel-devel
+# then reboot and the wireless adapter should show up
+[elatov@localhost ~]$ iw dev
+phy#0
+	Interface wlp3s0
+		ifindex 2
+		wdev 0x1
+		addr 34:36:3b:8a:7d:6c
+
+# and wl is the driver
+[elatov@localhost ~]$ ethtool -i wlp3s0
+driver: wl0
+version: 6.30.223.248 (r487574)
+firmware-version: 
+bus-info: 
+supports-statistics: no
+supports-test: no
+supports-eeprom-access: no
+supports-register-dump: no
+supports-priv-flags: no
+
+To fix the brightness button followed the instuctions on this site
+
+https://ask.fedoraproject.org/en/question/26364/cannot-adjust-brightness/
+
+and added the grub entry:
+
+[elatov@localhost ~]$ grep LINUX /etc/default/grub 
+GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/swap rd.lvm.lv=fedora/root rhgb quiet acpi_backlight=vendor"
+
+then I just rebuilt the grub menu
+
+sudo grub2-mkconfig -o /boot/efi/EFI/fedora/grub.cfg
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1178216
+
+# fix the ~ key
+https://bugzilla.redhat.com/show_bug.cgi?id=1025041
+
+[elatov@localhost ~]$ cat /etc/modprobe.d/hid_apple.conf
+options hid_apple iso_layout=0
+
+
+https://community.oracle.com/thread/2448975
+
+[elatov@localhost ~]$ grep GRUB_CMDLINE_LINUX /etc/default/grub 
+GRUB_CMDLINE_LINUX="rd.lvm.lv=fedora/swap rd.lvm.lv=fedora/root rhgb quiet acpi_backlight=vendor hid_apple.iso_layout=0"
+
+
+### Allow booting from Grub into Mac OS Yosemite
+$sudo cat /etc/grub.d/40_custom
+#!/bin/sh
+exec tail -n +3 $0
+# This file provides an easy way to add custom menu entries.  Simply type the
+# menu entries you want to add after this comment.  Be careful not to change
+# the 'exec tail' line above.
+menuentry "MacOS X Yosemite" {
+        insmod hfsplus
+        set root=(hd1,gpt3)
+        chainloader /System/Library/CoreServices/boot.efi
+        boot
+}
+# chose gpt3 cause that's where the Apple Boot partition was
+$sudo fdisk -l | grep boot
+/dev/sda3  186509544 187779079   1269536 619.9M Apple boot
+# decided to try apple boot as per this post
+http://comments.gmane.org/gmane.comp.boot-loaders.grub.devel/22598
+# and also saw the grub entry here:
+http://forums.fedoraforum.org/archive/index.php/t-288002.html
+# found a bug and it sugged chainloading:
+https://bugzilla.redhat.com/show_bug.cgi?id=893179
+###
+

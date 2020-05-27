@@ -1,0 +1,22 @@
+[2.3-RELEASE][root@pf.kar.int]/root: pkg install barnyard2
+Updating pfSense-core repository catalogue...
+pfSense-core repository is up-to-date.
+Updating pfSense repository catalogue...
+pfSense repository is up-to-date.
+All repositories are up-to-date.
+The following 4 package(s) will be affected (of 0 checked):
+
+New packages to be INSTALLED:
+    barnyard2: 1.13 [pfSense]
+    broccoli: 1.97,1 [pfSense]
+    GeoIP: 1.6.6 [pfSense]
+    mysql56-client: 5.6.27 [pfSense]
+
+The process will require 46 MiB more space.
+2 MiB to be downloaded.
+
+Proceed with this action? [y/N]: y
+
+
+https://doc.pfsense.org/index.php/Setup_Snort_Package
+https://doc.pfsense.org/index.php/Snort_suppress_list

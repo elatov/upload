@@ -1,0 +1,6 @@
+[root@host ~]# esxcfg-scsidevs -c
+Deuice UID                   Deuice Type    Console Deuice  Size    Plugin  Display Name
+mpx.vmhba32:C0:T0:L0         CD-ROM        /dev/sr0         0MB     NMP    Local USB CD-ROM (mpx.vmhba32:C0:T0:L0)
+mpx.vmhba33:C0:T0:L0         Direct-Access /dev/sda         0MB     NMP    USB Direct-Access (mpx.vmhba33:C0:T0:L0)
+mpx.vmhba3:C0:T0:L0          CD-ROM        /dev/sr1         0MB     NMP    Local HL-DT-ST CD-ROM (mpx.vmhba3:C0:T0:L0)
+naa.6001e4f0349cda000fa0bf4703f2279a  Direct-Access   /dev/sdb      69376MB  NMP    Local DELL Disk (naa.6001e4f0349cda000fa0bf4703f)

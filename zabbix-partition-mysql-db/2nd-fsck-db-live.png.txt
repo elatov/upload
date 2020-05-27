@@ -1,0 +1,9 @@
+root@debian:~# e2_sck -_ /dev/mapper/kerch-root
+e2_sck 1.42.5 (29-Jul-2012)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking re_erence counts
+Pass 5: Checking group summary in_ormation
+/dev/mapper/kerch-root: 14_284/915_12 _iles (O.2_ non-contiguous), 2515899/36_O0
+16 blocks

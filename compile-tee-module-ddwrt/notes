@@ -1,0 +1,40 @@
+### Compile dd-wrt
+http://www.dd-wrt.com/phpBB2/viewtopic.php?p=973183&sid=6e5dab736679b50c6792f54d86c17738
+http://www.dd-wrt.com/phpBB2/viewtopic.php?p=900316
+
+cd /opt
+wget http://download1.dd-wrt.com/dd-wrtv2/downloads/toolchains/toolchains.tar.xz
+tar -xvf toolchains.tar.xz
+cd ~/dd-wrt
+svn checkout svn://svn.dd-wrt.com/DD-WRT/src/linux/universal/linux-3.10
+cd linux-3.10
+cp .config_northstar_smp .config
+export PATH=$PATH:/opt/toolchain-arm_cortex-a9_gcc-4.8-linaro_musl-1.1.5_eabi/bin
+export CROSS_COMPILE=arm-linux-
+export ARCH=arm
+make modules ARCH=arm
+
+Comment out
+#if RALINK_DEVICE
+#source "drivers/net/wireless/rt3352/rt2860v2_ap/Kconfig"
+#source "drivers/net/wireless/rt3352/rt2860v2_sta/Kconfig"
+#endif
+
+from drivers/net/wireless/Kconfig
+
+https://blog.jmwhite.co.uk/2013/08/10/compiling-ipv6-modules-from-source-for-dd-wrt/
+
+https://github.com/boundarydevices/linux-imx6/issues/6
+
+### compile iptables
+http://www.spinics.net/lists/netfilter/msg55949.html
+http://www.jonisdumb.com/2011/02/compiling-ip6tables-dd-wrt.html
+
+# wget http://www.netfilter.org/projects/iptables/files/iptables-1.4.10.tar.bz2
+# tar -xjvf iptables-1.4.10.tar.bz2
+# cd iptables-1.4.10
+
+./configure --prefix=/opt --host=arm-linux
+
+### patch iptables for dd-wrt
+https://github.com/sabotage-linux/sabotage/blob/master/KEEP/iptables-1.4.14-musl-fixes.patch

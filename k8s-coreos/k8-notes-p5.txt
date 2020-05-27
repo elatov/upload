@@ -1,0 +1,304 @@
+
+core ~ # cd shipyard/
+core shipyard # ls
+data  data.bak  docker-compose.yml
+core shipyard # docker-compose down
+Stopping shipyard-controller    ... done
+Stopping shipyard-rethinkdb     ... done
+Stopping shipyard-swarm-agent   ... done
+Stopping shipyard-swarm-manager ... done
+Removing shipyard-controller    ... done
+Removing shipyard-rethinkdb     ... done
+Removing shipyard-swarm-agent   ... done
+Removing shipyard-swarm-manager ... done
+
+core ~ # kubectl get pods
+No resources found.
+core ~ # kubectl get nodes
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   6m
+core ~ # kubectl get nodes
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   7m
+
+
+
+core ~ # rkt list
+UUID		APP		IMAGE NAME					STATE	CREATED		STARTED		NETWORKS
+1a5930c6	flannel		quay.io/coreos/flannel:v0.8.0			exited	19 minutes ago	19 minutes ago
+2d29ff63	flannel		quay.io/coreos/flannel:v0.8.0			running	19 minutes ago	19 minutes ago
+a1e176ec	hyperkube	quay.io/coreos/hyperkube:v1.5.1_coreos.0	running	18 minutes ago	18 minutes ago
+
+core ~ # kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+secret "kubernetes-dashboard-certs" created
+serviceaccount "kubernetes-dashboard" created
+Error from server (BadRequest): error when creating "https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml": Role in version "v1beta1" cannot be handled as a Role: no kind "Role" is registered for version "rbac.authorization.k8s.io/v1beta1"
+Error from server (BadRequest): error when creating "https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml": RoleBinding in version "v1beta1" cannot be handled as a RoleBinding: no kind "RoleBinding" is registered for version "rbac.authorization.k8s.io/v1beta1"
+error validating "https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml": error validating data: [found invalid field tolerations for v1.PodSpec, found invalid field initContainers for v1.PodSpec]; if you choose to ignore these errors, turn validation off with --validate=false
+core ~ # kubectl get no
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   32m
+
+core kubernetes # cd manifests/
+core manifests # ls
+kube-apiserver.yaml  kube-controller-manager.yaml  kube-proxy.yaml  kube-scheduler.yaml
+core manifests # grep 1.5 *
+kube-apiserver.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+kube-controller-manager.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+kube-proxy.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+kube-scheduler.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+
+core ~ # etcdctl cluster-health
+member ce2a822cea30bfca is healthy: got healthy result from http://192.168.1.106:2379
+cluster is healthy
+
+core ~ # kubectl drain 192.168.1.106 --force
+node "192.168.1.106" already cordoned
+WARNING: Deleting pods not managed by ReplicationController, ReplicaSet, Job, DaemonSet or StatefulSet: kube-apiserver-192.168.1.106, kube-controller-manager-192.168.1.106, kube-proxy-192.168.1.106, kube-scheduler-192.168.1.106
+node "192.168.1.106" drained
+core ~ # kubectl get nodes
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   1h
+core ~ # systemctl stop kubelet
+
+core ~ # kubectl get nodes
+The connection to the server 192.168.1.106 was refused - did you specify the right host or port?
+core ~ # etcdctl cluster-health
+member ce2a822cea30bfca is healthy: got healthy result from http://192.168.1.106:2379
+cluster is healthy
+core ~ # systemctl stop etcd2
+core ~ # systemctl disable etcd2
+core ~ # etcdctl backup --data-dir /var/lib/etcd2 --backup-dir /home/core/etcd2-backup
+core ~ # rm -rf /var/lib/etcd/*
+core ~ # cp -a /var/lib/etcd2/* /var/lib/etcd
+core ~ # mkdir /etc/systemd/system/etcd-member.service.d
+
+core ~ # cp /run/systemd/system/etcd2.service.d/20-cloudinit.conf /etc/systemd/system/etcd-member.service.d/.
+core ~ # cp /etc/systemd/system/etcd2.service.d/50-network-config.conf /etc/systemd/system/etcd-member.service.d/.
+core ~ # mv /var/lib/coreos-install/user_data ~
+core ~ # systemctl daemon-reload
+core ~ # systemctl enable etcd-member
+Created symlink /etc/systemd/system/multi-user.target.wants/etcd-member.service → /usr/lib/systemd/system/etcd-member.service.
+core ~ # systemctl start etcd-member
+core ~ # systemctl status etcd-member
+● etcd-member.service - etcd (System Application Container)
+   Loaded: loaded (/usr/lib/systemd/system/etcd-member.service; enabled; vendor preset: disabled)
+  Drop-In: /etc/systemd/system/etcd-member.service.d
+           └─20-cloudinit.conf, 50-network-config.conf
+   Active: active (running) since Sat 2017-11-11 11:10:42 MST; 1s ago
+     Docs: https://github.com/coreos/etcd
+  Process: 26514 ExecStartPre=/usr/bin/rkt rm --uuid-file=/var/lib/coreos/etcd-member-wrapper.uuid (code=exited, status=254)
+  Process: 26510 ExecStartPre=/usr/bin/mkdir --parents /var/lib/coreos (code=exited, status=0/SUCCESS)
+ Main PID: 26522 (etcd)
+    Tasks: 13 (limit: 32768)
+   Memory: 111.1M
+      CPU: 2.362s
+   CGroup: /system.slice/etcd-member.service
+           └─26522 /usr/local/bin/etcd
+
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.420693 I | raft: raft.node: ce2a822cea30bfca elected leader ce2a822cea30bfca at term 20
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.420925 I | etcdserver: updating the cluster version from 2.3 to 3.1
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427604 N | etcdserver/membership: updated the cluster version from 2.3 to 3.1
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427635 I | etcdserver/api: enabled capabilities for version 3.1
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427661 I | embed: ready to serve client requests
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427831 I | etcdserver: published {Name:core ClientURLs:[http://192.168.1.106:2379]} to cluster 7e27652122e8b2ae
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427862 I | embed: ready to serve client requests
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.427967 N | embed: serving insecure client requests on [::]:2379, this is strongly discouraged!
+Nov 11 11:10:42 core etcd-wrapper[26522]: 2017-11-11 18:10:42.428207 N | embed: serving insecure client requests on [::]:4001, this is strongly discouraged!
+Nov 11 11:10:42 core systemd[1]: Started etcd (System Application Container).
+core ~ # etcdctl cluster-health
+member ce2a822cea30bfca is healthy: got healthy result from http://192.168.1.106:2379
+cluster is healthy
+
+core ~ # cd /opt/
+core opt # ls
+backup  bin  tmp
+core opt # mkdir etcd3
+core opt # cd etcd3/
+core etcd3 # wget https://github.com/coreos/etcd/releases/download/v3.2.0/etcd-v3.2.0-linux-amd64.tar.gz
+
+Saving to: 'etcd-v3.2.0-linux-amd64.tar.gz'
+
+etcd-v3.2.0-linux-amd64.tar.gz
+
+core etcd3 # ls
+etcd-v3.2.0-linux-amd64.tar.gz
+core etcd3 # tar xzf etcd-v3.2.0-linux-amd64.tar.gz
+core etcd3 # ls
+etcd-v3.2.0-linux-amd64  etcd-v3.2.0-linux-amd64.tar.gz
+core etcd3 # cd etcd-v3.2.0-linux-amd64
+core etcd-v3.2.0-linux-amd64 # ls
+Documentation  README-etcdctl.md  README.md  READMEv2-etcdctl.md  etcd  etcdctl
+core etcd-v3.2.0-linux-amd64 # ETCDCTL_API=3 ./etcdctl migrate --data-dir=/var/lib/etcd
+using default transformer
+2017-11-11 11:12:36.123567 I | etcdserver/api: enabled capabilities for version 2.3
+2017-11-11 11:12:36.123606 I | etcdserver/membership: added member ce2a822cea30bfca [http://localhost:2380 http://localhost:7001] to cluster 0 from store
+2017-11-11 11:12:36.123614 I | etcdserver/membership: set the cluster version to 2.3 from store
+2017-11-11 11:12:36.129480 N | etcdserver/membership: updated the cluster version from 2.3 to 3.1
+2017-11-11 11:12:36.129514 I | etcdserver/api: enabled capabilities for version 3.1
+waiting for etcd to close and release its lock on "/var/lib/etcd/member/snap/db"
+
+finished transforming keys
+core etcd-v3.2.0-linux-amd64 #
+core etcd-v3.2.0-linux-amd64 # cd
+
+core ~ # grep v1.5.2_coreos.0 /etc/systemd/system/kubelet.service
+core ~ # grep v1.5.1_coreos.0 /etc/systemd/system/kubelet.service
+Environment=KUBELET_VERSION=v1.5.1_coreos.0
+core ~ # vi /etc/systemd/system/kubelet.service
+core ~ # systemctl daemon-reload
+core ~ # grep -R v1.5.1_coreos.0 /etc/kubernetes/manifests/*
+/etc/kubernetes/manifests/kube-apiserver.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+/etc/kubernetes/manifests/kube-controller-manager.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+/etc/kubernetes/manifests/kube-proxy.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+/etc/kubernetes/manifests/kube-scheduler.yaml:    image: quay.io/coreos/hyperkube:v1.5.1_coreos.0
+core ~ # sed -i 's/v1.5.1_coreos.0/v1.6.1_coreos.0/ /etc/kubernetes/manifests/*
+> ^C
+core ~ # sed -i 's/v1.5.1_coreos.0/v1.6.1_coreos.0/' /etc/kubernetes/manifests/*
+core ~ # grep -R v1.5.1_coreos.0 /etc/kubernetes/manifests/*
+core ~ # grep -R v1.6.1_coreos.0 /etc/kubernetes/manifests/*
+/etc/kubernetes/manifests/kube-apiserver.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+/etc/kubernetes/manifests/kube-controller-manager.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+/etc/kubernetes/manifests/kube-proxy.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+/etc/kubernetes/manifests/kube-scheduler.yaml:    image: quay.io/coreos/hyperkube:v1.6.1_coreos.0
+core ~ # grep v1.6.1_coreos.0 /etc/systemd/system/kubelet.service
+Environment=KUBELET_IMAGE_TAG=v1.6.1_coreos.0
+core ~ # systemctl daemon-reload
+core ~ # systemctl restart kubelet
+
+
+
+core ~ # curl http://127.0.0.1:8080/version
+{
+  "major": "1",
+  "minor": "6",
+  "gitVersion": "v1.6.1+coreos.0",
+  "gitCommit": "9212f77ed8c169a0afa02e58dce87913c6387b3e",
+  "gitTreeState": "clean",
+  "buildDate": "2017-04-04T00:32:53Z",
+  "goVersion": "go1.7.5",
+  "compiler": "gc",
+  "platform": "linux/amd64"
+}
+
+
+core ~ # kubectl get no
+NAME            STATUS                     AGE
+192.168.1.106   Ready,SchedulingDisabled   1h
+
+
+core ~ # systemctl status kubelet
+● kubelet.service
+   Loaded: loaded (/etc/systemd/system/kubelet.service; enabled; vendor preset: disabled)
+   Active: active (running) since Sat 2017-11-11 11:44:42 MST; 1min 42s ago
+  Process: 16819 ExecStop=/usr/bin/rkt stop --uuid-file=/var/run/kubelet-pod.uuid (code=exited, status=0/SUCCESS)
+  Process: 16844 ExecStartPre=/usr/bin/rkt rm --uuid-file=/var/run/kubelet-pod.uuid (code=exited, status=0/SUCCESS)
+  Process: 16841 ExecStartPre=/usr/bin/mkdir -p /var/log/containers (code=exited, status=0/SUCCESS)
+  Process: 16838 ExecStartPre=/usr/bin/mkdir -p /etc/kubernetes/manifests (code=exited, status=0/SUCCESS)
+ Main PID: 16865 (kubelet)
+    Tasks: 20 (limit: 32768)
+   Memory: 71.1M
+      CPU: 4.230s
+   CGroup: /system.slice/kubelet.service
+           ├─16865 /kubelet --api-servers=http://127.0.0.1:8080 --register-schedulable=false --network-plugin=cni --container-runtime=docker --allow-privileged=true --pod-manifest-path=/etc/kubernetes/manifests --hostname-override=192.168.1
+           └─16924 journalctl -k -f
+
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.092669   16865 reconciler.go:231] VerifyControllerAttachedVolume operation started for volume "kubernetes.io/host-path/3f2d56378f887a55af5d2c21fea699d5-ssl-certs-host" (spec.Name:
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.092742   16865 reconciler.go:231] VerifyControllerAttachedVolume operation started for volume "kubernetes.io/host-path/3904d793c0237421892d0b11d8787f7d-ssl-certs-kubernetes" (spec.
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.092774   16865 reconciler.go:231] VerifyControllerAttachedVolume operation started for volume "kubernetes.io/host-path/3904d793c0237421892d0b11d8787f7d-ssl-certs-host" (spec.Name:
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.092815   16865 reconciler.go:231] VerifyControllerAttachedVolume operation started for volume "kubernetes.io/host-path/e50b6ff2a272106e2ca6fa4afd1652bc-ssl-certs-host" (spec.Name:
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.092884   16865 reconciler.go:231] VerifyControllerAttachedVolume operation started for volume "kubernetes.io/host-path/3f2d56378f887a55af5d2c21fea699d5-ssl-certs-kubernetes" (spec.
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.193221   16865 operation_generator.go:597] MountVolume.SetUp succeeded for volume "kubernetes.io/host-path/3f2d56378f887a55af5d2c21fea699d5-ssl-certs-kubernetes" (spec.Name: "ssl-c
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.193223   16865 operation_generator.go:597] MountVolume.SetUp succeeded for volume "kubernetes.io/host-path/3f2d56378f887a55af5d2c21fea699d5-ssl-certs-host" (spec.Name: "ssl-certs-h
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.193223   16865 operation_generator.go:597] MountVolume.SetUp succeeded for volume "kubernetes.io/host-path/3904d793c0237421892d0b11d8787f7d-ssl-certs-host" (spec.Name: "ssl-certs-h
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.193280   16865 operation_generator.go:597] MountVolume.SetUp succeeded for volume "kubernetes.io/host-path/3904d793c0237421892d0b11d8787f7d-ssl-certs-kubernetes" (spec.Name: "ssl-c
+Nov 11 11:44:48 core kubelet-wrapper[16865]: I1111 18:44:48.193293   16865 operation_generator.go:597] MountVolume.SetUp succeeded for volume "kubernetes.io/host-path/e50b6ff2a272106e2ca6fa4afd1652bc-ssl-certs-host" (spec.Name: "ssl-certs-h
+core ~ # cd
+core ~ # mkdir dashboard
+core ~ # cd dashboard/
+core dashboard # wget https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+
+core dashboard # kubectl apply -f kubernetes-dashboard.yaml
+secret "kubernetes-dashboard-certs" configured
+serviceaccount "kubernetes-dashboard" configured
+deployment "kubernetes-dashboard" created
+service "kubernetes-dashboard" created
+unable to decode "kubernetes-dashboard.yaml": no kind "Role" is registered for version "rbac.authorization.k8s.io/v1beta1"
+unable to decode "kubernetes-dashboard.yaml": no kind "RoleBinding" is registered for version "rbac.authorization.k8s.io/v1beta1"
+core dashboard # ls
+kubernetes-dashboard.yaml
+core dashboard # cd
+core ~ # vi /etc/systemd/system/kubelet.service
+core ~ # cd /etc/kubernetes/manifests/
+core manifests # ls
+kube-apiserver.yaml  kube-controller-manager.yaml  kube-proxy.yaml  kube-scheduler.yaml
+core manifests # sed -i 's/v1.6.1_coreos.0/v1.7.2_coreos.0/' /etc/kubernetes/manifests/*
+core manifests # grep v1.7 !$
+grep v1.7 /etc/kubernetes/manifests/*
+/etc/kubernetes/manifests/kube-apiserver.yaml:    image: quay.io/coreos/hyperkube:v1.7.2_coreos.0
+/etc/kubernetes/manifests/kube-controller-manager.yaml:    image: quay.io/coreos/hyperkube:v1.7.2_coreos.0
+/etc/kubernetes/manifests/kube-proxy.yaml:    image: quay.io/coreos/hyperkube:v1.7.2_coreos.0
+/etc/kubernetes/manifests/kube-scheduler.yaml:    image: quay.io/coreos/hyperkube:v1.7.2_coreos.0
+core manifests # cd
+core ~ # systemctl restart kubelet
+Warning: kubelet.service changed on disk. Run 'systemctl daemon-reload' to reload units.
+core ~ # systemctl daemon-reload
+core ~ # systemctl restart kubelet
+ ("kubernetes-dashboard-150844358-bsmgf_kube-system(cf56c555-c710-11e7-8d2c-0c4de99d45d5)"), skipping: network is not ready: [runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized]
+Nov 11 11:58:41 core kubelet-wrapper[28711]: W1111 18:58:41.822168   28711 cni.go:189] Unable to update cni config: No networks found in /etc/cni/net.d
+Nov 11 11:58:41 core kubelet-wrapper[28711]: E1111 18:58:41.822324   28711 kubelet.go:2136] Container runtime network not ready: NetworkReady=false reason:NetworkPluginNotReady message:docker: network plugin is not ready: cni config uninitialized
+^C
+core ~ # cd /opt/bin/
+core bin # ls
+docker-compose  docker-compose.1.11.2  docker-compose.1.12.0  docker-gc.sh  kubectl  rsync_backup  watchtower-logs.sh  wp-scan.sh
+core bin # mv kubectl kubectl.1.5.1
+core bin # curl -O https://storage.googleapis.com/kubernetes-release/release/v1.7.2/bin/linux/amd64/kubectl
+core bin # chmod +x kubectl
+core bin # chmod -x kubectl.1.5.1
+core ~ # hash -r
+core ~ # kubectl get no
+NAME            STATUS     AGE       VERSION
+192.168.1.106   NotReady   2h        v1.7.2+coreos.0
+core ~ # systemctl reboot
+core ~ # Connection to core.kar.int closed by remote host.
+Connection to core.kar.int closed.
+┌─[elatov@macair] - [/Users/elatov] - [2017-11-11 11:59:40]
+└─[255] <> ssh core
+Last login: Sat Nov 11 11:45:14 MST 2017 from 192.168.1.117 on pts/3
+Container Linux by CoreOS stable (1520.8.0)
+Update Strategy: No Reboots
+elatov@core ~ $ sudo su -
+
+core ~ # journalctl -fl
+-- Logs begin at Sun 2017-02-19 16:28:05 MST. --
+Nov 11 12:04:15 core kubelet-wrapper[6871]: I1111 19:04:15.717860    6871 manager.go:1121] Started watching for new ooms in manager
+Nov 11 12:04:15 core kubelet-wrapper[6871]: I1111 19:04:15.719419    6871 oomparser.go:185] oomparser using systemd
+Nov 11 12:04:15 core kubelet-wrapper[6871]: I1111 19:04:15.720302    6871 manager.go:288] Starting recovery of all containers
+Nov 11 12:04:15 core kubelet-wrapper[6871]: W1111 19:04:15.759201    6871 docker_sandbox.go:342] failed to read pod IP from plugin/docker: NetworkPlugin cni failed on the status hook for pod "kubernetes-dashboard-150844358-bsmgf_kube-system": CNI failed to retrieve network namespace path: Cannot find network namespace for the terminated container "b01749c91e4583201a0c64680e83f332efe5cdc4db37ed28b8b30682538ca83d"
+
+
+core dashboard # kubectl create -f kubernetes-dashboard.yaml
+secret "kubernetes-dashboard-certs" created
+serviceaccount "kubernetes-dashboard" created
+rolebinding "kubernetes-dashboard-minimal" created
+deployment "kubernetes-dashboard" created
+service "kubernetes-dashboard" created
+Error from server (Forbidden): error when creating "kubernetes-dashboard.yaml": roles.rbac.authorization.k8s.io "kubernetes-dashboard-minimal" is forbidden: attempt to grant extra privileges: [PolicyRule{Resources:["secrets"], APIGroups:[""], Verbs:["create"]} PolicyRule{Resources:["secrets"], APIGroups:[""], Verbs:["watch"]} PolicyRule{Resources:["secrets"], ResourceNames:["kubernetes-dashboard-key-holder"], APIGroups:[""], Verbs:["get"]} PolicyRule{Resources:["secrets"], ResourceNames:["kubernetes-dashboard-certs"], APIGroups:[""], Verbs:["get"]} PolicyRule{Resources:["secrets"], ResourceNames:["kubernetes-dashboard-key-holder"], APIGroups:[""], Verbs:["update"]} PolicyRule{Resources:["secrets"], ResourceNames:["kubernetes-dashboard-certs"], APIGroups:[""], Verbs:["update"]} PolicyRule{Resources:["secrets"], ResourceNames:["kubernetes-dashboard-key-holder"], APIGroups:[""], Verbs:["delete"]} PolicyRule{Resources:["secrets"], ResourceNames:["kubernetes-dashboard-certs"], APIGroups:[""], Verbs:["delete"]} PolicyRule{Resources:["services"], ResourceNames:["heapster"], APIGroups:[""], Verbs:["proxy"]}] user=&{kube-admin  [system:authenticated] map[]} ownerrules=[PolicyRule{Resources:["selfsubjectaccessreviews"], APIGroups:["authorization.k8s.io"], Verbs:["create"]} PolicyRule{NonResourceURLs:["/version" "/api" "/api/*" "/apis" "/apis/*"], Verbs:["get"]} PolicyRule{NonResourceURLs:["/healthz"], Verbs:["get"]} PolicyRule{NonResourceURLs:["/swaggerapi"], Verbs:["get"]} PolicyRule{NonResourceURLs:["/swaggerapi/*"], Verbs:["get"]}] ruleResolutionErrors=[]
+core dashboard # kubectl delete -f kubernetes-dashboard.yaml
+secret "kubernetes-dashboard-certs" deleted
+serviceaccount "kubernetes-dashboard" deleted
+rolebinding "kubernetes-dashboard-minimal" deleted
+deployment "kubernetes-dashboard" deleted
+service "kubernetes-dashboard" deleted
+Error from server (NotFound): error when deleting "kubernetes-dashboard.yaml": roles.rbac.authorization.k8s.io "kubernetes-dashboard-minimal" not found
+core dashboard # cd
+
+core nginx # cd
+core ~ # kubectl get po
+NAME                               READY     STATUS    RESTARTS   AGE
+nginx-deployment-431080787-g6z6c   1/1       Running   0          5m
+nginx-deployment-431080787-ggq6t   1/1       Running   0          5m
+core ~ # kubectl get no
+NAME            STATUS    AGE       VERSION
+192.168.1.106   Ready     2h        v1.7.2+coreos.0
+core ~ #
